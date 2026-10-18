@@ -1,5 +1,3 @@
 .git
 .gitignore
-server.js
-start-localhost.bat
 *.log

@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Local server for free online tools and prank screens",
   "scripts": {
+    "build": "echo 'Static site ready'",
     "start": "node server.js",
     "dev": "node server.js"
   },
