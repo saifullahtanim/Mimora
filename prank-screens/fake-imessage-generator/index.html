@@ -350,12 +350,16 @@ ol,ul{box-sizing:border-box}:root :where(.wp-block-list.has-background){padding:
 												<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
 												<span>Upload photo</span>
 											</button>
+											<button type="button" class="imsg-btn imsg-btn-ghost imsg-btn-crop-avatar" id="imsgCropAvatarBtn" style="display:none;" title="Adjust and crop photo">
+												<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2v14a2 2 0 0 0 2 2h14"/><path d="M18 22V8a2 2 0 0 0-2-2H2"/></svg>
+												<span>Crop</span>
+											</button>
 											<button type="button" class="imsg-btn imsg-btn-ghost imsg-btn-remove-avatar" id="imsgRemoveAvatarBtn" style="display:none;" title="Remove custom photo">
 												<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
 												<span>Remove</span>
 											</button>
 										</div>
-										<span class="imsg-avatar-tip" style="font-size:0.75rem; color:#6b7280;">PNG, JPG, or WebP. Auto-crops to circular avatar.</span>
+										<span class="imsg-avatar-tip" style="font-size:0.75rem; color:#6b7280;">PNG, JPG, or WebP. Interactive circle cropper with zoom & drag.</span>
 									</div>
 									<input type="file" id="imsgAvatarInput" accept="image/png,image/jpeg,image/webp,image/gif" style="display:none;">
 								</div>
@@ -903,6 +907,56 @@ ol,ul{box-sizing:border-box}:root :where(.wp-block-list.has-background){padding:
 				</div>
 			</div>
 		</div>
+
+	<!-- Interactive Circular Avatar Cropper Modal -->
+	<div id="imsgCropperModal" class="imsg-crop-modal-overlay" style="display:none;" aria-hidden="true" role="dialog" aria-modal="true">
+		<div class="imsg-crop-modal-card">
+			<div class="imsg-crop-modal-header">
+				<div class="imsg-crop-modal-title">
+					<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2v14a2 2 0 0 0 2 2h14"/><path d="M18 22V8a2 2 0 0 0-2-2H2"/></svg>
+					<span>Crop Contact Profile Photo</span>
+				</div>
+				<button type="button" class="imsg-crop-modal-close" id="imsgCropCloseBtn" aria-label="Close cropper">&times;</button>
+			</div>
+
+			<div class="imsg-crop-modal-body">
+				<p class="imsg-crop-hint">Drag image to position. Use slider or pinch/wheel to zoom.</p>
+				
+				<div class="imsg-crop-viewport-wrap">
+					<div class="imsg-crop-viewport" id="imsgCropViewport">
+						<canvas id="imsgCropCanvas" width="340" height="340"></canvas>
+					</div>
+				</div>
+
+				<div class="imsg-crop-controls">
+					<div class="imsg-crop-zoom-row">
+						<button type="button" class="imsg-crop-zoom-btn" id="imsgCropZoomOut" title="Zoom Out">−</button>
+						<input type="range" id="imsgCropZoom" min="0.2" max="4" step="0.01" value="1" class="imsg-crop-slider" aria-label="Zoom photo">
+						<button type="button" class="imsg-crop-zoom-btn" id="imsgCropZoomIn" title="Zoom In">+</button>
+					</div>
+					<div class="imsg-crop-action-toolbar">
+						<button type="button" class="imsg-crop-tool-btn" id="imsgCropRotateBtn" title="Rotate 90 degrees">
+							<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6"/><path d="M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+							<span>Rotate</span>
+						</button>
+						<button type="button" class="imsg-crop-tool-btn" id="imsgCropResetBtn" title="Reset view">
+							<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+							<span>Reset</span>
+						</button>
+					</div>
+				</div>
+			</div>
+
+			<div class="imsg-crop-modal-footer">
+				<button type="button" class="imsg-crop-btn-cancel" id="imsgCropCancelBtn">Cancel</button>
+				<button type="button" class="imsg-crop-btn-apply" id="imsgCropApplyBtn">
+					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+					<span>Crop & Apply</span>
+				</button>
+			</div>
+		</div>
+	</div>
+
 	<script id="foxiz-core-js-extra">
 var foxizCoreParams = {"ajaxurl":"","darkModeID":"RubyDarkMode","yesPersonalized":"1","cookieDomain":"","cookiePath":"/"};
 //# sourceURL=foxiz-core-js-extra

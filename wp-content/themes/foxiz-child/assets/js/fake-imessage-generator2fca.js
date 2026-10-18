@@ -714,12 +714,24 @@
         contactName:        document.getElementById('imsgContactName'),
         avatarInput:        document.getElementById('imsgAvatarInput'),
         uploadAvatarBtn:    document.getElementById('imsgUploadAvatarBtn'),
+        cropAvatarBtn:      document.getElementById('imsgCropAvatarBtn'),
         removeAvatarBtn:    document.getElementById('imsgRemoveAvatarBtn'),
         avatarThumbWrap:    document.getElementById('imsgAvatarThumbWrap'),
         avatarThumb:        document.getElementById('imsgAvatarThumb'),
         avatarInitials:     document.getElementById('imsgAvatarInitials'),
         avatarImg:          document.getElementById('imsgAvatarImg'),
         avatarHint:         document.getElementById('imsgAvatarHint'),
+        cropperModal:       document.getElementById('imsgCropperModal'),
+        cropCloseBtn:       document.getElementById('imsgCropCloseBtn'),
+        cropCancelBtn:      document.getElementById('imsgCropCancelBtn'),
+        cropApplyBtn:       document.getElementById('imsgCropApplyBtn'),
+        cropCanvas:         document.getElementById('imsgCropCanvas'),
+        cropZoom:           document.getElementById('imsgCropZoom'),
+        cropZoomIn:         document.getElementById('imsgCropZoomIn'),
+        cropZoomOut:        document.getElementById('imsgCropZoomOut'),
+        cropRotateBtn:      document.getElementById('imsgCropRotateBtn'),
+        cropResetBtn:       document.getElementById('imsgCropResetBtn'),
+        cropViewport:       document.getElementById('imsgCropViewport'),
         service:            document.getElementById('imsgService'),
         statusTime:         document.getElementById('imsgStatusTime'),
         battery:            document.getElementById('imsgBattery'),
@@ -853,6 +865,258 @@
         render();
     }
 
+    var rawSourceImage = null;
+
+    // ---------- Interactive Avatar Cropper Engine ----------
+    var cropper = {
+        img: null,
+        zoom: 1,
+        minZoom: 0.15,
+        maxZoom: 5,
+        panX: 0,
+        panY: 0,
+        rotation: 0,
+        cropRadius: 120, // 240px diameter circle on 340x340 canvas
+        isDragging: false,
+        lastX: 0,
+        lastY: 0
+    };
+
+    var cropCtx = els.cropCanvas ? els.cropCanvas.getContext('2d') : null;
+
+    function openCropModal(imageObj) {
+        if (!els.cropperModal || !els.cropCanvas || !imageObj) return;
+        cropper.img = imageObj;
+        cropper.panX = 0;
+        cropper.panY = 0;
+        cropper.rotation = 0;
+        cropper.isDragging = false;
+
+        // Auto calculate initial zoom so image covers circular cutout
+        var minDim = Math.min(imageObj.naturalWidth || imageObj.width || 300, imageObj.naturalHeight || imageObj.height || 300);
+        var targetDiameter = cropper.cropRadius * 2;
+        var initialZoom = Math.max(targetDiameter / minDim, 0.8);
+        cropper.zoom = initialZoom;
+
+        if (els.cropZoom) {
+            els.cropZoom.min = Math.max(0.1, (initialZoom * 0.4).toFixed(2));
+            els.cropZoom.max = Math.max(4, (initialZoom * 3.5).toFixed(2));
+            els.cropZoom.value = initialZoom;
+        }
+
+        els.cropperModal.style.display = 'flex';
+        els.cropperModal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+        drawCropCanvas();
+    }
+
+    function closeCropModal() {
+        if (!els.cropperModal) return;
+        els.cropperModal.style.display = 'none';
+        els.cropperModal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+    }
+
+    function drawCropCanvas() {
+        if (!cropCtx || !els.cropCanvas || !cropper.img) return;
+        var cvs = els.cropCanvas;
+        var w = cvs.width;
+        var h = cvs.height;
+        var radius = cropper.cropRadius;
+
+        cropCtx.clearRect(0, 0, w, h);
+
+        // 1. Draw translated, rotated and zoomed image
+        cropCtx.save();
+        cropCtx.translate(w / 2 + cropper.panX, h / 2 + cropper.panY);
+        cropCtx.rotate((cropper.rotation * Math.PI) / 180);
+        cropCtx.scale(cropper.zoom, cropper.zoom);
+        var imgW = cropper.img.naturalWidth || cropper.img.width;
+        var imgH = cropper.img.naturalHeight || cropper.img.height;
+        cropCtx.drawImage(cropper.img, -imgW / 2, -imgH / 2);
+        cropCtx.restore();
+
+        // 2. Dark circular overlay mask
+        cropCtx.save();
+        cropCtx.fillStyle = 'rgba(15, 23, 42, 0.65)';
+        cropCtx.beginPath();
+        cropCtx.rect(0, 0, w, h);
+        cropCtx.arc(w / 2, h / 2, radius, 0, Math.PI * 2, true);
+        cropCtx.fill();
+
+        // 3. Crisp white circle boundary
+        cropCtx.strokeStyle = '#ffffff';
+        cropCtx.lineWidth = 2.5;
+        cropCtx.beginPath();
+        cropCtx.arc(w / 2, h / 2, radius, 0, Math.PI * 2);
+        cropCtx.stroke();
+
+        // 4. Rule-of-thirds grid lines inside circle
+        cropCtx.save();
+        cropCtx.beginPath();
+        cropCtx.arc(w / 2, h / 2, radius, 0, Math.PI * 2);
+        cropCtx.clip();
+        cropCtx.strokeStyle = 'rgba(255, 255, 255, 0.22)';
+        cropCtx.lineWidth = 1;
+        var step = (radius * 2) / 3;
+        var startX = w / 2 - radius;
+        var startY = h / 2 - radius;
+        cropCtx.beginPath();
+        cropCtx.moveTo(startX + step, startY);
+        cropCtx.lineTo(startX + step, startY + radius * 2);
+        cropCtx.moveTo(startX + step * 2, startY);
+        cropCtx.lineTo(startX + step * 2, startY + radius * 2);
+        cropCtx.moveTo(startX, startY + step);
+        cropCtx.lineTo(startX + radius * 2, startY + step);
+        cropCtx.moveTo(startX, startY + step * 2);
+        cropCtx.lineTo(startX + radius * 2, startY + step * 2);
+        cropCtx.stroke();
+        cropCtx.restore();
+
+        cropCtx.restore();
+    }
+
+    // Touch & Mouse Dragging / Panning on Cropper Viewport
+    if (els.cropViewport && els.cropCanvas) {
+        function getPointerPos(e) {
+            var clientX = e.clientX;
+            var clientY = e.clientY;
+            if (e.touches && e.touches.length) {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            }
+            return { x: clientX, y: clientY };
+        }
+
+        function onDragStart(e) {
+            cropper.isDragging = true;
+            var pos = getPointerPos(e);
+            cropper.lastX = pos.x;
+            cropper.lastY = pos.y;
+            if (e.type === 'touchstart') e.preventDefault();
+        }
+
+        function onDragMove(e) {
+            if (!cropper.isDragging) return;
+            if (e.type === 'touchmove') e.preventDefault();
+            var pos = getPointerPos(e);
+            var dx = pos.x - cropper.lastX;
+            var dy = pos.y - cropper.lastY;
+            cropper.lastX = pos.x;
+            cropper.lastY = pos.y;
+
+            var rect = els.cropCanvas.getBoundingClientRect();
+            var factor = els.cropCanvas.width / (rect.width || 340);
+            cropper.panX += dx * factor;
+            cropper.panY += dy * factor;
+            drawCropCanvas();
+        }
+
+        function onDragEnd() {
+            cropper.isDragging = false;
+        }
+
+        els.cropViewport.addEventListener('mousedown', onDragStart);
+        window.addEventListener('mousemove', onDragMove);
+        window.addEventListener('mouseup', onDragEnd);
+
+        els.cropViewport.addEventListener('touchstart', onDragStart, { passive: false });
+        window.addEventListener('touchmove', onDragMove, { passive: false });
+        window.addEventListener('touchend', onDragEnd);
+
+        // Mouse wheel zoom
+        els.cropViewport.addEventListener('wheel', function (e) {
+            e.preventDefault();
+            var step = e.deltaY < 0 ? 0.08 : -0.08;
+            cropper.zoom = Math.max(cropper.minZoom, Math.min(cropper.maxZoom, cropper.zoom + step));
+            if (els.cropZoom) els.cropZoom.value = cropper.zoom;
+            drawCropCanvas();
+        }, { passive: false });
+    }
+
+    if (els.cropZoom) {
+        els.cropZoom.addEventListener('input', function () {
+            cropper.zoom = parseFloat(els.cropZoom.value);
+            drawCropCanvas();
+        });
+    }
+
+    if (els.cropZoomIn) {
+        els.cropZoomIn.addEventListener('click', function () {
+            cropper.zoom = Math.min(cropper.maxZoom, cropper.zoom + 0.15);
+            if (els.cropZoom) els.cropZoom.value = cropper.zoom;
+            drawCropCanvas();
+        });
+    }
+
+    if (els.cropZoomOut) {
+        els.cropZoomOut.addEventListener('click', function () {
+            cropper.zoom = Math.max(cropper.minZoom, cropper.zoom - 0.15);
+            if (els.cropZoom) els.cropZoom.value = cropper.zoom;
+            drawCropCanvas();
+        });
+    }
+
+    if (els.cropRotateBtn) {
+        els.cropRotateBtn.addEventListener('click', function () {
+            cropper.rotation = (cropper.rotation + 90) % 360;
+            drawCropCanvas();
+        });
+    }
+
+    if (els.cropResetBtn) {
+        els.cropResetBtn.addEventListener('click', function () {
+            cropper.panX = 0;
+            cropper.panY = 0;
+            cropper.rotation = 0;
+            if (cropper.img) {
+                var minDim = Math.min(cropper.img.naturalWidth || cropper.img.width, cropper.img.naturalHeight || cropper.img.height);
+                cropper.zoom = Math.max((cropper.cropRadius * 2) / minDim, 1);
+                if (els.cropZoom) els.cropZoom.value = cropper.zoom;
+            }
+            drawCropCanvas();
+        });
+    }
+
+    if (els.cropCloseBtn) els.cropCloseBtn.addEventListener('click', closeCropModal);
+    if (els.cropCancelBtn) els.cropCancelBtn.addEventListener('click', closeCropModal);
+
+    // Apply crop button
+    if (els.cropApplyBtn) {
+        els.cropApplyBtn.addEventListener('click', function () {
+            if (!cropper.img) return;
+            var outSize = 400; // Crisp high-res square
+            var outCanvas = document.createElement('canvas');
+            outCanvas.width = outSize;
+            outCanvas.height = outSize;
+            var outCtx = outCanvas.getContext('2d');
+
+            var scaleFactor = outSize / (cropper.cropRadius * 2);
+
+            outCtx.save();
+            outCtx.translate(outSize / 2, outSize / 2);
+            outCtx.scale(scaleFactor, scaleFactor);
+            outCtx.translate(cropper.panX, cropper.panY);
+            outCtx.rotate((cropper.rotation * Math.PI) / 180);
+            outCtx.scale(cropper.zoom, cropper.zoom);
+
+            var imgW = cropper.img.naturalWidth || cropper.img.width;
+            var imgH = cropper.img.naturalHeight || cropper.img.height;
+            outCtx.drawImage(cropper.img, -imgW / 2, -imgH / 2);
+            outCtx.restore();
+
+            var croppedDataUrl = outCanvas.toDataURL('image/png');
+            var croppedImg = new Image();
+            croppedImg.onload = function () {
+                state.contactAvatar = croppedImg;
+                updateAvatarUI();
+                render();
+                closeCropModal();
+            };
+            croppedImg.src = croppedDataUrl;
+        });
+    }
+
     function updateAvatarUI() {
         if (!els.avatarThumb) return;
         if (state.contactAvatar && state.contactAvatar.src) {
@@ -862,6 +1126,7 @@
             }
             if (els.avatarInitials) els.avatarInitials.style.display = 'none';
             if (els.avatarThumb) els.avatarThumb.style.background = 'transparent';
+            if (els.cropAvatarBtn) els.cropAvatarBtn.style.display = 'inline-flex';
             if (els.removeAvatarBtn) els.removeAvatarBtn.style.display = 'inline-flex';
             if (els.avatarHint) els.avatarHint.textContent = 'Custom photo';
         } else {
@@ -877,6 +1142,7 @@
                 els.avatarInitials.style.display = 'block';
                 els.avatarInitials.textContent = initialsFromName(state.contactName);
             }
+            if (els.cropAvatarBtn) els.cropAvatarBtn.style.display = 'none';
             if (els.removeAvatarBtn) els.removeAvatarBtn.style.display = 'none';
             if (els.avatarHint) els.avatarHint.textContent = 'Auto initials';
         }
@@ -885,6 +1151,15 @@
     if (els.uploadAvatarBtn && els.avatarInput) {
         els.uploadAvatarBtn.addEventListener('click', function () {
             els.avatarInput.click();
+        });
+    }
+    if (els.cropAvatarBtn) {
+        els.cropAvatarBtn.addEventListener('click', function () {
+            if (rawSourceImage) {
+                openCropModal(rawSourceImage);
+            } else if (state.contactAvatar) {
+                openCropModal(state.contactAvatar);
+            }
         });
     }
     if (els.avatarThumbWrap && els.avatarInput) {
@@ -906,9 +1181,8 @@
             reader.onload = function (evt) {
                 var img = new Image();
                 img.onload = function () {
-                    state.contactAvatar = img;
-                    updateAvatarUI();
-                    render();
+                    rawSourceImage = img;
+                    openCropModal(img);
                 };
                 img.src = evt.target.result;
             };
@@ -918,6 +1192,7 @@
     if (els.removeAvatarBtn) {
         els.removeAvatarBtn.addEventListener('click', function () {
             state.contactAvatar = null;
+            rawSourceImage = null;
             if (els.avatarInput) els.avatarInput.value = '';
             updateAvatarUI();
             render();
@@ -937,7 +1212,11 @@
         var avX = (W - avSize) / 2;
         var avY = STATUS_H + 6;
         if (ptX >= avX && ptX <= avX + avSize && ptY >= avY && ptY <= avY + avSize) {
-            if (els.avatarInput) els.avatarInput.click();
+            if (rawSourceImage) {
+                openCropModal(rawSourceImage);
+            } else if (els.avatarInput) {
+                els.avatarInput.click();
+            }
         }
     });
 
@@ -976,6 +1255,7 @@
         if (!confirm('Clear all messages and reset settings to defaults?')) return;
         state.contactName = 'Mom';
         state.contactAvatar = null;
+        rawSourceImage = null;
         if (els.avatarInput) els.avatarInput.value = '';
         state.service = 'iMessage';
         state.statusTime = '9:41';
