@@ -61,7 +61,7 @@
         simMode: 'dual',
         showPercent: true,
         showCameraHole: true,
-        showNotifIcons: false,
+        showNotifIcons: true,
         contactName: 'Mimora',
         contactAvatar: null,
         service: 'iMessage',
@@ -280,6 +280,69 @@
         }
     }
 
+    // Vector Android notification icons (Gmail, Google Photos, Cloud)
+    function drawGmailNotifIcon(c, cx, cy) {
+        var w = 12.5;
+        var h = 9.2;
+        var x = cx - w / 2;
+        var y = cy - h / 2;
+        c.save();
+        c.strokeStyle = COLORS.statusIcon;
+        c.fillStyle = COLORS.statusIcon;
+        c.lineWidth = 1.15;
+        c.lineCap = 'round';
+        c.lineJoin = 'round';
+
+        roundRectPath(c, x, y, w, h, 2);
+        c.stroke();
+
+        c.beginPath();
+        c.moveTo(x + 1.2, y + 1.2);
+        c.lineTo(cx, y + h * 0.62);
+        c.lineTo(x + w - 1.2, y + 1.2);
+        c.stroke();
+        c.restore();
+    }
+
+    function drawPhotosNotifIcon(c, cx, cy) {
+        c.save();
+        c.fillStyle = COLORS.statusIcon;
+        var r = 2.4;
+        var d = 2.4;
+        var angles = [0, Math.PI / 2, Math.PI, Math.PI * 1.5];
+        for (var i = 0; i < 4; i++) {
+            var a = angles[i];
+            var px = cx + Math.cos(a) * d;
+            var py = cy + Math.sin(a) * d;
+            c.beginPath();
+            c.arc(px, py, r, a - Math.PI / 2, a + Math.PI / 2);
+            c.lineTo(cx, cy);
+            c.closePath();
+            c.fill();
+        }
+        c.restore();
+    }
+
+    function drawCloudNotifIcon(c, cx, cy) {
+        c.save();
+        c.strokeStyle = COLORS.statusIcon;
+        c.lineWidth = 1.15;
+        c.lineCap = 'round';
+        c.lineJoin = 'round';
+
+        var baseY = cy + 3.2;
+
+        c.beginPath();
+        c.moveTo(cx - 3.8, baseY);
+        c.lineTo(cx + 4.2, baseY);
+        c.arc(cx + 3.8, cy + 1.2, 2.0, 0.4, -Math.PI * 0.65, true);
+        c.arc(cx - 0.4, cy - 1.2, 3.1, -Math.PI * 0.15, -Math.PI * 0.95, true);
+        c.arc(cx - 3.8, cy + 1.2, 2.0, -Math.PI * 0.65, Math.PI * 0.55, true);
+        c.closePath();
+        c.stroke();
+        c.restore();
+    }
+
     // Modern Android / Samsung Flagship status bar (matches punch-hole + VoLTE + Dual SIM)
     function drawAndroidStatusBar(c, y) {
         var centerY = y + 24;
@@ -305,13 +368,28 @@
             c.fill();
         }
 
-        // 2. Left side: Clean Time (no clutter/notification icons)
+        // 2. Left side: Time + Notification Icons (Gmail, Photos, Cloud)
         var timeStr = state.statusTime || '9:41';
         setFont(c, 14.5, 600, '"Roboto", "Google Sans", "Segoe UI", -apple-system, sans-serif');
         c.fillStyle = COLORS.statusIcon;
         c.textAlign = 'left';
         c.textBaseline = 'middle';
         c.fillText(timeStr, 20, centerY);
+
+        if (state.showNotifIcons) {
+            var timeW = c.measureText(timeStr).width;
+            var notifStartX = 20 + timeW + 8;
+            var iconPitch = 16.5;
+
+            // 1. Gmail
+            drawGmailNotifIcon(c, notifStartX + 6, centerY);
+
+            // 2. Photos
+            drawPhotosNotifIcon(c, notifStartX + 6 + iconPitch, centerY);
+
+            // 3. Cloud
+            drawCloudNotifIcon(c, notifStartX + 6 + iconPitch * 2, centerY);
+        }
 
         // 3. Right side: Horizontal Battery, Battery %, Wi-Fi, Network (VoLTE/5G/4G), Signal (Single / Dual SIM)
         var curX = W - 20;
