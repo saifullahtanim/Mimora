@@ -323,12 +323,20 @@
         });
     }
 
+    function getLogoUrl() {
+        const logo = $('.logo img.logo-default, .logo img').first().attr('src');
+        if (logo) return logo;
+        const prefix = (window.location.pathname.startsWith('/Mimora') ? '/Mimora' : '');
+        return prefix + '/wp-content/uploads/2026/01/logo.png';
+    }
+
     // Render Recover Password Form (Matches user's Screen 1)
     function renderRecoverForm(targetContainer) {
+        const logoSrc = getLogoUrl();
         const html = `
             <div class="recover-form-card" style="padding: 5px 5px 15px;">
                 <div style="margin-bottom: 18px;">
-                    <img src="/wp-content/uploads/2026/01/logo.png" alt="Mimora" style="height:32px; width:auto; display:block;">
+                    <img src="${logoSrc}" alt="Mimora" style="height:32px; width:auto; display:block;">
                 </div>
                 <h2 style="font-size: 28px; font-weight: 800; color: var(--h1-fcolor, #1e293b); margin-bottom: 22px; line-height: 1.2;">Recover Your Password</h2>
                 <div id="modal-forgot-alert" class="mimora-auth-alert" style="display:none;"></div>
@@ -354,10 +362,11 @@
 
     // Render Recover Sent Confirmation (Matches user's Screen 2)
     function renderRecoverSentScreen(targetContainer) {
+        const logoSrc = getLogoUrl();
         const html = `
             <div class="recover-sent-card" style="padding: 10px 5px 15px;">
                 <div style="margin-bottom: 18px;">
-                    <img src="/wp-content/uploads/2026/01/logo.png" alt="Mimora" style="height:32px; width:auto; display:block;">
+                    <img src="${logoSrc}" alt="Mimora" style="height:32px; width:auto; display:block;">
                 </div>
                 <h2 style="font-size: 28px; font-weight: 800; color: var(--h1-fcolor, #1e293b); margin-bottom: 20px; line-height: 1.25;">Recover Your Password</h2>
                 <p style="font-size: 15.5px; line-height: 1.65; color: #475569; margin-bottom: 25px;">

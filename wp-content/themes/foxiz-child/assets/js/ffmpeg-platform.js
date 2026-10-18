@@ -23,7 +23,40 @@
 
 	if (global.how7oFfmpeg) return; // already loaded
 
-	var CORE_BASE = '/wp-content/themes/foxiz-child/assets/js/vendor/ffmpeg';
+	var CDN_BASE = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd';
+
+	function resolveCoreBase() {
+		// 1. Script tag #tools-ffmpeg-js (browser resolves relative src into full absolute URL e.g. https://.../Mimora/wp-content/...)
+		var scriptTag = document.getElementById('tools-ffmpeg-js');
+		if (scriptTag && scriptTag.src) {
+			return scriptTag.src.split('?')[0].replace(/\/ffmpeg\.min[^/]*$/, '');
+		}
+		// 2. Script tag #tools-ffmpeg-platform-js
+		var platTag = document.getElementById('tools-ffmpeg-platform-js');
+		if (platTag && platTag.src) {
+			return platTag.src.split('?')[0].replace(/\/ffmpeg-platform[^/]*$/, '/vendor/ffmpeg');
+		}
+		// 3. document.currentScript
+		if (typeof document !== 'undefined' && document.currentScript && document.currentScript.src) {
+			return document.currentScript.src.split('?')[0].replace(/\/ffmpeg-platform[^/]*$/, '/vendor/ffmpeg');
+		}
+		// 4. Any script containing vendor/ffmpeg
+		if (typeof document !== 'undefined') {
+			var scripts = document.getElementsByTagName('script');
+			for (var i = 0; i < scripts.length; i++) {
+				if (scripts[i].src && scripts[i].src.indexOf('vendor/ffmpeg') !== -1) {
+					return scripts[i].src.split('?')[0].replace(/\/ffmpeg\.min[^/]*$/, '');
+				}
+			}
+		}
+		// 5. Fallback based on window.location.pathname detecting GitHub Pages repo subfolder (e.g. /Mimora/)
+		var segments = (typeof window !== 'undefined' && window.location && window.location.pathname ? window.location.pathname : '').split('/').filter(Boolean);
+		var prefix = '';
+		if (segments.length > 0 && !['tools', 'prank-screens', 'wp-content', 'wp-json', 'index.html'].includes(segments[0].toLowerCase())) {
+			prefix = '/' + segments[0];
+		}
+		return prefix + '/wp-content/themes/foxiz-child/assets/js/vendor/ffmpeg';
+	}
 
 	var state = {
 		ffmpeg: null,
@@ -56,6 +89,13 @@
 			};
 			xhr.onerror = function () { reject(new Error('Network error loading ' + url)); };
 			xhr.send();
+		});
+	}
+
+	function fetchBlobWithFallback(localUrl, cdnUrl, mimeType, onProgress) {
+		return toBlobURL(localUrl, mimeType, onProgress).catch(function (err) {
+			console.warn('[how7oFfmpeg] Local file failed (' + localUrl + '), falling back to CDN (' + cdnUrl + '):', err);
+			return toBlobURL(cdnUrl, mimeType, onProgress);
 		});
 	}
 
@@ -94,10 +134,16 @@
 				}
 			}
 
+			var coreBase = resolveCoreBase();
+			var localCoreJs = coreBase + '/ffmpeg-core.js';
+			var localCoreWasm = coreBase + '/ffmpeg-core.wasm';
+			var cdnCoreJs = CDN_BASE + '/ffmpeg-core.js';
+			var cdnCoreWasm = CDN_BASE + '/ffmpeg-core.wasm';
+
 			return Promise.all([
-				toBlobURL(CORE_BASE + '/ffmpeg-core.js', 'text/javascript',
+				fetchBlobWithFallback(localCoreJs, cdnCoreJs, 'text/javascript',
 					function (p) { coreJsBytes = p; emit(); }),
-				toBlobURL(CORE_BASE + '/ffmpeg-core.wasm', 'application/wasm',
+				fetchBlobWithFallback(localCoreWasm, cdnCoreWasm, 'application/wasm',
 					function (p) { wasmBytes = p; emit(); })
 			]).then(function (urls) {
 				return ffmpeg.load({ coreURL: urls[0], wasmURL: urls[1] });
