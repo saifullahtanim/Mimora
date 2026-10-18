@@ -246,6 +246,14 @@ const server = http.createServer((req, res) => {
         return;
     }
 
+    // 301 Redirect old fake-imessage-generator URL to fake-message-generator
+    if (req.url.startsWith('/prank-screens/fake-imessage-generator')) {
+        const target = req.url.replace('/prank-screens/fake-imessage-generator', '/prank-screens/fake-message-generator');
+        res.writeHead(301, { Location: target });
+        res.end();
+        return;
+    }
+
     // API: Signup / Create Account
     if (req.url === '/api/signup' && req.method === 'POST') {
         let body = '';

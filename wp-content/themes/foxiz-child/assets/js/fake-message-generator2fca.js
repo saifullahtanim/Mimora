@@ -1,8 +1,7 @@
-/* Fake iMessage Generator
- * Renders an iOS Messages screenshot to a single <canvas>. Logical
- * dimensions match an iPhone 15 screen (393x... pt) at 3x density,
- * so the exported PNG is dimensionally indistinguishable from a real
- * iPhone screenshot.
+/* Fake Message Generator
+ * Renders an iOS/Android Messages screenshot to a single <canvas>. Logical
+ * dimensions match an iPhone 15 / Android screen at 3x density,
+ * so the exported PNG is crisp and clean.
  */
 (function () {
     'use strict';
@@ -1631,9 +1630,9 @@
         try {
             var url = canvas.toDataURL('image/png');
             var a = document.createElement('a');
-            var slug = (state.contactName || 'imessage').toString().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'imessage';
+            var slug = (state.contactName || 'message').toString().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'message';
             a.href = url;
-            a.download = 'fake-imessage-' + slug + '.png';
+            a.download = 'fake-message-' + slug + '.png';
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);

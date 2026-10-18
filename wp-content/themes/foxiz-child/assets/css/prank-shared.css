@@ -473,7 +473,7 @@
 	border-top: 1px solid rgba(0, 0, 0, 0.3);
 }
 
-/* Fake iMessage Generator — mini iOS-style chat with 3 bubbles + status bar */
+/* Fake Message Generator — mini chat with bubbles + status bar */
 .prank-os-thumb--imsg {
 	background: #fff;
 	padding: 0;
