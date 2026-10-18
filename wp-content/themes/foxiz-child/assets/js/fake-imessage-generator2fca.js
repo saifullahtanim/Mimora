@@ -367,36 +367,36 @@
             c.fill();
         }
 
-        // 3. Right side: Battery, Battery %, DND, Wi-Fi, Network (VoLTE/5G/4G), Signal (Single / Dual SIM)
-        var curX = W - 18;
+        // 3. Right side: Horizontal Battery, Battery %, Wi-Fi, Network (VoLTE/5G/4G), Signal (Single / Dual SIM)
+        var curX = W - 20;
 
-        // Vertical Android Battery
-        var battW = 9.5, battH = 15;
-        var battCapW = 4.2, battCapH = 1.8;
+        // Horizontal Battery (lying down like real screenshot)
+        var battW = 25, battH = 11.5;
         var battX = curX - battW;
-        var battY = centerY - battH / 2 + 0.5;
+        var battY = centerY - battH / 2;
 
-        // Cap
-        c.fillStyle = COLORS.statusIcon;
-        roundRectPath(c, battX + (battW - battCapW) / 2, battY - battCapH + 0.5, battCapW, battCapH, 0.7);
-        c.fill();
-        // Body
+        // Body outline
         c.strokeStyle = COLORS.statusIcon;
         c.lineWidth = 1.1;
-        roundRectPath(c, battX, battY, battW, battH, 2.2);
+        roundRectPath(c, battX, battY, battW, battH, 3);
         c.stroke();
-        // Fill from bottom
-        var pct = Math.max(0, Math.min(100, state.battery)) / 100;
-        var bInset = 1.4;
-        var maxFillH = battH - bInset * 2;
-        var fillH = Math.max(1, maxFillH * pct);
-        var fillY = battY + battH - bInset - fillH;
-        c.fillStyle = pct <= 0.15 ? '#FF3B30' : COLORS.statusIcon;
-        roundRectPath(c, battX + bInset, fillY, battW - bInset * 2, fillH, 1.0);
-        c.fill();
-        curX = battX - 5;
 
-        // Battery percentage text (e.g. 53%)
+        // Terminal Cap on the right
+        c.fillStyle = COLORS.statusIcon;
+        roundRectPath(c, battX + battW + 0.8, battY + 2.8, 1.8, battH - 5.6, 0.9);
+        c.fill();
+
+        // Fill from left to right
+        var pct = Math.max(0, Math.min(100, state.battery)) / 100;
+        var inset = 1.4;
+        var maxFillW = battW - inset * 2;
+        var fillW = Math.max(0, maxFillW * pct);
+        c.fillStyle = pct <= 0.15 ? '#FF3B30' : COLORS.statusIcon;
+        roundRectPath(c, battX + inset, battY + inset, fillW, battH - inset * 2, 1.4);
+        c.fill();
+        curX = battX - 6;
+
+        // Battery percentage text (e.g. 100% or 53%)
         if (state.showPercent) {
             var pctText = (state.battery | 0) + '%';
             setFont(c, 12.5, 600, '"Roboto", "Segoe UI", sans-serif');
@@ -405,22 +405,8 @@
             c.textAlign = 'right';
             c.textBaseline = 'middle';
             c.fillText(pctText, curX, centerY);
-            curX -= (pctW + 6);
+            curX -= (pctW + 7);
         }
-
-        // Silent / Do Not Disturb circle slash (as seen in Samsung screenshot)
-        var dndR = 4.2;
-        curX -= dndR;
-        c.strokeStyle = COLORS.statusIcon;
-        c.lineWidth = 1.0;
-        c.beginPath();
-        c.arc(curX, centerY, dndR, 0, Math.PI * 2);
-        c.stroke();
-        c.beginPath();
-        c.moveTo(curX - 2.5, centerY + 2.5);
-        c.lineTo(curX + 2.5, centerY - 2.5);
-        c.stroke();
-        curX -= (dndR + 5);
 
         // Wi-Fi
         if (state.wifi) {
@@ -442,7 +428,7 @@
             c.arc(curX, centerY + 2.2, 1.4, 0, Math.PI * 2);
             c.fill();
             c.lineCap = 'butt';
-            curX -= (wifiR + 5);
+            curX -= (wifiR + 6);
         }
 
         // Network badge (VoLTE, 5G, 4G)
@@ -464,39 +450,32 @@
             curX -= 5;
         }
 
-        // Signal bars (Dual SIM vs. Single SIM)
-        function drawBarSet(endX, bars, label) {
+        // Signal bars (Dual SIM vs. Single SIM) — without 1 & 2 numbers
+        function drawBarSet(endX, bars) {
             var count = 4;
-            var barW = 2.2, barGap = 1.0;
+            var barW = 2.4, barGap = 1.1;
             var clusterW = count * barW + (count - 1) * barGap;
             var startX = endX - clusterW;
-            var baseY = centerY + 4.5;
+            var baseY = centerY + 5;
             for (var b = 0; b < count; b++) {
-                var bh = 2.4 + b * 1.8;
+                var bh = 2.8 + b * 2.0;
                 var bx = startX + b * (barW + barGap);
                 var by = baseY - bh;
                 c.fillStyle = b < bars ? COLORS.statusIcon : 'rgba(0,0,0,0.22)';
-                roundRectPath(c, bx, by, barW, bh, 0.6);
+                roundRectPath(c, bx, by, barW, bh, 0.7);
                 c.fill();
-            }
-            if (label) {
-                setFont(c, 6.5, 700, '"Roboto", sans-serif');
-                c.fillStyle = COLORS.statusIcon;
-                c.textAlign = 'center';
-                c.textBaseline = 'bottom';
-                c.fillText(label, startX + clusterW / 2, baseY - 9.5);
             }
             return clusterW;
         }
 
         var barsCount = Math.max(0, Math.min(4, state.signal | 0));
         if (state.simMode === 'dual') {
-            var w2 = drawBarSet(curX, barsCount, '2');
+            var w2 = drawBarSet(curX, barsCount);
             curX -= (w2 + 3);
-            var w1 = drawBarSet(curX, barsCount, '1');
+            var w1 = drawBarSet(curX, barsCount);
             curX -= (w1 + 4);
         } else {
-            var wSingle = drawBarSet(curX, barsCount, '');
+            var wSingle = drawBarSet(curX, barsCount);
             curX -= (wSingle + 4);
         }
     }
