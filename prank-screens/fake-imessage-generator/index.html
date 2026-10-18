@@ -315,6 +315,20 @@ ol,ul{box-sizing:border-box}:root :where(.wp-block-list.has-background){padding:
 						<div class="imsg-controls-section">
 							<h3 class="imsg-controls-heading">Conversation</h3>
 
+							<div class="imsg-field imsg-device-os-field">
+								<label class="imsg-label">Device System / Status Bar</label>
+								<div class="imsg-device-toggle-group">
+									<button type="button" class="imsg-device-btn is-active" data-os="ios" id="imsgOsIos">
+										<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.61-.75 1.04-1.8 1.01-2.87-.96.04-2.07.64-2.73 1.41-.57.65-1.07 1.72-.94 2.76 1.08.08 2.06-.55 2.66-1.3"/></svg>
+										<span>iPhone (iOS)</span>
+									</button>
+									<button type="button" class="imsg-device-btn" data-os="android" id="imsgOsAndroid">
+										<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.523 15.3414c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.551 0 .9993.4482.9993.9993.0001.5511-.4483.9997-.9993.9997m-11.046 0c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4482.9993.9993 0 .5511-.4482.9997-.9993.9997m11.4045-6.02l1.996-3.4572c.1556-.2698.063-.614-.2069-.7696-.2694-.1556-.6135-.0631-.7696.2068l-2.0223 3.5028c-1.464-.666-3.1118-1.037-4.8787-1.037-1.767 0-3.4148.371-4.8788 1.037l-2.0223-3.5028c-.1561-.2699-.5002-.3624-.7696-.2068-.2699.1556-.3625.4998-.2069.7696l1.996 3.4572C4.1627 10.966 2.5 13.9877 2.5 17.5h19c0-3.5123-1.6627-6.534-4.6185-8.1786"/></svg>
+										<span>Android</span>
+									</button>
+								</div>
+							</div>
+
 							<div class="imsg-row">
 								<div class="imsg-field">
 									<label for="imsgContactName" class="imsg-label">Contact name</label>
@@ -377,6 +391,43 @@ ol,ul{box-sizing:border-box}:root :where(.wp-block-list.has-background){padding:
 								<div class="imsg-field">
 									<label for="imsgSignal" class="imsg-label">Signal: <strong id="imsgSignalVal">4</strong> bars</label>
 									<input type="range" id="imsgSignal" class="imsg-slider" min="0" max="4" step="1" value="4">
+								</div>
+							</div>
+
+							<!-- Android-specific Status Bar Options -->
+							<div class="imsg-android-panel" id="imsgAndroidPanel" style="display:none;">
+								<div class="imsg-row">
+									<div class="imsg-field">
+										<label for="imsgNetworkType" class="imsg-label">Mobile Network</label>
+										<select id="imsgNetworkType" class="imsg-select">
+											<option value="VoLTE" selected>VoLTE (HD Call)</option>
+											<option value="5G">5G</option>
+											<option value="4G">4G / LTE</option>
+											<option value="none">Wi-Fi Only (No Data)</option>
+										</select>
+									</div>
+									<div class="imsg-field">
+										<label for="imsgSimMode" class="imsg-label">SIM Cards</label>
+										<select id="imsgSimMode" class="imsg-select">
+											<option value="dual" selected>Dual SIM (SIM 1 & 2)</option>
+											<option value="single">Single SIM</option>
+										</select>
+									</div>
+								</div>
+
+								<div class="imsg-toggles" style="margin-top: 4px;">
+									<label class="imsg-toggle">
+										<input type="checkbox" id="imsgShowPercent" checked>
+										<span>Show battery % (e.g. 53%)</span>
+									</label>
+									<label class="imsg-toggle">
+										<input type="checkbox" id="imsgShowCameraHole" checked>
+										<span>Punch-hole camera</span>
+									</label>
+									<label class="imsg-toggle">
+										<input type="checkbox" id="imsgShowNotifIcons" checked>
+										<span>Notification icons</span>
+									</label>
 								</div>
 							</div>
 

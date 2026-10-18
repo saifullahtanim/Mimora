@@ -57,6 +57,12 @@
 
     // ---------- State ----------
     var state = {
+        deviceOS: 'ios',
+        networkType: 'VoLTE',
+        simMode: 'dual',
+        showPercent: true,
+        showCameraHole: true,
+        showNotifIcons: true,
         contactName: 'Mom',
         contactAvatar: null,
         service: 'iMessage',
@@ -197,10 +203,8 @@
         return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
     }
 
-    // ---------- Status bar (no Dynamic Island — only visible in screenshots
-    // when a Live Activity / camera indicator is active, which is not the
-    // default state for a Messages screenshot).
-    function drawStatusBar(c, y) {
+    // ---------- Status bar ----------
+    function drawIosStatusBar(c, y) {
         // Time on the left
         setFont(c, 17, 600, FONT_DISPLAY);
         c.fillStyle = COLORS.statusIcon;
@@ -209,14 +213,10 @@
         c.fillText(state.statusTime || '9:41', 56, y + 24);
 
         // Right cluster: signal bars → wifi → battery (left to right).
-        // ALL THREE icons anchor to the same baseline (iconBottomY) — that
-        // shared bottom line is what makes them look right in real iOS.
         var iconBottomY = y + 34;
         var rightX = W - 20;
 
         // ----- Battery -----
-        // 1pt outline + small cap + nearly-full fill, all in the same black
-        // so at high charge it reads as a solid pill (real-screenshot look).
         var battW = 27, battH = 12;
         var battX = rightX - battW;
         var battY = iconBottomY - battH;
@@ -224,11 +224,11 @@
         c.lineWidth = 1.1;
         roundRectPath(c, battX, battY, battW, battH, 3);
         c.stroke();
-        // Cap (small rounded bump on the right)
+        // Cap
         c.fillStyle = COLORS.statusIcon;
         roundRectPath(c, battX + battW + 0.8, battY + 3, 1.8, battH - 6, 0.9);
         c.fill();
-        // Fill: 1.5pt inset from the outline — at 100% reads as a solid pill
+        // Fill
         var pct = Math.max(0, Math.min(100, state.battery)) / 100;
         var inset = 1.5;
         var fillW = Math.max(0, (battW - inset * 2) * pct);
@@ -236,11 +236,7 @@
         roundRectPath(c, battX + inset, battY + inset, fillW, battH - inset * 2, 1.4);
         c.fill();
 
-        // ----- Wi-Fi (3 arcs + 1 dot, wider arcs) -----
-        // Real iOS Wi-Fi has 3 concentric arcs + apex dot. Outer radius ~10pt
-        // and a ~117° angular sweep gives the recognizable wide-fan look.
-        // Position picked so the gap to signal (left) and to battery (right)
-        // are EQUAL — that even rhythm is what makes the cluster look real.
+        // ----- Wi-Fi -----
         var wifiOuterR = 10;
         var iconGap = 7;
         var dotR = 1.6;
@@ -250,22 +246,17 @@
             c.strokeStyle = COLORS.statusIcon;
             c.lineCap = 'round';
             c.lineWidth = 1.9;
-            // Wider sweep: ~117° span (was ~79°)
             var aStart = Math.PI + 0.55;
             var aEnd   = Math.PI * 2 - 0.55;
-            // Outer arc
             c.beginPath();
             c.arc(wifiCX, wifiCY, wifiOuterR, aStart, aEnd);
             c.stroke();
-            // Middle arc
             c.beginPath();
             c.arc(wifiCX, wifiCY, 6.7, aStart, aEnd);
             c.stroke();
-            // Inner arc (above the dot)
             c.beginPath();
             c.arc(wifiCX, wifiCY, 3.5, aStart, aEnd);
             c.stroke();
-            // Solid dot at the apex
             c.fillStyle = COLORS.statusIcon;
             c.beginPath();
             c.arc(wifiCX, wifiCY, dotR, 0, Math.PI * 2);
@@ -273,8 +264,7 @@
             c.lineCap = 'butt';
         }
 
-        // ----- Signal bars (4 ascending, sharing iconBottomY) -----
-        // Right edge of signal cluster sits iconGap (7pt) left of Wi-Fi.
+        // ----- Signal bars (4 ascending) -----
         var sigBaseY = iconBottomY;
         var sigBarW = 3.2, sigBarGap = 1.4, sigBarCount = 4;
         var sigClusterW = sigBarCount * sigBarW + (sigBarCount - 1) * sigBarGap;
@@ -288,6 +278,234 @@
             c.fillStyle = b < bars ? COLORS.statusIcon : 'rgba(0,0,0,0.22)';
             roundRectPath(c, bx, by, sigBarW, bh, 0.9);
             c.fill();
+        }
+    }
+
+    // Modern Android / Samsung Flagship status bar (matches punch-hole + VoLTE + Dual SIM)
+    function drawAndroidStatusBar(c, y) {
+        var centerY = y + 24;
+
+        // 1. Center Punch-hole Camera
+        if (state.showCameraHole) {
+            var camCX = W / 2;
+            var camCY = y + 21;
+            // Outer bezel
+            c.fillStyle = '#1c2024';
+            c.beginPath();
+            c.arc(camCX, camCY, 6.6, 0, Math.PI * 2);
+            c.fill();
+            // Inner dark lens
+            c.fillStyle = '#06080c';
+            c.beginPath();
+            c.arc(camCX, camCY, 5.3, 0, Math.PI * 2);
+            c.fill();
+            // Glint reflection
+            c.fillStyle = 'rgba(70, 130, 200, 0.45)';
+            c.beginPath();
+            c.arc(camCX + 1.5, camCY - 1.5, 1.2, 0, Math.PI * 2);
+            c.fill();
+        }
+
+        // 2. Left side: Time + Notification icons
+        var timeStr = state.statusTime || '11:40';
+        setFont(c, 14, 600, '"Roboto", "Google Sans", "Segoe UI", -apple-system, sans-serif');
+        c.fillStyle = COLORS.statusIcon;
+        c.textAlign = 'left';
+        c.textBaseline = 'middle';
+        c.fillText(timeStr, 20, centerY);
+        var timeW = c.measureText(timeStr).width;
+
+        if (state.showNotifIcons) {
+            var notifX = 20 + timeW + 8;
+
+            // Gallery / Photo icon (rounded rect with hill & sun)
+            c.strokeStyle = COLORS.statusIcon;
+            c.lineWidth = 1.0;
+            roundRectPath(c, notifX, centerY - 5, 11, 10, 2);
+            c.stroke();
+            c.beginPath();
+            c.moveTo(notifX + 2, centerY + 3);
+            c.lineTo(notifX + 5, centerY - 1.5);
+            c.lineTo(notifX + 7, centerY + 0.5);
+            c.lineTo(notifX + 9.5, centerY - 2.5);
+            c.stroke();
+
+            // Cloud / Weather icon
+            var cloudX = notifX + 16;
+            c.fillStyle = COLORS.statusIcon;
+            c.beginPath();
+            c.arc(cloudX + 3, centerY + 0.5, 2.6, 0, Math.PI * 2);
+            c.arc(cloudX + 6.2, centerY - 1.5, 3.2, 0, Math.PI * 2);
+            c.arc(cloudX + 9.4, centerY + 0.5, 2.4, 0, Math.PI * 2);
+            c.fill();
+            c.fillRect(cloudX + 2, centerY + 0.5, 8.5, 2.5);
+
+            // Heart / Health icon
+            var heartX = cloudX + 17;
+            c.save();
+            c.translate(heartX + 4.5, centerY);
+            c.beginPath();
+            c.arc(0, 0, 5, 0, Math.PI * 2);
+            c.strokeStyle = COLORS.statusIcon;
+            c.lineWidth = 0.9;
+            c.stroke();
+            c.beginPath();
+            c.moveTo(0, 2.2);
+            c.bezierCurveTo(-2.6, 0.2, -2.6, -2, -0.9, -2);
+            c.bezierCurveTo(0, -2, 0, -0.8, 0, -0.8);
+            c.bezierCurveTo(0, -0.8, 0, -2, 0.9, -2);
+            c.bezierCurveTo(2.6, -2, 2.6, 0.2, 0, 2.2);
+            c.fillStyle = COLORS.statusIcon;
+            c.fill();
+            c.restore();
+
+            // More notifications dot
+            var dotX = heartX + 14;
+            c.fillStyle = COLORS.statusIcon;
+            c.beginPath();
+            c.arc(dotX, centerY, 1.5, 0, Math.PI * 2);
+            c.fill();
+        }
+
+        // 3. Right side: Battery, Battery %, DND, Wi-Fi, Network (VoLTE/5G/4G), Signal (Single / Dual SIM)
+        var curX = W - 18;
+
+        // Vertical Android Battery
+        var battW = 9.5, battH = 15;
+        var battCapW = 4.2, battCapH = 1.8;
+        var battX = curX - battW;
+        var battY = centerY - battH / 2 + 0.5;
+
+        // Cap
+        c.fillStyle = COLORS.statusIcon;
+        roundRectPath(c, battX + (battW - battCapW) / 2, battY - battCapH + 0.5, battCapW, battCapH, 0.7);
+        c.fill();
+        // Body
+        c.strokeStyle = COLORS.statusIcon;
+        c.lineWidth = 1.1;
+        roundRectPath(c, battX, battY, battW, battH, 2.2);
+        c.stroke();
+        // Fill from bottom
+        var pct = Math.max(0, Math.min(100, state.battery)) / 100;
+        var bInset = 1.4;
+        var maxFillH = battH - bInset * 2;
+        var fillH = Math.max(1, maxFillH * pct);
+        var fillY = battY + battH - bInset - fillH;
+        c.fillStyle = pct <= 0.15 ? '#FF3B30' : COLORS.statusIcon;
+        roundRectPath(c, battX + bInset, fillY, battW - bInset * 2, fillH, 1.0);
+        c.fill();
+        curX = battX - 5;
+
+        // Battery percentage text (e.g. 53%)
+        if (state.showPercent) {
+            var pctText = (state.battery | 0) + '%';
+            setFont(c, 12.5, 600, '"Roboto", "Segoe UI", sans-serif');
+            var pctW = c.measureText(pctText).width;
+            c.fillStyle = COLORS.statusIcon;
+            c.textAlign = 'right';
+            c.textBaseline = 'middle';
+            c.fillText(pctText, curX, centerY);
+            curX -= (pctW + 6);
+        }
+
+        // Silent / Do Not Disturb circle slash (as seen in Samsung screenshot)
+        var dndR = 4.2;
+        curX -= dndR;
+        c.strokeStyle = COLORS.statusIcon;
+        c.lineWidth = 1.0;
+        c.beginPath();
+        c.arc(curX, centerY, dndR, 0, Math.PI * 2);
+        c.stroke();
+        c.beginPath();
+        c.moveTo(curX - 2.5, centerY + 2.5);
+        c.lineTo(curX + 2.5, centerY - 2.5);
+        c.stroke();
+        curX -= (dndR + 5);
+
+        // Wi-Fi
+        if (state.wifi) {
+            var wifiR = 8.5;
+            curX -= wifiR;
+            c.strokeStyle = COLORS.statusIcon;
+            c.lineCap = 'round';
+            c.lineWidth = 1.5;
+            var aStart = Math.PI + 0.6;
+            var aEnd   = Math.PI * 2 - 0.6;
+            c.beginPath();
+            c.arc(curX, centerY + 3.2, wifiR, aStart, aEnd);
+            c.stroke();
+            c.beginPath();
+            c.arc(curX, centerY + 3.2, 5.4, aStart, aEnd);
+            c.stroke();
+            c.fillStyle = COLORS.statusIcon;
+            c.beginPath();
+            c.arc(curX, centerY + 2.2, 1.4, 0, Math.PI * 2);
+            c.fill();
+            c.lineCap = 'butt';
+            curX -= (wifiR + 5);
+        }
+
+        // Network badge (VoLTE, 5G, 4G)
+        if (state.networkType && state.networkType !== 'none') {
+            var netStr = state.networkType;
+            setFont(c, 8, 700, '"Roboto", "Segoe UI", sans-serif');
+            var netW = c.measureText(netStr).width;
+            var badgeW = netW + 5;
+            var badgeH = 11;
+            curX -= badgeW;
+            c.strokeStyle = COLORS.statusIcon;
+            c.lineWidth = 0.9;
+            roundRectPath(c, curX, centerY - badgeH / 2, badgeW, badgeH, 2);
+            c.stroke();
+            c.fillStyle = COLORS.statusIcon;
+            c.textAlign = 'center';
+            c.textBaseline = 'middle';
+            c.fillText(netStr, curX + badgeW / 2, centerY + 0.5);
+            curX -= 5;
+        }
+
+        // Signal bars (Dual SIM vs. Single SIM)
+        function drawBarSet(endX, bars, label) {
+            var count = 4;
+            var barW = 2.2, barGap = 1.0;
+            var clusterW = count * barW + (count - 1) * barGap;
+            var startX = endX - clusterW;
+            var baseY = centerY + 4.5;
+            for (var b = 0; b < count; b++) {
+                var bh = 2.4 + b * 1.8;
+                var bx = startX + b * (barW + barGap);
+                var by = baseY - bh;
+                c.fillStyle = b < bars ? COLORS.statusIcon : 'rgba(0,0,0,0.22)';
+                roundRectPath(c, bx, by, barW, bh, 0.6);
+                c.fill();
+            }
+            if (label) {
+                setFont(c, 6.5, 700, '"Roboto", sans-serif');
+                c.fillStyle = COLORS.statusIcon;
+                c.textAlign = 'center';
+                c.textBaseline = 'bottom';
+                c.fillText(label, startX + clusterW / 2, baseY - 9.5);
+            }
+            return clusterW;
+        }
+
+        var barsCount = Math.max(0, Math.min(4, state.signal | 0));
+        if (state.simMode === 'dual') {
+            var w2 = drawBarSet(curX, barsCount, '2');
+            curX -= (w2 + 3);
+            var w1 = drawBarSet(curX, barsCount, '1');
+            curX -= (w1 + 4);
+        } else {
+            var wSingle = drawBarSet(curX, barsCount, '');
+            curX -= (wSingle + 4);
+        }
+    }
+
+    function drawStatusBar(c, y) {
+        if (state.deviceOS === 'android') {
+            drawAndroidStatusBar(c, y);
+        } else {
+            drawIosStatusBar(c, y);
         }
     }
 
@@ -739,6 +957,14 @@
         signal:             document.getElementById('imsgSignal'),
         signalVal:          document.getElementById('imsgSignalVal'),
         wifi:               document.getElementById('imsgWifi'),
+        osIos:              document.getElementById('imsgOsIos'),
+        osAndroid:          document.getElementById('imsgOsAndroid'),
+        androidPanel:       document.getElementById('imsgAndroidPanel'),
+        networkType:        document.getElementById('imsgNetworkType'),
+        simMode:            document.getElementById('imsgSimMode'),
+        showPercent:        document.getElementById('imsgShowPercent'),
+        showCameraHole:     document.getElementById('imsgShowCameraHole'),
+        showNotifIcons:     document.getElementById('imsgShowNotifIcons'),
         showTyping:         document.getElementById('imsgShowTyping'),
         showReceipt:        document.getElementById('imsgShowReceipt'),
         receiptText:        document.getElementById('imsgReceiptText'),
@@ -1242,6 +1468,54 @@
     els.showReceipt.addEventListener('change', function () { state.showReadReceipt = els.showReceipt.checked; render(); });
     els.receiptText.addEventListener('input', function () { state.readReceiptText = els.receiptText.value; render(); });
 
+    // Device OS Toggle & Android Options
+    function setDeviceOS(os) {
+        state.deviceOS = os;
+        if (els.osIos) els.osIos.classList.toggle('is-active', os === 'ios');
+        if (els.osAndroid) els.osAndroid.classList.toggle('is-active', os === 'android');
+        if (els.androidPanel) {
+            els.androidPanel.style.display = (os === 'android') ? 'block' : 'none';
+        }
+        render();
+    }
+
+    if (els.osIos) {
+        els.osIos.addEventListener('click', function () { setDeviceOS('ios'); });
+    }
+    if (els.osAndroid) {
+        els.osAndroid.addEventListener('click', function () { setDeviceOS('android'); });
+    }
+    if (els.networkType) {
+        els.networkType.addEventListener('change', function () {
+            state.networkType = els.networkType.value;
+            render();
+        });
+    }
+    if (els.simMode) {
+        els.simMode.addEventListener('change', function () {
+            state.simMode = els.simMode.value;
+            render();
+        });
+    }
+    if (els.showPercent) {
+        els.showPercent.addEventListener('change', function () {
+            state.showPercent = els.showPercent.checked;
+            render();
+        });
+    }
+    if (els.showCameraHole) {
+        els.showCameraHole.addEventListener('change', function () {
+            state.showCameraHole = els.showCameraHole.checked;
+            render();
+        });
+    }
+    if (els.showNotifIcons) {
+        els.showNotifIcons.addEventListener('change', function () {
+            state.showNotifIcons = els.showNotifIcons.checked;
+            render();
+        });
+    }
+
     els.addMessage.addEventListener('click', function () {
         var lastSide = state.messages.length ? state.messages[state.messages.length - 1].side : 'in';
         var nextSide = lastSide === 'in' ? 'out' : 'in';
@@ -1265,6 +1539,18 @@
         state.showTyping = false;
         state.showReadReceipt = true;
         state.readReceiptText = 'Read 9:42 AM';
+        state.deviceOS = 'ios';
+        state.networkType = 'VoLTE';
+        state.simMode = 'dual';
+        state.showPercent = true;
+        state.showCameraHole = true;
+        state.showNotifIcons = true;
+        if (els.networkType) els.networkType.value = state.networkType;
+        if (els.simMode) els.simMode.value = state.simMode;
+        if (els.showPercent) els.showPercent.checked = state.showPercent;
+        if (els.showCameraHole) els.showCameraHole.checked = state.showCameraHole;
+        if (els.showNotifIcons) els.showNotifIcons.checked = state.showNotifIcons;
+        setDeviceOS('ios');
         state.messages = [
             { id: nextId++, side: 'in',  text: 'Hey, are you free tonight?', timestamp: 'Today 9:38 AM' },
             { id: nextId++, side: 'out', text: 'Yeah! What time?',           timestamp: '' },

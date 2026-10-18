@@ -958,3 +958,78 @@
     }
 }
 
+/* Device OS Switcher */
+.imsg-device-os-field {
+    margin-bottom: 4px;
+}
+
+.imsg-device-toggle-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    background: #e2e8f0;
+    padding: 4px;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+[data-theme="dark"] .imsg-device-toggle-group {
+    background: #23272e;
+}
+
+.imsg-device-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 9px 12px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: #475569;
+    font-size: 0.88rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-family: inherit;
+}
+
+.imsg-device-btn:hover {
+    color: #0f172a;
+}
+
+.imsg-device-btn.is-active {
+    background: #ffffff;
+    color: #007AFF;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="dark"] .imsg-device-btn {
+    color: #94a3b8;
+}
+
+[data-theme="dark"] .imsg-device-btn.is-active {
+    background: #334155;
+    color: #38bdf8;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+/* Android Options Panel */
+.imsg-android-panel {
+    background: #ffffff;
+    border: 1px solid var(--imsg-input-border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 4px;
+    animation: imsgFadeIn 0.2s ease-out;
+}
+
+[data-theme="dark"] .imsg-android-panel {
+    background: #1e232a;
+    border-color: #334155;
+}
+
+
