@@ -329,6 +329,38 @@ ol,ul{box-sizing:border-box}:root :where(.wp-block-list.has-background){padding:
 								</div>
 							</div>
 
+							<div class="imsg-field imsg-avatar-picker-field">
+								<label class="imsg-label">
+									<span>Contact profile photo</span>
+									<span class="imsg-label-hint" id="imsgAvatarHint" style="font-weight:400; font-size:0.75rem; color:#6b7280;">Auto initials</span>
+								</label>
+								<div class="imsg-avatar-picker-row">
+									<div class="imsg-avatar-thumb-wrap" id="imsgAvatarThumbWrap" role="button" tabindex="0" title="Click to upload profile photo" aria-label="Upload contact photo">
+										<div class="imsg-avatar-thumb" id="imsgAvatarThumb">
+											<span id="imsgAvatarInitials">M</span>
+											<img id="imsgAvatarImg" src="" alt="Contact Avatar" style="display:none;">
+										</div>
+										<div class="imsg-avatar-badge" title="Change photo">
+											<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+										</div>
+									</div>
+									<div class="imsg-avatar-picker-info">
+										<div class="imsg-avatar-picker-btns">
+											<button type="button" class="imsg-btn imsg-btn-ghost imsg-btn-upload-avatar" id="imsgUploadAvatarBtn">
+												<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+												<span>Upload photo</span>
+											</button>
+											<button type="button" class="imsg-btn imsg-btn-ghost imsg-btn-remove-avatar" id="imsgRemoveAvatarBtn" style="display:none;" title="Remove custom photo">
+												<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+												<span>Remove</span>
+											</button>
+										</div>
+										<span class="imsg-avatar-tip" style="font-size:0.75rem; color:#6b7280;">PNG, JPG, or WebP. Auto-crops to circular avatar.</span>
+									</div>
+									<input type="file" id="imsgAvatarInput" accept="image/png,image/jpeg,image/webp,image/gif" style="display:none;">
+								</div>
+							</div>
+
 							<div class="imsg-row imsg-row-3">
 								<div class="imsg-field">
 									<label for="imsgStatusTime" class="imsg-label">Status time</label>

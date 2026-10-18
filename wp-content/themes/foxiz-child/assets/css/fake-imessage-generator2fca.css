@@ -554,3 +554,115 @@
     .imsg-btn-primary { min-width: 0; width: 100%; }
     /* Theme-wide rule: do NOT override .imsg-faq-inner padding here. */
 }
+
+/* Contact Avatar Picker Styles */
+.imsg-avatar-picker-field {
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+.imsg-avatar-picker-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: #fff;
+    border: 1px solid var(--imsg-input-border);
+    border-radius: var(--imsg-radius);
+    padding: 10px 14px;
+    box-sizing: border-box;
+    transition: border-color var(--imsg-transition);
+}
+
+.imsg-avatar-thumb-wrap {
+    position: relative;
+    cursor: pointer;
+    flex-shrink: 0;
+    outline: none;
+    border-radius: 50%;
+}
+
+.imsg-avatar-thumb-wrap:focus-visible .imsg-avatar-thumb {
+    box-shadow: 0 0 0 3px var(--imsg-accent-light);
+    border-color: var(--imsg-accent);
+}
+
+.imsg-avatar-thumb {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #FF9500;
+    color: #fff;
+    font-size: 19px;
+    font-weight: 600;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+    border: 2px solid #fff;
+    transition: transform 0.15s ease, filter 0.15s ease;
+    user-select: none;
+}
+
+.imsg-avatar-thumb-wrap:hover .imsg-avatar-thumb {
+    transform: scale(1.05);
+    filter: brightness(1.05);
+}
+
+.imsg-avatar-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.imsg-avatar-badge {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--imsg-accent);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.imsg-avatar-picker-info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+    flex: 1;
+}
+
+.imsg-avatar-picker-btns {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.imsg-btn-upload-avatar {
+    padding: 6px 12px;
+    border-radius: 7px;
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+
+.imsg-btn-remove-avatar {
+    padding: 6px 10px;
+    border-radius: 7px;
+    font-size: 0.8rem;
+    color: #ef4444 !important;
+    border-color: rgba(239, 68, 68, 0.3) !important;
+}
+
+.imsg-btn-remove-avatar:hover {
+    background: rgba(239, 68, 68, 0.08) !important;
+}
+

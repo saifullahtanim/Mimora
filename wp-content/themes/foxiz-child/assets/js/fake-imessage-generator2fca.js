@@ -58,6 +58,7 @@
     // ---------- State ----------
     var state = {
         contactName: 'Mom',
+        contactAvatar: null,
         service: 'iMessage',
         statusTime: '9:41',
         battery: 100,
@@ -334,22 +335,51 @@
         var avSize = 50;
         var avX = (W - avSize) / 2;
         var avY = y + 6;
-        var palette = COLORS.avatarPalette[paletteIndex(state.contactName)];
-        // Subtle gradient for depth
-        var grad = c.createLinearGradient(avX, avY, avX, avY + avSize);
-        grad.addColorStop(0, palette);
-        grad.addColorStop(1, shade(palette, -0.18));
-        c.fillStyle = grad;
-        c.beginPath();
-        c.arc(avX + avSize / 2, avY + avSize / 2, avSize / 2, 0, Math.PI * 2);
-        c.fill();
 
-        // Initials inside avatar
-        setFont(c, 19, 600, FONT_DISPLAY);
-        c.fillStyle = '#fff';
-        c.textAlign = 'center';
-        c.textBaseline = 'middle';
-        c.fillText(initialsFromName(state.contactName), avX + avSize / 2, avY + avSize / 2 + 1);
+        if (state.contactAvatar && state.contactAvatar.complete && state.contactAvatar.naturalWidth > 0) {
+            c.save();
+            c.beginPath();
+            c.arc(avX + avSize / 2, avY + avSize / 2, avSize / 2, 0, Math.PI * 2);
+            c.clip();
+
+            // Cover crop
+            var aImg = state.contactAvatar;
+            var nw = aImg.naturalWidth || aImg.width;
+            var nh = aImg.naturalHeight || aImg.height;
+            var scale = Math.max(avSize / nw, avSize / nh);
+            var sw = nw * scale;
+            var sh = nh * scale;
+            var sx = avX + (avSize - sw) / 2;
+            var sy = avY + (avSize - sh) / 2;
+            c.drawImage(aImg, sx, sy, sw, sh);
+            c.restore();
+
+            // Subtle border around photo
+            c.save();
+            c.strokeStyle = 'rgba(0,0,0,0.08)';
+            c.lineWidth = 1;
+            c.beginPath();
+            c.arc(avX + avSize / 2, avY + avSize / 2, avSize / 2, 0, Math.PI * 2);
+            c.stroke();
+            c.restore();
+        } else {
+            var palette = COLORS.avatarPalette[paletteIndex(state.contactName)];
+            // Subtle gradient for depth
+            var grad = c.createLinearGradient(avX, avY, avX, avY + avSize);
+            grad.addColorStop(0, palette);
+            grad.addColorStop(1, shade(palette, -0.18));
+            c.fillStyle = grad;
+            c.beginPath();
+            c.arc(avX + avSize / 2, avY + avSize / 2, avSize / 2, 0, Math.PI * 2);
+            c.fill();
+
+            // Initials inside avatar
+            setFont(c, 19, 600, FONT_DISPLAY);
+            c.fillStyle = '#fff';
+            c.textAlign = 'center';
+            c.textBaseline = 'middle';
+            c.fillText(initialsFromName(state.contactName), avX + avSize / 2, avY + avSize / 2 + 1);
+        }
 
         // Contact name + tiny chevron, below the avatar.
         // Render name and chevron as one centered group so spacing is exact.
@@ -681,21 +711,29 @@
 
     // ---------- Controls ----------
     var els = {
-        contactName:    document.getElementById('imsgContactName'),
-        service:        document.getElementById('imsgService'),
-        statusTime:     document.getElementById('imsgStatusTime'),
-        battery:        document.getElementById('imsgBattery'),
-        batteryVal:     document.getElementById('imsgBatteryVal'),
-        signal:         document.getElementById('imsgSignal'),
-        signalVal:      document.getElementById('imsgSignalVal'),
-        wifi:           document.getElementById('imsgWifi'),
-        showTyping:     document.getElementById('imsgShowTyping'),
-        showReceipt:    document.getElementById('imsgShowReceipt'),
-        receiptText:    document.getElementById('imsgReceiptText'),
-        addMessage:     document.getElementById('imsgAddMessage'),
-        messageList:    document.getElementById('imsgMessageList'),
-        downloadPng:    document.getElementById('imsgDownloadPng'),
-        reset:          document.getElementById('imsgReset')
+        contactName:        document.getElementById('imsgContactName'),
+        avatarInput:        document.getElementById('imsgAvatarInput'),
+        uploadAvatarBtn:    document.getElementById('imsgUploadAvatarBtn'),
+        removeAvatarBtn:    document.getElementById('imsgRemoveAvatarBtn'),
+        avatarThumbWrap:    document.getElementById('imsgAvatarThumbWrap'),
+        avatarThumb:        document.getElementById('imsgAvatarThumb'),
+        avatarInitials:     document.getElementById('imsgAvatarInitials'),
+        avatarImg:          document.getElementById('imsgAvatarImg'),
+        avatarHint:         document.getElementById('imsgAvatarHint'),
+        service:            document.getElementById('imsgService'),
+        statusTime:         document.getElementById('imsgStatusTime'),
+        battery:            document.getElementById('imsgBattery'),
+        batteryVal:         document.getElementById('imsgBatteryVal'),
+        signal:             document.getElementById('imsgSignal'),
+        signalVal:          document.getElementById('imsgSignalVal'),
+        wifi:               document.getElementById('imsgWifi'),
+        showTyping:         document.getElementById('imsgShowTyping'),
+        showReceipt:        document.getElementById('imsgShowReceipt'),
+        receiptText:        document.getElementById('imsgReceiptText'),
+        addMessage:         document.getElementById('imsgAddMessage'),
+        messageList:        document.getElementById('imsgMessageList'),
+        downloadPng:        document.getElementById('imsgDownloadPng'),
+        reset:              document.getElementById('imsgReset')
     };
 
     function buildMessageRow(msg, index, total) {
@@ -815,7 +853,99 @@
         render();
     }
 
-    els.contactName.addEventListener('input', function () { state.contactName = els.contactName.value; render(); });
+    function updateAvatarUI() {
+        if (!els.avatarThumb) return;
+        if (state.contactAvatar && state.contactAvatar.src) {
+            if (els.avatarImg) {
+                els.avatarImg.src = state.contactAvatar.src;
+                els.avatarImg.style.display = 'block';
+            }
+            if (els.avatarInitials) els.avatarInitials.style.display = 'none';
+            if (els.avatarThumb) els.avatarThumb.style.background = 'transparent';
+            if (els.removeAvatarBtn) els.removeAvatarBtn.style.display = 'inline-flex';
+            if (els.avatarHint) els.avatarHint.textContent = 'Custom photo';
+        } else {
+            if (els.avatarImg) {
+                els.avatarImg.style.display = 'none';
+                els.avatarImg.src = '';
+            }
+            var palette = COLORS.avatarPalette[paletteIndex(state.contactName)];
+            if (els.avatarThumb) {
+                els.avatarThumb.style.background = 'linear-gradient(135deg, ' + palette + ' 0%, ' + shade(palette, -0.18) + ' 100%)';
+            }
+            if (els.avatarInitials) {
+                els.avatarInitials.style.display = 'block';
+                els.avatarInitials.textContent = initialsFromName(state.contactName);
+            }
+            if (els.removeAvatarBtn) els.removeAvatarBtn.style.display = 'none';
+            if (els.avatarHint) els.avatarHint.textContent = 'Auto initials';
+        }
+    }
+
+    if (els.uploadAvatarBtn && els.avatarInput) {
+        els.uploadAvatarBtn.addEventListener('click', function () {
+            els.avatarInput.click();
+        });
+    }
+    if (els.avatarThumbWrap && els.avatarInput) {
+        els.avatarThumbWrap.addEventListener('click', function () {
+            els.avatarInput.click();
+        });
+        els.avatarThumbWrap.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                els.avatarInput.click();
+            }
+        });
+    }
+    if (els.avatarInput) {
+        els.avatarInput.addEventListener('change', function (e) {
+            var file = e.target.files && e.target.files[0];
+            if (!file) return;
+            var reader = new FileReader();
+            reader.onload = function (evt) {
+                var img = new Image();
+                img.onload = function () {
+                    state.contactAvatar = img;
+                    updateAvatarUI();
+                    render();
+                };
+                img.src = evt.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+    if (els.removeAvatarBtn) {
+        els.removeAvatarBtn.addEventListener('click', function () {
+            state.contactAvatar = null;
+            if (els.avatarInput) els.avatarInput.value = '';
+            updateAvatarUI();
+            render();
+        });
+    }
+
+    // Also allow clicking directly on the avatar in the preview canvas
+    canvas.addEventListener('click', function (e) {
+        var rect = canvas.getBoundingClientRect();
+        var clientX = e.clientX - rect.left;
+        var clientY = e.clientY - rect.top;
+        var scaleX = W / rect.width;
+        var ptX = clientX * scaleX;
+        var ptY = clientY * scaleX;
+        // Avatar bounds: X in [(W-50)/2, (W+50)/2], Y in [STATUS_H + 6, STATUS_H + 56]
+        var avSize = 50;
+        var avX = (W - avSize) / 2;
+        var avY = STATUS_H + 6;
+        if (ptX >= avX && ptX <= avX + avSize && ptY >= avY && ptY <= avY + avSize) {
+            if (els.avatarInput) els.avatarInput.click();
+        }
+    });
+
+    els.contactName.addEventListener('input', function () { 
+        state.contactName = els.contactName.value; 
+        updateAvatarUI();
+        render(); 
+    });
     els.service.addEventListener('change', function () { state.service = els.service.value; render(); });
     els.statusTime.addEventListener('input', function () { state.statusTime = els.statusTime.value; render(); });
     els.battery.addEventListener('input', function () {
@@ -845,6 +975,8 @@
     els.reset.addEventListener('click', function () {
         if (!confirm('Clear all messages and reset settings to defaults?')) return;
         state.contactName = 'Mom';
+        state.contactAvatar = null;
+        if (els.avatarInput) els.avatarInput.value = '';
         state.service = 'iMessage';
         state.statusTime = '9:41';
         state.battery = 100;
@@ -869,6 +1001,7 @@
         els.showTyping.checked = state.showTyping;
         els.showReceipt.checked = state.showReadReceipt;
         els.receiptText.value = state.readReceiptText;
+        updateAvatarUI();
         renderAll();
     });
 
@@ -888,5 +1021,6 @@
         }
     });
 
+    updateAvatarUI();
     renderAll();
 })();
