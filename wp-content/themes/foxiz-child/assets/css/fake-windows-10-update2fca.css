@@ -1,0 +1,81 @@
+/* =================================================================
+ * Fake Windows 10 Update Screen — fullscreen overlay
+ * Same 5-dot arc spinner as Windows 11 (Microsoft kept the same
+ * spinner across both OS versions). Text layout differs:
+ *   Win10: "Working on updates" / "XX% complete" / "Don't turn off your PC."
+ *   Win11: "Working on updates XX% complete." / "Don't turn off your computer."
+ * ================================================================= */
+
+.fwu10-overlay {
+	background: #0078d7;
+	color: #fff;
+	font-family: "Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, sans-serif;
+	font-weight: 300;
+	align-items: center;
+	justify-content: center;
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+}
+.fwu10-screen {
+	text-align: center;
+	padding: 20px;
+	max-width: 900px;
+	width: 100%;
+	animation: fwu10FadeIn 0.5s ease-out;
+}
+@keyframes fwu10FadeIn {
+	from { opacity: 0; }
+	to   { opacity: 1; }
+}
+
+/* ---------- 5-dot arc spinner (same as Windows 11) ---------- */
+.fwu10-spinner {
+	position: relative;
+	width: 80px;
+	height: 80px;
+	margin: 0 auto 44px;
+}
+.fwu10-dot-wrap {
+	position: absolute;
+	inset: 0;
+	animation: fwu10SpinnerRotate 1.8s cubic-bezier(0.42, 0, 0.58, 1) infinite;
+}
+.fwu10-dot-wrap:nth-child(1) { animation-delay:  0s;    }
+.fwu10-dot-wrap:nth-child(2) { animation-delay: -0.10s; }
+.fwu10-dot-wrap:nth-child(3) { animation-delay: -0.20s; }
+.fwu10-dot-wrap:nth-child(4) { animation-delay: -0.30s; }
+.fwu10-dot-wrap:nth-child(5) { animation-delay: -0.40s; }
+.fwu10-dot {
+	position: absolute;
+	top: 0;
+	left: 46.25%;
+	width: 7.5%;
+	height: 7.5%;
+	background: #fff;
+	border-radius: 50%;
+}
+
+@keyframes fwu10SpinnerRotate {
+	from { transform: rotate(0deg); }
+	to   { transform: rotate(360deg); }
+}
+
+/* ---------- Message text ---------- */
+.fwu10-main-text {
+	font-size: 23px;
+	font-weight: 300;
+	line-height: 1.55;
+	margin: 0 0 12px;
+	letter-spacing: 0.005em;
+	color: #fff;
+	font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Large monitors ---------- */
+@media (min-width: 1600px) {
+	.fwu10-spinner { width: 96px; height: 96px; margin-bottom: 56px; }
+	.fwu10-main-text { font-size: 28px; }
+}
+@media (max-width: 600px) {
+	.fwu10-main-text { font-size: 18px; }
+}

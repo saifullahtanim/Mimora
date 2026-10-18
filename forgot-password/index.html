@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Recover Your Password — Mimora</title>
+	<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+	<link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" id="rb-preload-gfonts" href="https://fonts.googleapis.com/css?family=Jost:400,500,600,700,800,900%7CMulish:700,800,900&amp;display=swap" crossorigin>
+	<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Jost:400,500,600,700,800,900%7CMulish:700,800,900&amp;display=swap"></noscript>
+
+	<link rel='stylesheet' id='foxiz-elements-css' href='../wp-content/plugins/foxiz-core/lib/foxiz-elements/public/style128b.css?ver=3.1' media='all' />
+	<link rel='stylesheet' id='tools-site-chrome-css' href='../wp-content/themes/foxiz-child/assets/css/site-chrome9632.css?ver=1.2.4' media='all' />
+	<link rel='stylesheet' id='foxiz-main-css' href='../wp-content/themes/foxiz/assets/css/main4250.css?ver=2.7.0' media='all' />
+	<style id="foxiz-main-inline-css">
+		:root {
+			--body-family: Jost, sans-serif;
+			--h1-family: Mulish, sans-serif;
+			--g-color: #3b5998;
+			--round-5: 12px;
+		}
+		[data-theme="dark"] {
+			--solid-white: #191c20;
+			--body-fcolor: #cbd5e1;
+		}
+		.recover-card-outer {
+			background: var(--solid-white, #ffffff);
+			border-radius: 14px;
+			padding: 45px 38px 40px;
+			box-shadow: 0 15px 45px rgba(15, 23, 42, 0.12);
+			width: 100%;
+			max-width: 480px;
+			margin: 0 auto;
+		}
+		[data-theme="dark"] .recover-card-outer {
+			box-shadow: 0 15px 45px rgba(0, 0, 0, 0.45);
+			border: 1px solid rgba(255, 255, 255, 0.08);
+		}
+		.recover-title {
+			font-size: 32px;
+			font-weight: 800;
+			color: var(--h1-fcolor, #1e293b);
+			margin-bottom: 24px;
+			line-height: 1.2;
+		}
+		.recover-label {
+			font-size: 14px;
+			font-weight: 600;
+			color: #475569;
+			margin-bottom: 8px;
+			display: block;
+		}
+		[data-theme="dark"] .recover-label {
+			color: #94a3b8;
+		}
+		.recover-input {
+			width: 100%;
+			height: 48px;
+			border: 1.5px solid #e2e8f0;
+			border-radius: 6px;
+			padding: 0 14px;
+			font-size: 15px;
+			color: #1e293b;
+			background: #ffffff;
+			transition: border-color 0.15s;
+			box-sizing: border-box;
+		}
+		[data-theme="dark"] .recover-input {
+			background: #23272e;
+			border-color: #334155;
+			color: #f8fafc;
+		}
+		.recover-input:focus {
+			outline: none;
+			border-color: #3b5998;
+		}
+		.recover-btn {
+			width: 100%;
+			height: 48px;
+			background: #3b5998;
+			color: #ffffff;
+			border: none;
+			border-radius: 6px;
+			font-size: 16px;
+			font-weight: 700;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 8px;
+			cursor: pointer;
+			transition: background 0.15s;
+		}
+		.recover-btn:hover {
+			background: #30477a;
+		}
+	</style>
+	<link rel='stylesheet' id='foxiz-style-css' href='../wp-content/themes/foxiz-child/style53cf.css?ver=2.1' media='all' />
+	<script id="jquery-core-js" src="../wp-includes/js/jquery/jquery.minf43b.js?ver=3.7.1"></script>
+	<link rel="icon" href="../wp-content/uploads/2026/01/title.png" sizes="32x32" />
+</head>
+<body class="wp-singular page-template-default page" data-theme="default">
+	<script>
+		(function () {
+			let currentMode = null;
+			try { currentMode = localStorage.getItem('RubyDarkMode') || 'default'; } catch(e) { currentMode = 'default'; }
+			document.body.setAttribute('data-theme', currentMode === 'dark' ? 'dark' : 'default');
+		})();
+	</script>
+
+	<div class="site-outer">
+		<!-- Header -->
+		<div id="site-header" class="header-wrap rb-section header-set-1 header-1 header-wrapper style-shadow">
+			<div class="navbar-wrap">
+				<div class="rb-container edge-padding">
+					<div class="navbar-inner" style="display:flex; justify-content:space-between; align-items:center; padding:15px 0;">
+						<div class="logo-wrap is-image-logo site-branding">
+							<a href="../index.html" class="logo" title="Mimora">
+								<img class="logo-default" height="120" width="384" src="../wp-content/uploads/2026/01/logo.png" alt="Mimora">
+							</a>
+						</div>
+						<div class="navbar-right">
+							<a href="../index.html" style="font-weight:700; color:#3b5998; text-decoration:none;">← Back to Home</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Recover Password Card Container (Matches Screen 1 & Screen 2) -->
+		<div class="mimora-auth-page-wrap" style="min-height: calc(100vh - 220px); display:flex; align-items:center; justify-content:center; padding:50px 20px 80px;">
+			<div class="recover-card-outer">
+				<div style="margin-bottom: 20px;">
+					<a href="../index.html" style="display:inline-block;">
+						<img src="../wp-content/uploads/2026/01/logo.png" alt="Mimora" style="height:36px; width:auto; display:block;">
+					</a>
+				</div>
+
+				<h1 class="recover-title">Recover Your Password</h1>
+
+				<div id="recover-alert" class="mimora-auth-alert" style="display:none;"></div>
+
+				<!-- Screen 1: Form View -->
+				<div id="recover-form-view">
+					<form id="recover-form" action="#" method="post">
+						<div style="margin-bottom: 22px;">
+							<label class="recover-label" for="recover-email">Your Email <span style="color:#ef4444;">*</span></label>
+							<input type="email" id="recover-email" required="required" autocomplete="email" placeholder="you@example.com" class="recover-input" />
+						</div>
+
+						<button type="submit" class="recover-btn" id="recover-submit-btn">
+							<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 11 15 16 9"></polyline></svg>
+							<span>Send Instructions</span>
+						</button>
+					</form>
+					<div style="margin-top: 22px; text-align: center;">
+						<a href="../index.html" style="color:#3b5998; font-weight:600; font-size:14px; text-decoration:none;">← Back to Log In</a>
+					</div>
+				</div>
+
+				<!-- Screen 2: Sent Confirmation View -->
+				<div id="recover-sent-view" style="display:none; padding-top: 5px;">
+					<p style="font-size:16px; line-height:1.65; color:#475569; margin-bottom: 25px;">
+						If we find an eligible account associated with that address, we will send an email to the address containing further instructions to recover your password.
+					</p>
+					<div style="text-align: center; margin-top: 25px;">
+						<a href="../index.html" style="color:#3b5998; font-weight:600; font-size:14px; text-decoration:none;">← Back to Log In</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		$(document).ready(function () {
+			$('#recover-form').on('submit', async function (e) {
+				e.preventDefault();
+				const email = $('#recover-email').val().trim();
+				const btn = $('#recover-submit-btn');
+				const alertBox = $('#recover-alert');
+
+				if (!email) return;
+
+				btn.prop('disabled', true).html('<span>Sending Instructions...</span>');
+				alertBox.hide();
+
+				try {
+					const res = await fetch('/api/forgot-password', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({ email })
+					});
+
+					const data = await res.json();
+					// As per security standard and user's screen 2: always transition to screen 2 if valid format
+					$('#recover-form-view').hide();
+					$('#recover-sent-view').fadeIn(200);
+				} catch (err) {
+					// Even if network blip, show screen 2 or connection error
+					$('#recover-form-view').hide();
+					$('#recover-sent-view').fadeIn(200);
+				}
+			});
+		});
+	</script>
+</body>
+</html>

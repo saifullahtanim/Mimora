@@ -1,0 +1,52 @@
+/* =================================================================
+ * Hacker Typer — fullscreen terminal prank
+ * ================================================================= */
+
+.htyper-overlay {
+	background: #000;
+	color: #00ff33;
+	font-family: ui-monospace, "SF Mono", "Cascadia Code", Consolas, "Roboto Mono", monospace;
+	display: none;
+	overflow: hidden;
+	padding: 24px 28px;
+}
+.htyper-overlay.is-active {
+	display: block;
+}
+
+.htyper-terminal {
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	font-size: 14px;
+	line-height: 1.4;
+	position: relative;
+}
+.htyper-output {
+	display: inline;
+	white-space: pre-wrap;
+	word-break: break-all;
+	text-shadow: 0 0 3px rgba(0, 255, 51, 0.4);
+}
+.htyper-cursor {
+	display: inline-block;
+	width: 0.6em;
+	height: 1.1em;
+	vertical-align: text-bottom;
+	background: #00ff33;
+	color: transparent;
+	margin-left: 2px;
+	animation: htyperBlink 1s steps(1) infinite;
+	box-shadow: 0 0 6px rgba(0, 255, 51, 0.6);
+}
+@keyframes htyperBlink {
+	50% { opacity: 0; }
+}
+
+@media (min-width: 1600px) {
+	.htyper-terminal { font-size: 15px; }
+}
+@media (max-width: 767px) {
+	.htyper-overlay { padding: 14px 16px; }
+	.htyper-terminal { font-size: 12px; }
+}

@@ -1,0 +1,163 @@
+/* ==========================================================================
+   h7 directory system — shared by the homepage and tool category hub pages.
+   Accent driven by --cat / --cat-soft custom properties set per section/page.
+   ========================================================================== */
+
+.h7-sec-head {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 16px;
+	margin-bottom: 20px;
+}
+
+.h7-sec-title {
+	font-size: 25px;
+	font-weight: 900;
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin: 0;
+}
+
+.h7-cico {
+	flex: 0 0 42px;
+	height: 42px;
+	border-radius: 11px;
+	background: var(--cat-soft, #fff7ed);
+	color: var(--cat, #ea580c);
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.h7-cico svg {
+	width: 21px;
+	height: 21px;
+}
+
+.h7-sec-count {
+	font-style: normal;
+	font-size: 13px;
+	font-weight: 600;
+	color: #6b7280;
+	background: #f3f4f6;
+	border-radius: 99px;
+	padding: 3px 10px;
+	align-self: center;
+}
+
+.h7-sec-all {
+	font-weight: 700;
+	color: var(--cat, #ea580c);
+	font-size: 15px;
+	white-space: nowrap;
+}
+
+.h7-sec-all:hover {
+	text-decoration: underline;
+}
+
+/* Centered variant: stacked icon-title + subtitle, no side link. */
+.h7-sec-head--center {
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	gap: 0;
+}
+
+.h7-sec-head--center .h7-sec-title {
+	justify-content: center;
+}
+
+.h7-sec-sub {
+	font-size: 16px;
+	color: #6b7280;
+	margin: 10px 0 0;
+	line-height: 1.5;
+}
+
+.h7-tool-grid {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 14px;
+}
+
+.h7-tool-card {
+	display: flex;
+	gap: 15px;
+	align-items: center;
+	background: #fff;
+	border: 1px solid #ddd;
+	border-radius: 16px;
+	padding: 22px 20px;
+	min-height: 108px;
+	box-shadow: 0 2px 8px rgba(15, 23, 42, .04);
+	transition: .15s;
+	color: inherit;
+	text-decoration: none;
+}
+
+.h7-tool-card:hover {
+	border-color: var(--cat, #f97316);
+	box-shadow: 0 8px 22px rgba(15, 23, 42, .10);
+	transform: translateY(-2px);
+}
+
+.h7-tico {
+	flex: 0 0 50px;
+	height: 50px;
+	border-radius: 13px;
+	background: var(--cat-soft, #fff7ed);
+	color: var(--cat, #ea580c);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.h7-tico svg {
+	width: 25px;
+	height: 25px;
+}
+
+.h7-tool-card-title {
+	font-size: 17px;
+	font-weight: 800;
+	line-height: 1.3;
+	margin: 0;
+}
+
+.h7-tool-card-desc {
+	font-size: 14px;
+	color: #6b7280;
+	margin: 4px 0 0;
+	line-height: 1.4;
+}
+
+@media (max-width: 1000px) {
+	.h7-tool-grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@media (max-width: 700px) {
+	.h7-sec-head {
+		flex-wrap: wrap;
+		row-gap: 6px;
+	}
+
+	.h7-sec-title {
+		font-size: 22px;
+		flex-wrap: wrap;
+	}
+
+	.h7-sec-all {
+		font-size: 14px;
+	}
+}
+
+@media (max-width: 560px) {
+	.h7-tool-grid {
+		grid-template-columns: 1fr;
+	}
+}

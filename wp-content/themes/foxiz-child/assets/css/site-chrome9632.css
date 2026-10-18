@@ -1,0 +1,401 @@
+/* ==========================================================================
+   Native site footer (dark, per the approved design reference).
+   ========================================================================== */
+
+.h7-footer {
+	background: #0f172a;
+	margin-top: 48px;
+}
+
+.h7-footer-inner {
+	padding: 44px 0 0;
+}
+
+.h7-footer-grid {
+	display: grid;
+	grid-template-columns: 1.5fr 1fr 1fr 1fr;
+	gap: 28px 44px;
+	padding-bottom: 34px;
+}
+
+.h7-footer-brand .h7-footer-logo {
+	display: inline-block;
+	margin-bottom: 14px;
+}
+
+.h7-footer-brand .h7-footer-logo img {
+	max-height: 44px;
+	width: auto;
+	display: block;
+}
+
+.h7-footer-sitename {
+	font-size: 22px;
+	font-weight: 800;
+	color: #fff;
+	text-decoration: none;
+}
+
+.h7-footer-blurb {
+	font-size: 14.5px;
+	line-height: 1.6;
+	color: #94a3b8;
+	margin: 0;
+	max-width: 300px;
+}
+
+.h7-footer-heading {
+	font-size: 13.5px;
+	font-weight: 700;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	color: #f8fafc;
+	margin: 0 0 12px;
+	padding-bottom: 8px;
+	border-bottom: 2px solid #f97316;
+	display: inline-block;
+}
+
+.h7-footer-links {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.h7-footer-links li {
+	padding: 5px 0;
+}
+
+.h7-footer-links a {
+	font-size: 15px;
+	color: #cbd5e1;
+	text-decoration: none;
+	transition: .15s;
+}
+
+.h7-footer-links a:hover {
+	color: #fff;
+}
+
+.h7-footer-links .h7-footer-more {
+	font-weight: 700;
+	color: #fb923c;
+}
+
+.h7-footer-links .h7-footer-more:hover {
+	color: #fdba74;
+}
+
+/* Brand-column trust list. */
+.h7-footer-usp {
+	list-style: none;
+	margin: 18px 0 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 11px;
+	max-width: 300px;
+}
+
+.h7-footer-usp li {
+	display: flex;
+	align-items: flex-start;
+	gap: 11px;
+	font-size: 14px;
+	line-height: 1.5;
+	color: #cbd5e1;
+}
+
+.h7-footer-usp-ico {
+	flex: 0 0 28px;
+	height: 28px;
+	border-radius: 8px;
+	background: rgba(249, 115, 22, .16);
+	color: #fb923c;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.h7-footer-usp-ico svg {
+	width: 14px;
+	height: 14px;
+}
+
+/* Copyright strip. */
+.h7-footer .footer-copyright {
+	border: 0;
+	padding: 10px 0 18px;
+}
+
+.h7-footer .footer-copyright,
+.h7-footer .footer-copyright .copyright,
+.h7-footer .copyright-inner {
+	color: #64748b;
+	font-size: 13px;
+}
+
+@media (max-width: 1000px) {
+	.h7-footer-grid {
+		grid-template-columns: 1fr 1fr;
+		gap: 26px;
+	}
+}
+
+@media (max-width: 560px) {
+	.h7-footer-grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+/* ==========================================================================
+   Header nav dropdown (Tools submenu) — match the h7 design system.
+   ========================================================================== */
+
+.navbar-outer .main-menu .sub-menu {
+	min-width: 232px;
+	padding: 10px 8px;
+	margin-top: 12px;
+	background: #fff;
+	border: 1px solid #e5e7eb;
+	border-radius: 14px;
+	box-shadow: 0 16px 40px rgba(15, 23, 42, .12);
+}
+
+.navbar-outer .main-menu .sub-menu > .menu-item > a {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 9px 14px;
+	border-radius: 9px;
+	font-size: 14.5px;
+	color: #374151;
+	transition: .15s;
+}
+
+.navbar-outer .main-menu .sub-menu > .menu-item > a:hover {
+	background: #fff7ed;
+	color: #ea580c;
+}
+
+/* Category color dots — Tools dropdown only (menu item ids from the main menu). */
+#menu-item-4668 .sub-menu > .menu-item > a::before {
+	content: "";
+	flex: 0 0 7px;
+	width: 7px;
+	height: 7px;
+	border-radius: 50%;
+	background: #f97316;
+}
+
+#menu-item-4668 .sub-menu #menu-item-5972 > a::before { background: #ea580c; }
+#menu-item-4668 .sub-menu #menu-item-5973 > a::before { background: #2563eb; }
+#menu-item-4668 .sub-menu #menu-item-5974 > a::before { background: #dc2626; }
+#menu-item-4668 .sub-menu #menu-item-5975 > a::before { background: #059669; }
+#menu-item-4668 .sub-menu #menu-item-5976 > a::before { background: #e11d48; }
+#menu-item-4668 .sub-menu #menu-item-5977 > a::before { background: #0d9488; }
+
+#menu-item-4668 .sub-menu #menu-item-5971 > a {
+	font-weight: 700;
+	color: #0f172a;
+}
+
+#menu-item-4668 .sub-menu #menu-item-5971 > a:hover {
+	color: #ea580c;
+}
+
+/* ==========================================================================
+   Mimora Authentication & Sign Up Card Styling (Matches Modal 1:1)
+   ========================================================================== */
+
+.mimora-auth-alert {
+	padding: 12px 16px;
+	border-radius: 9px;
+	margin-bottom: 20px;
+	font-size: 14px;
+	line-height: 1.45;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.mimora-alert-success {
+	background: #ecfdf5;
+	border: 1px solid #a7f3d0;
+	color: #065f46;
+}
+
+[data-theme='dark'] .mimora-alert-success {
+	background: rgba(16, 185, 129, 0.15);
+	border-color: rgba(16, 185, 129, 0.35);
+	color: #6ee7b7;
+}
+
+.mimora-alert-error {
+	background: #fef2f2;
+	border: 1px solid #fecaca;
+	color: #991b1b;
+}
+
+[data-theme='dark'] .mimora-alert-error {
+	background: rgba(239, 68, 68, 0.15);
+	border-color: rgba(239, 68, 68, 0.35);
+	color: #fca5a5;
+}
+
+.mimora-alert-icon {
+	font-size: 16px;
+	flex-shrink: 0;
+	font-weight: 700;
+}
+
+/* User Menu in Navbar */
+.mimora-user-avatar {
+	width: 34px;
+	height: 34px;
+	border-radius: 50%;
+	background: linear-gradient(135deg, #488cbf 0%, #2563eb 100%);
+	color: #ffffff;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	font-weight: 700;
+	font-size: 15px;
+	box-shadow: 0 2px 8px rgba(72, 140, 191, 0.35);
+	transition: transform 0.2s;
+}
+
+.mimora-user-avatar:hover {
+	transform: scale(1.06);
+}
+
+.widget-h-login {
+	position: relative;
+}
+
+.mimora-user-dropdown {
+	position: absolute;
+	top: calc(100% + 12px);
+	right: 0;
+	min-width: 200px;
+	background: var(--solid-white, #ffffff);
+	border: 1px solid rgba(0, 0, 0, 0.08);
+	border-radius: 12px;
+	box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+	padding: 14px;
+	z-index: 10000;
+}
+
+[data-theme='dark'] .mimora-user-dropdown {
+	background: #191c20;
+	border-color: rgba(255, 255, 255, 0.08);
+	box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+}
+
+.mimora-user-dropdown-header strong {
+	display: block;
+	font-size: 15px;
+	color: var(--body-fcolor, #1e293b);
+}
+
+[data-theme='dark'] .mimora-user-dropdown-header strong {
+	color: #f8fafc;
+}
+
+.mimora-user-dropdown-header small {
+	display: block;
+	font-size: 12.5px;
+	color: #64748b;
+	margin-top: 2px;
+}
+
+.mimora-user-dropdown-divider {
+	height: 1px;
+	background: rgba(0, 0, 0, 0.06);
+	margin: 10px 0;
+}
+
+[data-theme='dark'] .mimora-user-dropdown-divider {
+	background: rgba(255, 255, 255, 0.08);
+}
+
+.mimora-user-avatar-img {
+	width: 34px;
+	height: 34px;
+	border-radius: 50%;
+	object-fit: cover;
+	display: block;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+	transition: transform 0.2s;
+}
+
+.mimora-user-avatar-img:hover {
+	transform: scale(1.06);
+}
+
+.mimora-user-dropdown-item {
+	display: flex;
+	align-items: center;
+	color: var(--body-fcolor, #334155) !important;
+	font-size: 13.5px;
+	font-weight: 600;
+	text-decoration: none;
+	padding: 7px 8px;
+	border-radius: 6px;
+	transition: background 0.15s, color 0.15s;
+}
+
+[data-theme='dark'] .mimora-user-dropdown-item {
+	color: #cbd5e1 !important;
+}
+
+.mimora-user-dropdown-item:hover {
+	background: rgba(72, 140, 191, 0.1);
+	color: var(--g-color, #488cbf) !important;
+	text-decoration: none !important;
+}
+
+.mimora-user-dropdown-item svg {
+	margin-right: 8px;
+	flex-shrink: 0;
+}
+
+.mimora-user-logout-btn {
+	display: flex;
+	align-items: center;
+	color: #ef4444 !important;
+	font-size: 13.5px;
+	font-weight: 600;
+	text-decoration: none;
+	padding: 7px 8px;
+	border-radius: 6px;
+	transition: background 0.15s;
+}
+
+.mimora-user-logout-btn:hover {
+	background: rgba(239, 68, 68, 0.08);
+	text-decoration: none !important;
+}
+
+/* Dedicated Signup Page Layout */
+.mimora-auth-page-wrap {
+	min-height: calc(100vh - 350px);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 50px 20px 70px;
+}
+
+.mimora-auth-page-card {
+	width: 100%;
+	max-width: 440px;
+}
+
+.mimora-auth-page-card .logo-popup-outer {
+	margin: 0 auto;
+	box-shadow: 0 20px 50px rgba(15, 23, 42, 0.12);
+}
+
+[data-theme='dark'] .mimora-auth-page-card .logo-popup-outer {
+	box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+}

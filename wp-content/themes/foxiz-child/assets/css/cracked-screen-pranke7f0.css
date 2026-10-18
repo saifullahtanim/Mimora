@@ -1,0 +1,226 @@
+/* =================================================================
+ * Cracked Screen Prank
+ * Realistic effect = a real photograph of shattered glass on black
+ * (1080p/4K webp) laid over the chosen background with
+ * mix-blend-mode:screen — the black drops out so only the glass shows.
+ * A contrast/brightness filter crushes the photo's grey sheen first;
+ * without it the pane reads as white frost over bright backgrounds.
+ * Layers on top of prank-shared.css (one card + separator sections).
+ * ================================================================= */
+
+/* Every rendering of the crack photo (card preview + overlay stamps) */
+.crack-preview-shard,
+.crack-shard {
+	mix-blend-mode: screen;
+	filter: contrast(1.7) brightness(0.8);
+	pointer-events: none;
+}
+
+/* Default (black) mode = the untouched photo, exactly as shot. The filter
+ * exists only to stop wash-out over the bright desktop/wallpaper gradients. */
+.crack-screen[data-style="black"] .crack-shard,
+.crack-preview-shard {
+	filter: none;
+}
+
+/* ---------- Card preview: the raw broken-screen photo on black ---------- */
+.crack-preview-frame {
+	background: #000;
+}
+
+.crack-preview-shard {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+/* ---------- Settings controls ---------- */
+.crack-select {
+	width: 100%;
+	padding: 9px 12px;
+	font-size: 1rem;
+	font-weight: 600;
+	font-family: inherit;
+	color: #111827;
+	background: #fff;
+	border: 1px solid #e5e7eb;
+	border-radius: 8px;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+	cursor: pointer;
+	outline: none;
+	transition: border-color var(--effect, 0.2s ease), box-shadow var(--effect, 0.2s ease);
+}
+
+.crack-select:hover { border-color: var(--flex-gray-30, #d1d5db); }
+.crack-select:focus-visible {
+	border-color: var(--prank-accent);
+	box-shadow: 0 0 0 3px var(--prank-accent-light);
+}
+
+.crack-check {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	font-size: 0.95rem;
+	font-weight: 600;
+	color: var(--headline-fcolor, #374151);
+	cursor: pointer;
+	user-select: none;
+}
+
+.crack-check input[type="checkbox"] {
+	width: 18px;
+	height: 18px;
+	accent-color: var(--prank-accent);
+	cursor: pointer;
+	flex: 0 0 18px;
+}
+
+.crack-check input[type="checkbox"]:focus-visible {
+	outline: 2px solid var(--prank-accent);
+	outline-offset: 2px;
+	border-radius: 4px;
+}
+
+/* =================================================================
+ * Fullscreen overlay
+ * ================================================================= */
+.crack-overlay {
+	background: #000;
+	cursor: crosshair;
+}
+
+.crack-screen {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+
+.crack-screen[data-style="black"] { background: #000; }
+
+/* Desktop / wallpaper gradients run ~25% darker than a normal wallpaper —
+ * against bright colors the screen-blended cracks wash toward white frost. */
+.crack-screen[data-style="desktop"] {
+	background:
+		radial-gradient(ellipse 60% 50% at 30% 32%, rgba(255, 255, 255, 0.1), transparent 70%),
+		linear-gradient(180deg, #38699c 0%, #6795b3 48%, #5c8531 56%, #3a5b22 100%);
+}
+
+.crack-screen[data-style="wallpaper"] {
+	background:
+		radial-gradient(circle at 28% 22%, rgba(255, 255, 255, 0.12), transparent 45%),
+		linear-gradient(150deg, #5c23b9 0%, #922f88 45%, #b93b53 78%, #c0813d 100%);
+}
+
+/* Stamped glass impacts live in this layer, above the faux desktop chrome.
+ * NOTE: no z-index here on purpose — a z-index would make .crack-shards an
+ * isolated stacking context and mix-blend-mode:screen would then blend against
+ * an empty backdrop (black stops dropping out). Paint order is via DOM order:
+ * this element comes after the taskbar/clock and before the hint. */
+.crack-shards {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+}
+
+/* One stamped impact. The photo's impact centre sits at 48% / 45.5% of the
+ * frame (measured, not eyeballed) — the JS anchors that point at the click,
+ * so rotation/mirroring must pivot there too, and the feathered mask that
+ * hides the photo's rectangular edges is centred on the same point. */
+.crack-shard {
+	position: absolute;
+	--rot: 0deg;
+	--flip: 1;
+	transform: rotate(var(--rot)) scaleX(var(--flip));
+	transform-origin: 48% 45.5%;
+	-webkit-mask-image: radial-gradient(circle at 48% 45.5%, #000 0%, #000 42%, rgba(0,0,0,0.55) 60%, transparent 78%);
+	        mask-image: radial-gradient(circle at 48% 45.5%, #000 0%, #000 42%, rgba(0,0,0,0.55) 60%, transparent 78%);
+	will-change: transform, opacity;
+	animation: crackPop 130ms ease-out both;
+}
+
+@keyframes crackPop {
+	from { opacity: 0; transform: rotate(var(--rot)) scaleX(var(--flip)) scale(0.92); }
+	to   { opacity: 1; transform: rotate(var(--rot)) scaleX(var(--flip)) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.crack-shard { animation-duration: 1ms; }
+}
+
+/* ---------- Faux desktop taskbar (desktop style only) ---------- */
+.crack-taskbar {
+	display: none;
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	height: 38px;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0 16px;
+	background: linear-gradient(180deg, #3f8be8 0%, #2a6fd0 8%, #245fbf 100%);
+	border-top: 1px solid rgba(255, 255, 255, 0.35);
+	color: #fff;
+	font-family: "Franklin Gothic Medium", Tahoma, Arial, sans-serif;
+}
+
+.crack-screen[data-style="desktop"] .crack-taskbar { display: flex; }
+
+.crack-taskbar-start {
+	font-style: italic;
+	font-weight: 700;
+	font-size: 17px;
+	text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
+}
+
+.crack-taskbar-clock { font-size: 13px; font-variant-numeric: tabular-nums; }
+
+/* ---------- Lock-screen clock (wallpaper style only) ---------- */
+.crack-lockclock {
+	display: none;
+	position: absolute;
+	top: 12%;
+	left: 0;
+	right: 0;
+	text-align: center;
+	color: #fff;
+	font-family: -apple-system, "SF Pro Display", "Segoe UI", system-ui, sans-serif;
+	font-size: clamp(48px, 11vw, 120px);
+	font-weight: 300;
+	letter-spacing: -0.02em;
+	text-shadow: 0 2px 16px rgba(0, 0, 0, 0.25);
+}
+
+.crack-screen[data-style="wallpaper"] .crack-lockclock { display: block; }
+
+/* ---------- Click hint ---------- */
+.crack-hint {
+	position: absolute;
+	left: 50%;
+	bottom: 12%;
+	transform: translateX(-50%);
+	padding: 10px 20px;
+	background: rgba(0, 0, 0, 0.55);
+	color: #fff;
+	font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+	font-size: 15px;
+	font-weight: 600;
+	border-radius: 40px;
+	backdrop-filter: blur(6px);
+	-webkit-backdrop-filter: blur(6px);
+	pointer-events: none;
+	transition: opacity 0.3s ease;
+}
+
+.crack-screen[data-style="desktop"] .crack-hint { bottom: 64px; }
+.crack-hint.is-hidden { opacity: 0; }
+
+@media (max-width: 767px) {
+	.crack-hint { font-size: 13px; padding: 8px 16px; }
+	.crack-taskbar { height: 32px; }
+}

@@ -1,0 +1,20 @@
+[
+  {
+    "id": "msg_1792292099372_804d84",
+    "name": "Saifulla Tanim",
+    "email": "nimpataaaa@gmail.com",
+    "subject": "Feature / Tool Request",
+    "message": "Hello Mimora Team! Testing modern contact form submission.",
+    "createdAt": "2026-10-18T02:54:59.373Z",
+    "status": "unread"
+  },
+  {
+    "id": "msg_1792291871472_908641",
+    "name": "Tanim Test",
+    "email": "tanim@test.com",
+    "subject": "Test Subject",
+    "message": "Hello from test",
+    "createdAt": "2026-10-18T02:51:11.474Z",
+    "status": "unread"
+  }
+]

@@ -1,0 +1,659 @@
+/* Color Converter
+-------------------------------------- */
+
+.colorcv-page {
+    --colorcv-accent: #f97316;
+    --colorcv-accent-dark: #ea580c;
+    --colorcv-accent-light: color-mix(in srgb, #f97316 12%, transparent);
+    --colorcv-border: var(--flex-gray-15, rgba(0, 0, 0, 0.08));
+    --colorcv-surface: var(--solid-white, #fff);
+    --colorcv-soft: #f3f4f6;
+    --colorcv-radius: var(--round-7, 7px);
+    --colorcv-transition: var(--effect, 0.25s ease);
+    position: relative;
+    padding: 36px 0 80px;
+}
+
+/* Hero
+-------------------------------------- */
+
+.colorcv-hero {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 18px 0 28px;
+    text-align: center;
+}
+
+.colorcv-title {
+    margin-bottom: 12px;
+    font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+}
+
+.colorcv-subtitle {
+    max-width: 680px;
+    margin: 0 auto;
+    font-size: clamp(0.9rem, 1.5vw, 1rem);
+    line-height: 1.65;
+    color: var(--excerpt-color);
+}
+
+/* Card
+-------------------------------------- */
+
+.colorcv-tool-section {
+    max-width: 880px;
+    margin: 0 auto 28px;
+}
+
+.colorcv-card {
+    border: 1px solid #ddd;
+    border-radius: 16px;
+    background: var(--colorcv-surface);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03), 0 6px 24px rgba(0, 0, 0, 0.07);
+    padding: 28px 30px;
+}
+
+/* Swatch Row
+-------------------------------------- */
+
+.colorcv-swatch-row {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 20px;
+    align-items: stretch;
+    margin-bottom: 26px;
+}
+
+.colorcv-swatch {
+    position: relative;
+    height: 118px;
+    border: 1px solid var(--colorcv-border);
+    border-radius: 10px;
+    background-color: #0ea5e9;
+    background-image:
+        linear-gradient(45deg, rgba(0, 0, 0, 0.06) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, 0.06) 75%),
+        linear-gradient(45deg, rgba(0, 0, 0, 0.06) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, 0.06) 75%);
+    background-size: 16px 16px;
+    background-position: 0 0, 8px 8px;
+    overflow: hidden;
+}
+
+.colorcv-swatch::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--colorcv-current, #0ea5e9);
+    transition: background 0.18s;
+}
+
+.colorcv-swatch-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+}
+
+.colorcv-picker-btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 14px 18px;
+    font-family: var(--btn-family);
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: #fff;
+    background: var(--colorcv-accent);
+    border: 2px solid transparent;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: var(--colorcv-transition);
+    line-height: 1.15;
+    white-space: nowrap;
+    box-sizing: border-box;
+}
+
+.colorcv-picker-btn:hover {
+    background: var(--colorcv-accent-dark);
+    box-shadow: 0 4px 14px color-mix(in srgb, var(--colorcv-accent) 35%, transparent);
+}
+
+.colorcv-picker-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+.colorcv-picker-btn:focus-within {
+    outline: 2px solid var(--colorcv-accent);
+    outline-offset: 3px;
+}
+
+.colorcv-native-picker {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    border: 0;
+    padding: 0;
+}
+
+.colorcv-page .colorcv-card input.colorcv-input {
+    width: 100%;
+    padding: 14px 18px;
+    margin: 0;
+    font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', 'Consolas', 'Monaco', monospace;
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1.15;
+    color: #111;
+    background: #f3f4f6;
+    border: 2px solid #9ca3af;
+    border-radius: 10px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08);
+    transition: border-color 0.15s, box-shadow 0.15s, background-color 0.15s;
+    box-sizing: border-box;
+}
+
+.colorcv-page .colorcv-card input.colorcv-input:hover {
+    border-color: #6b7280;
+    background: #fff;
+}
+
+.colorcv-page .colorcv-card input.colorcv-input:focus {
+    outline: none;
+    background: #fff;
+    border-color: var(--colorcv-accent);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04), 0 0 0 3px var(--colorcv-accent-light);
+}
+
+.colorcv-page .colorcv-card input.colorcv-input.is-invalid {
+    border-color: #dc2626;
+    background: rgba(220, 38, 38, 0.06);
+}
+
+.colorcv-page .colorcv-card input.colorcv-input::placeholder {
+    color: #6b7280;
+    opacity: 0.85;
+}
+
+/* Output Grid
+-------------------------------------- */
+
+.colorcv-output-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-bottom: 28px;
+}
+
+.colorcv-output {
+    display: grid;
+    grid-template-columns: 100px 1fr auto;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: #fafbfc;
+    border: 1px solid var(--colorcv-border);
+    border-radius: 10px;
+    min-height: 44px;
+    transition: background 0.15s;
+}
+
+.colorcv-output:hover {
+    background: #f2f4f6;
+}
+
+.colorcv-output-label {
+    font-family: var(--meta-family);
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: var(--excerpt-color, #777);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.colorcv-output-value {
+    min-width: 0;
+    font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', 'Consolas', 'Monaco', monospace;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--headline-fcolor, #111);
+    word-break: break-all;
+    line-height: 1.4;
+    user-select: all;
+}
+
+.colorcv-output-value:empty::before {
+    content: '—';
+    color: var(--excerpt-color, #bbb);
+    font-weight: 400;
+}
+
+.colorcv-copy {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--body-fcolor, #888);
+    background: transparent;
+    border: 1px solid var(--colorcv-border);
+    border-radius: 14px;
+    cursor: pointer;
+    transition: var(--colorcv-transition);
+    white-space: nowrap;
+}
+
+.colorcv-copy:hover {
+    color: var(--colorcv-accent);
+    border-color: var(--colorcv-accent);
+}
+
+.colorcv-copy.is-copied {
+    color: #00b894;
+    border-color: #00b894;
+}
+
+/* Sliders
+-------------------------------------- */
+
+.colorcv-sliders {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    padding-top: 22px;
+    border-top: 1px solid var(--colorcv-border);
+}
+
+.colorcv-slider-group-alpha {
+    grid-column: 1 / -1;
+}
+
+.colorcv-slider-title {
+    margin: 0 0 10px;
+    font-family: var(--meta-family);
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--excerpt-color, #888);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.colorcv-slider-row {
+    display: grid;
+    grid-template-columns: 20px 1fr 70px;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+}
+
+.colorcv-slider-label {
+    font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', 'Consolas', 'Monaco', monospace;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--headline-fcolor, #333);
+    text-align: center;
+}
+
+.colorcv-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 8px;
+    background: var(--colorcv-soft);
+    border-radius: 6px;
+    outline: none;
+    cursor: pointer;
+}
+
+.colorcv-slider[data-channel="r"] { background: linear-gradient(to right, #000, #ff0000); }
+.colorcv-slider[data-channel="g"] { background: linear-gradient(to right, #000, #00ff00); }
+.colorcv-slider[data-channel="b"] { background: linear-gradient(to right, #000, #0000ff); }
+.colorcv-slider[data-channel="h"] {
+    background: linear-gradient(to right, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000);
+}
+.colorcv-slider[data-channel="s"] {
+    background: linear-gradient(to right, hsl(var(--colorcv-hue, 330), 0%, 50%), hsl(var(--colorcv-hue, 330), 100%, 50%));
+}
+.colorcv-slider[data-channel="l"] {
+    background: linear-gradient(to right, hsl(var(--colorcv-hue, 330), var(--colorcv-sat, 81%), 0%), hsl(var(--colorcv-hue, 330), var(--colorcv-sat, 81%), 50%), hsl(var(--colorcv-hue, 330), var(--colorcv-sat, 81%), 100%));
+}
+.colorcv-slider[data-channel="a"] {
+    background-color: #fff;
+    background-image:
+        linear-gradient(to right, transparent, var(--colorcv-current, #0ea5e9)),
+        linear-gradient(45deg, rgba(0, 0, 0, 0.08) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, 0.08) 75%),
+        linear-gradient(45deg, rgba(0, 0, 0, 0.08) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, 0.08) 75%);
+    background-size: 100% 100%, 10px 10px, 10px 10px;
+    background-position: 0 0, 0 0, 5px 5px;
+}
+
+.colorcv-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #fff;
+    cursor: pointer;
+    border: 2px solid var(--colorcv-accent);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    transition: transform 0.15s;
+}
+
+.colorcv-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.12);
+}
+
+.colorcv-slider::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #fff;
+    cursor: pointer;
+    border: 2px solid var(--colorcv-accent);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+.colorcv-slider:focus-visible {
+    outline: 2px solid var(--colorcv-accent);
+    outline-offset: 4px;
+}
+
+.colorcv-num {
+    width: 70px;
+    padding: 6px 8px;
+    font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', 'Consolas', 'Monaco', monospace;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-align: center;
+    color: var(--headline-fcolor, #111);
+    background: var(--colorcv-surface);
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    transition: border-color 0.2s;
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+.colorcv-num::-webkit-outer-spin-button,
+.colorcv-num::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.colorcv-num:focus {
+    outline: none;
+    border-color: var(--colorcv-accent);
+    box-shadow: 0 0 0 2px var(--colorcv-accent-light);
+}
+
+/* SEO / FAQ
+-------------------------------------- */
+
+.colorcv-seo-content {
+    margin-top: 54px;
+    padding-top: 36px;
+    border-top: 1px solid var(--colorcv-border);
+}
+
+.colorcv-faq {
+    margin-top: 54px;
+    padding-top: 36px;
+    border-top: 1px solid var(--colorcv-border);
+}
+
+.colorcv-faq-inner {
+    padding: 0;
+}
+
+.colorcv-faq-label {
+    display: inline-block;
+    margin-bottom: 6px;
+    padding: 3px 12px;
+    font-family: var(--meta-family);
+    font-size: var(--meta-fsize);
+    font-weight: var(--meta-b-fweight, 600);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--colorcv-accent);
+    background: var(--colorcv-accent-light);
+    border-radius: 20px;
+}
+
+.colorcv-faq-title {
+    margin-bottom: 24px;
+    font-size: clamp(1.5rem, 2.5vw, 2rem);
+}
+
+.colorcv-faq-list {
+    position: relative;
+}
+
+.colorcv-faq-item {
+    border-bottom: 1px solid var(--colorcv-border);
+}
+
+.colorcv-faq-item:last-child {
+    border-bottom: none;
+}
+
+.colorcv-faq-question {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 18px 0;
+    text-align: left;
+    color: inherit;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    gap: 20px;
+    cursor: pointer;
+}
+
+.colorcv-faq-question:hover,
+.colorcv-faq-question:focus {
+    color: var(--colorcv-accent);
+    background: transparent;
+    box-shadow: none;
+}
+
+.colorcv-faq-question-text {
+    font-family: var(--h4-family);
+    font-size: clamp(1rem, 2vw, 1.125rem);
+    font-weight: var(--h4-fweight, 700);
+    line-height: 1.45;
+}
+
+.colorcv-faq-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
+    color: var(--colorcv-accent);
+    border: 1px solid var(--colorcv-border);
+    border-radius: 50%;
+    background: var(--colorcv-accent-light);
+    transition: var(--colorcv-transition);
+}
+
+.colorcv-faq-toggle svg {
+    width: 14px;
+    height: 14px;
+    transition: transform 0.2s ease;
+}
+
+.colorcv-faq-item.colorcv-faq-open .colorcv-faq-toggle svg {
+    transform: rotate(180deg);
+}
+
+.colorcv-faq-answer {
+    display: none;
+    padding-bottom: 18px;
+}
+
+.colorcv-faq-item.colorcv-faq-open .colorcv-faq-answer {
+    display: block;
+}
+
+.colorcv-faq-item:first-child .colorcv-faq-answer {
+    display: block;
+}
+
+.colorcv-faq-item:first-child .colorcv-faq-toggle svg {
+    transform: rotate(180deg);
+}
+
+.colorcv-faq-item:first-child:not(.colorcv-faq-open):not(.colorcv-faq-touched) .colorcv-faq-answer {
+    display: block;
+}
+
+.colorcv-faq-item:first-child:not(.colorcv-faq-open).colorcv-faq-touched .colorcv-faq-answer {
+    display: none;
+}
+
+.colorcv-faq-item:first-child:not(.colorcv-faq-open).colorcv-faq-touched .colorcv-faq-toggle svg {
+    transform: rotate(0deg);
+}
+
+.colorcv-faq-answer-inner {
+    max-width: 840px;
+    color: var(--excerpt-color);
+    line-height: 1.7;
+    font-size: 0.95rem;
+}
+
+.colorcv-faq-answer-inner p {
+    margin: 0;
+}
+
+/* Toast
+-------------------------------------- */
+
+.colorcv-toast-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 100000;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    pointer-events: none;
+}
+
+.colorcv-toast {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #fff;
+    background: var(--dark-accent, #191c20);
+    border-radius: var(--colorcv-radius);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    pointer-events: auto;
+    animation: colorcvToastIn 0.3s ease;
+}
+
+.colorcv-toast.colorcv-toast-out {
+    animation: colorcvToastOut 0.25s ease forwards;
+}
+
+@keyframes colorcvToastIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes colorcvToastOut {
+    to { opacity: 0; transform: translateY(10px); }
+}
+
+/* Responsive
+-------------------------------------- */
+
+@media (max-width: 1024px) {
+    .colorcv-page { padding-top: 28px; }
+}
+
+@media (max-width: 767px) {
+    .colorcv-page {
+        padding: 18px 0 56px;
+    }
+
+    .colorcv-hero {
+        padding: 24px 0 20px;
+    }
+
+    .colorcv-card {
+        padding: 22px 16px 20px;
+    }
+
+    .colorcv-swatch-row {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .colorcv-swatch {
+        height: 96px;
+    }
+
+    .colorcv-output-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .colorcv-output {
+        grid-template-columns: 1fr auto;
+        grid-template-areas:
+            "label copy"
+            "value value";
+        gap: 6px;
+        padding: 10px 12px;
+    }
+
+    .colorcv-output-label {
+        grid-area: label;
+    }
+
+    .colorcv-copy {
+        grid-area: copy;
+    }
+
+    .colorcv-output-value {
+        grid-area: value;
+    }
+
+    .colorcv-sliders {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .colorcv-num {
+        width: 60px;
+    }
+
+    .colorcv-seo-content {
+        margin-top: 42px;
+    }
+
+    .colorcv-faq {
+        margin-top: 42px;
+    }
+
+    .colorcv-toast-container {
+        bottom: 12px;
+        right: 12px;
+        left: 12px;
+    }
+}

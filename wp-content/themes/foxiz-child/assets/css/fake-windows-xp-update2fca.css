@@ -1,0 +1,120 @@
+/* =================================================================
+ * Fake Windows XP Update Screen — reusable stage component
+ *
+ * Matches the real XP "Installing Windows Updates" shutdown screen:
+ *   - Light blue gradient background
+ *   - Real Windows XP logo (colorful waving flag SVG)
+ *   - "Installing Windows Updates... XX%" text
+ *   - "Do not turn off or unplug your computer."
+ *   - Dark blue / orange decorative bottom strip
+ *
+ * Used in two contexts:
+ *   1. Inside .prank-overlay (fullscreen)
+ *   2. Inside .prank-preview-frame (small landing-page preview)
+ * ================================================================= */
+
+/* ---------- Stage container ---------- */
+.fwuxp-stage {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background:
+		radial-gradient(ellipse 45% 55% at 18% 30%, rgba(255, 255, 255, 0.35), transparent 65%),
+		linear-gradient(180deg, #5d87d4 0%, #6a92d9 40%, #5e85cf 100%);
+	color: #fff;
+	font-family: "Franklin Gothic Medium", "Franklin Gothic", Tahoma, Arial, sans-serif;
+	font-weight: 400;
+	overflow: hidden;
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+}
+
+/* Top decorative strip — solid dark navy bar */
+.fwuxp-stage::before {
+	content: '';
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	height: 9%;
+	background:
+		linear-gradient(180deg, #1b3a8a 0 calc(100% - 2px), #e88a2b calc(100% - 2px) 100%);
+	z-index: 0;
+}
+
+/* Bottom decorative strip — dark blue bar with orange hairline on top */
+.fwuxp-stage::after {
+	content: '';
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	height: 9%;
+	background:
+		linear-gradient(180deg, #e88a2b 0 2px, #1b3a8a 2px 100%);
+	z-index: 0;
+}
+
+.fwuxp-screen {
+	position: relative;
+	text-align: center;
+	width: 100%;
+	max-width: 520px;
+	padding: 0 40px;
+	margin-left: 22%;
+	animation: fwuxpFadeIn 0.6s ease-out;
+	z-index: 1;
+}
+
+@keyframes fwuxpFadeIn {
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
+
+/* ---------- Windows XP logo (PNG image) ---------- */
+/* Logo is offset slightly right relative to text, matching the real XP layout */
+.fwuxp-logo-img {
+	display: block;
+	width: 260px;
+	height: auto;
+	margin: 0 auto 28px;
+	transform: translateX(8%);
+}
+
+/* ---------- Main message text ---------- */
+.fwuxp-main-text {
+	font-size: 18px;
+	font-weight: 400;
+	line-height: 1.5;
+	margin: 24px 0 8px;
+	color: #fff;
+	font-variant-numeric: tabular-nums;
+}
+.fwuxp-sub-text {
+	font-size: 18px;
+	font-weight: 400;
+	line-height: 1.5;
+	margin: 0;
+	color: #fff;
+}
+
+/* ---------- Large monitors ---------- */
+@media (min-width: 1600px) {
+	.fwuxp-stage:not(.fwuxp-stage-mini) .fwuxp-logo-img { width: 340px; margin-bottom: 36px; }
+	.fwuxp-stage:not(.fwuxp-stage-mini) .fwuxp-main-text,
+	.fwuxp-stage:not(.fwuxp-stage-mini) .fwuxp-sub-text { font-size: 22px; }
+}
+
+/* =================================================================
+ * MINI variant — used inside the landing-page preview frame
+ * ================================================================= */
+.fwuxp-stage-mini .fwuxp-screen {
+	padding: 0 14px;
+}
+.fwuxp-stage-mini .fwuxp-logo-img { width: 90px; margin-bottom: 10px; }
+.fwuxp-stage-mini .fwuxp-main-text { font-size: 8px; margin: 8px 0 3px; }
+.fwuxp-stage-mini .fwuxp-sub-text { font-size: 8px; }
+.fwuxp-stage-mini::after { height: 12%; }

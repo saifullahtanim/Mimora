@@ -1,0 +1,344 @@
+.ratio-main {
+    --ratio-accent: #e17055;
+    --ratio-accent-dark: #c65f45;
+    --ratio-accent-light: color-mix(in srgb, #e17055 10%, transparent);
+    --ratio-border: #e5e7eb;
+    --ratio-panel-bg: #f3f4f6;
+    --ratio-text: #111827;
+    --ratio-muted: #6b7280;
+    padding: 40px 0 80px;
+}
+
+/* Hero */
+.ratio-hero {
+    margin-bottom: 28px;
+    text-align: center;
+}
+.ratio-title {
+    font-size: clamp(28px, 4vw, 40px);
+    color: var(--ratio-text);
+    margin: 0 0 10px;
+    line-height: 1.2;
+}
+.ratio-subtitle {
+    color: var(--ratio-muted);
+    font-size: 16px;
+    margin: 0;
+    max-width: 640px;
+    margin-inline: auto;
+}
+
+/* Tool card */
+.ratio-tool-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+/* Tabs */
+.ratio-tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--ratio-border);
+    margin-bottom: 24px;
+}
+.ratio-tab {
+    position: relative;
+    padding: 12px 22px;
+    background: transparent;
+    border: 0;
+    color: var(--ratio-muted);
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    transition: color 0.15s;
+}
+.ratio-tab::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 2px;
+    background: transparent;
+    transition: background 0.15s;
+}
+.ratio-tab:hover { color: var(--ratio-text); }
+.ratio-tab.is-active { color: var(--ratio-accent); }
+.ratio-tab.is-active::after { background: var(--ratio-accent); }
+.ratio-tab:focus { outline: none; }
+.ratio-tab:focus-visible { color: var(--ratio-accent); }
+
+/* Panels */
+.ratio-panel { display: none; }
+.ratio-panel.is-active { display: block; }
+
+/* Subpanels (soft gray inner blocks) */
+.ratio-subpanel {
+    background: var(--ratio-panel-bg);
+    padding: 16px;
+    border-radius: 10px;
+    margin-bottom: 16px;
+}
+.ratio-subpanel-label {
+    font-size: 13px;
+    color: #374151;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+/* Solve row */
+.ratio-solve-row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    background: var(--ratio-panel-bg);
+    padding: 20px 16px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+}
+.ratio-scale-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+}
+.ratio-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.ratio-field label {
+    font-size: 12px;
+    color: var(--ratio-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-align: center;
+}
+.ratio-sep,
+.ratio-eq {
+    font-size: 22px;
+    color: var(--ratio-muted);
+    padding-bottom: 10px;
+}
+.ratio-eq { font-size: 20px; }
+
+/* Inputs — parent theme sets gray bg + !important no-shadow, so we need higher
+   specificity and !important on shadow to override foxiz/assets/css/main.css */
+.ratio-main .ratio-input {
+    width: 90px;
+    padding: 10px 12px;
+    background: #fff;
+    border: 1.5px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--ratio-text);
+    text-align: center;
+    line-height: 1.3;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+.ratio-main .ratio-input::placeholder { color: #9ca3af; font-weight: 400; }
+.ratio-main .ratio-input-sm { width: 120px; text-align: left; }
+.ratio-main .ratio-input:hover { border-color: #9ca3af; }
+.ratio-main .ratio-input:focus {
+    border-color: var(--ratio-accent);
+    box-shadow: 0 0 0 3px var(--ratio-accent-light) !important;
+}
+.ratio-main .ratio-input:disabled {
+    background: #f9fafb;
+    color: #9ca3af;
+    cursor: not-allowed;
+    box-shadow: none !important;
+}
+
+/* Radio rows */
+.ratio-radio-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+.ratio-radio-row:last-child { margin-bottom: 0; }
+.ratio-radio-row input[type="radio"] {
+    accent-color: var(--ratio-accent);
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+.ratio-radio-text {
+    color: var(--ratio-text);
+    width: 160px;
+    font-size: 14px;
+}
+
+/* Simplified strip */
+.ratio-simplified {
+    background: var(--ratio-panel-bg);
+    padding: 14px 16px;
+    border-radius: 10px;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.ratio-simplified-label {
+    color: var(--ratio-muted);
+    font-size: 13px;
+    margin-right: 6px;
+}
+.ratio-simplified-value {
+    font-weight: 700;
+    color: var(--ratio-text);
+    font-size: 16px;
+}
+.ratio-simplified-decimal {
+    font-weight: 600;
+    color: var(--ratio-text);
+}
+
+/* Buttons */
+.ratio-actions {
+    display: flex;
+    gap: 10px;
+    margin: 16px 0;
+}
+.ratio-btn {
+    padding: 10px 22px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: background 0.15s, border-color 0.15s;
+}
+.ratio-btn-primary {
+    background: var(--ratio-accent);
+    color: #fff;
+    border-color: var(--ratio-accent);
+}
+.ratio-btn-primary:hover { background: var(--ratio-accent-dark); border-color: var(--ratio-accent-dark); }
+.ratio-btn-ghost {
+    background: #fff;
+    color: #374151;
+    border-color: var(--ratio-border);
+}
+.ratio-btn-ghost:hover { background: #f9fafb; }
+.ratio-btn:focus-visible {
+    outline: 2px solid var(--ratio-accent);
+    outline-offset: 2px;
+}
+
+/* Errors */
+.ratio-error {
+    color: #dc2626;
+    font-size: 13px;
+    margin: 6px 2px 0;
+    min-height: 18px;
+}
+.ratio-error:empty { display: none; }
+
+/* Result panel */
+.ratio-result {
+    background: var(--ratio-accent-light);
+    border: 1px solid var(--ratio-accent);
+    padding: 16px 18px;
+    border-radius: 10px;
+    margin-top: 8px;
+}
+.ratio-result-label {
+    font-size: 12px;
+    color: var(--ratio-accent-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+    font-weight: 700;
+}
+.ratio-result-value {
+    font-size: 28px;
+    color: var(--ratio-text);
+    font-weight: 700;
+    line-height: 1.2;
+}
+.ratio-result-sub {
+    font-size: 14px;
+    color: var(--ratio-muted);
+    margin-top: 8px;
+}
+
+/* SEO content section — flat separator */
+.ratio-seo-content {
+    padding-top: 36px;
+    border-top: 1px solid var(--ratio-border);
+    margin-top: 40px;
+}
+.ratio-seo-content-inner { max-width: none; }
+
+/* FAQ section — flat separator */
+.ratio-faq {
+    padding-top: 36px;
+    border-top: 1px solid var(--ratio-border);
+    margin-top: 40px;
+}
+.ratio-faq-inner {
+    padding: 0;
+    background: none;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    max-width: none;
+}
+.ratio-faq-title {
+    font-size: 24px;
+    margin: 0 0 16px;
+    color: var(--ratio-text);
+}
+.ratio-faq-item {
+    border-bottom: 1px solid var(--ratio-border);
+    padding: 14px 0;
+}
+.ratio-faq-item:last-child { border-bottom: none; }
+.ratio-faq-q {
+    font-weight: 600;
+    color: var(--ratio-text);
+    cursor: pointer;
+    list-style: none;
+    padding-right: 24px;
+    position: relative;
+}
+.ratio-faq-q::-webkit-details-marker { display: none; }
+.ratio-faq-q::after {
+    content: "+";
+    position: absolute;
+    right: 0;
+    top: 0;
+    font-size: 20px;
+    color: var(--ratio-muted);
+    transition: transform 0.15s;
+}
+.ratio-faq-item[open] .ratio-faq-q::after { content: "−"; }
+.ratio-faq-a {
+    color: var(--ratio-muted);
+    margin-top: 10px;
+    line-height: 1.6;
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    .ratio-solve-row {
+        justify-content: flex-start;
+    }
+    .ratio-input { width: 72px; font-size: 15px; }
+    .ratio-radio-text { width: 120px; }
+    .ratio-result-value { font-size: 22px; }
+    /* DO NOT add background/border/radius/shadow to .ratio-faq-inner here */
+}

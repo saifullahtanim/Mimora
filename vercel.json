@@ -1,0 +1,25 @@
+{
+  "version": 2,
+  "cleanUrls": true,
+  "trailingSlash": true,
+  "rewrites": [
+    { "source": "/api/signup", "destination": "/api/signup.js" },
+    { "source": "/api/signup/", "destination": "/api/signup.js" },
+    { "source": "/api/login", "destination": "/api/login.js" },
+    { "source": "/api/login/", "destination": "/api/login.js" },
+    { "source": "/api/forgot-password", "destination": "/api/forgot-password.js" },
+    { "source": "/api/forgot-password/", "destination": "/api/forgot-password.js" },
+    { "source": "/api/resend-email", "destination": "/api/resend-email.js" },
+    { "source": "/api/resend-email/", "destination": "/api/resend-email.js" },
+    { "source": "/api/verify-email", "destination": "/api/verify-email.js" },
+    { "source": "/api/verify-email/", "destination": "/api/verify-email.js" },
+    { "source": "/api/reset-password", "destination": "/api/reset-password.js" },
+    { "source": "/api/reset-password/", "destination": "/api/reset-password.js" },
+    { "source": "/api/update-profile", "destination": "/api/update-profile.js" },
+    { "source": "/api/update-profile/", "destination": "/api/update-profile.js" },
+    { "source": "/api/change-password", "destination": "/api/change-password.js" },
+    { "source": "/api/change-password/", "destination": "/api/change-password.js" },
+    { "source": "/api/contact", "destination": "/api/contact.js" },
+    { "source": "/api/contact/", "destination": "/api/contact.js" }
+  ]
+}

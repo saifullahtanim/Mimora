@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>My Profile &amp; Account Settings — Mimora</title>
+	
+	<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+	<link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" id="rb-preload-gfonts" href="https://fonts.googleapis.com/css?family=Jost:400,500,600,700,800,900%7CMulish:700,800,900&amp;display=swap" crossorigin>
+	<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Jost:400,500,600,700,800,900%7CMulish:700,800,900&amp;display=swap"></noscript>
+
+	<link rel='stylesheet' id='foxiz-elements-css' href='../wp-content/plugins/foxiz-core/lib/foxiz-elements/public/style128b.css?ver=3.1' media='all' />
+	<link rel='stylesheet' id='tools-site-chrome-css' href='../wp-content/themes/foxiz-child/assets/css/site-chrome9632.css?ver=1.2.4' media='all' />
+	<link rel='stylesheet' id='foxiz-main-css' href='../wp-content/themes/foxiz/assets/css/main4250.css?ver=2.7.0' media='all' />
+	<link rel='stylesheet' id='foxiz-style-css' href='../wp-content/themes/foxiz-child/style53cf.css?ver=2.1' media='all' />
+
+	<style>
+		:root {
+			--body-family: Jost, sans-serif;
+			--h1-family: Mulish, sans-serif;
+			--g-color: #488cbf;
+			--g-color-hover: #3b75a1;
+			--primary-gradient: linear-gradient(135deg, #488cbf 0%, #2563eb 100%);
+			--solid-white: #ffffff;
+			--card-bg: #ffffff;
+			--card-border: rgba(0, 0, 0, 0.08);
+			--text-main: #0f172a;
+			--text-muted: #64748b;
+			--input-bg: #f8fafc;
+			--input-border: #e2e8f0;
+		}
+
+		[data-theme="dark"] {
+			--solid-white: #111418;
+			--card-bg: #191c20;
+			--card-border: rgba(255, 255, 255, 0.08);
+			--text-main: #f8fafc;
+			--text-muted: #94a3b8;
+			--input-bg: #22262c;
+			--input-border: #334155;
+		}
+
+		body {
+			background: var(--solid-white);
+			color: var(--text-main);
+			font-family: var(--body-family);
+			margin: 0;
+			padding: 0;
+			min-height: 100vh;
+		}
+
+		.profile-page-wrap {
+			max-width: 900px;
+			margin: 0 auto;
+			padding: 40px 20px 80px;
+		}
+
+		/* Header Card */
+		.profile-hero-card {
+			background: var(--card-bg);
+			border: 1px solid var(--card-border);
+			border-radius: 20px;
+			padding: 35px 30px;
+			margin-bottom: 30px;
+			box-shadow: 0 15px 40px rgba(0, 0, 0, 0.05);
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 25px;
+			position: relative;
+			overflow: hidden;
+		}
+
+		.profile-hero-card::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			height: 6px;
+			background: var(--primary-gradient);
+		}
+
+		.profile-hero-left {
+			display: flex;
+			align-items: center;
+			gap: 24px;
+		}
+
+		/* Avatar Upload Wrapper */
+		.profile-avatar-wrapper {
+			position: relative;
+			width: 104px;
+			height: 104px;
+			flex-shrink: 0;
+		}
+
+		.profile-avatar-img,
+		.profile-avatar-placeholder {
+			width: 104px;
+			height: 104px;
+			border-radius: 50%;
+			object-fit: cover;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 38px;
+			font-weight: 800;
+			color: #fff;
+			background: var(--primary-gradient);
+			box-shadow: 0 8px 24px rgba(72, 140, 191, 0.3);
+			border: 3.5px solid var(--card-bg);
+		}
+
+		.profile-avatar-upload-btn {
+			position: absolute;
+			bottom: 2px;
+			right: 2px;
+			width: 34px;
+			height: 34px;
+			border-radius: 50%;
+			background: #2563eb;
+			color: #ffffff;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			cursor: pointer;
+			box-shadow: 0 4px 10px rgba(37, 99, 235, 0.4);
+			transition: all 0.2s;
+			border: 2px solid var(--card-bg);
+		}
+
+		.profile-avatar-upload-btn:hover {
+			transform: scale(1.12);
+			background: #1d4ed8;
+		}
+
+		.profile-hero-info h1 {
+			margin: 0 0 6px;
+			font-size: 26px;
+			font-weight: 800;
+			color: var(--text-main);
+			display: flex;
+			align-items: center;
+			gap: 10px;
+		}
+
+		.verified-badge {
+			display: inline-flex;
+			align-items: center;
+			gap: 4px;
+			background: #ecfdf5;
+			color: #10b981;
+			font-size: 12px;
+			font-weight: 700;
+			padding: 4px 10px;
+			border-radius: 20px;
+			border: 1px solid rgba(16, 185, 129, 0.2);
+		}
+
+		[data-theme="dark"] .verified-badge {
+			background: rgba(16, 185, 129, 0.12);
+		}
+
+		.profile-hero-username {
+			font-size: 15px;
+			color: var(--text-muted);
+			font-weight: 600;
+			margin: 0 0 8px;
+		}
+
+		.profile-hero-email {
+			font-size: 14px;
+			color: var(--text-muted);
+			margin: 0;
+			display: flex;
+			align-items: center;
+			gap: 6px;
+		}
+
+		.avatar-actions-sub {
+			margin-top: 10px;
+			display: flex;
+			gap: 10px;
+		}
+
+		.btn-sub-action {
+			background: none;
+			border: none;
+			color: #ef4444;
+			font-size: 12px;
+			font-weight: 600;
+			cursor: pointer;
+			padding: 0;
+			text-decoration: underline;
+		}
+
+		/* Grid Layout for Form Cards */
+		.profile-grid {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 26px;
+		}
+
+		@media (max-width: 768px) {
+			.profile-hero-card {
+				flex-direction: column;
+				text-align: center;
+				padding: 30px 20px;
+			}
+			.profile-hero-left {
+				flex-direction: column;
+			}
+			.profile-grid {
+				grid-template-columns: 1fr;
+			}
+		}
+
+		/* Form Card */
+		.profile-section-card {
+			background: var(--card-bg);
+			border: 1px solid var(--card-border);
+			border-radius: 18px;
+			padding: 30px 26px;
+			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+		}
+
+		.section-header {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			margin-bottom: 22px;
+			padding-bottom: 14px;
+			border-bottom: 1px solid var(--card-border);
+		}
+
+		.section-header-icon {
+			width: 40px;
+			height: 40px;
+			border-radius: 10px;
+			background: rgba(72, 140, 191, 0.1);
+			color: var(--g-color);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.section-header h2 {
+			font-size: 19px;
+			font-weight: 800;
+			margin: 0;
+			color: var(--text-main);
+		}
+
+		.section-header p {
+			margin: 2px 0 0;
+			font-size: 13px;
+			color: var(--text-muted);
+		}
+
+		.form-group {
+			margin-bottom: 18px;
+		}
+
+		.form-label {
+			display: block;
+			font-size: 13.5px;
+			font-weight: 600;
+			color: var(--text-main);
+			margin-bottom: 6px;
+		}
+
+		.form-input-wrap {
+			position: relative;
+		}
+
+		.form-input {
+			width: 100%;
+			height: 44px;
+			background: var(--input-bg);
+			border: 1.5px solid var(--input-border);
+			border-radius: 8px;
+			padding: 0 14px;
+			font-size: 14.5px;
+			color: var(--text-main);
+			box-sizing: border-box;
+			transition: all 0.2s;
+			font-family: inherit;
+		}
+
+		.form-input:focus {
+			outline: none;
+			border-color: var(--g-color);
+			box-shadow: 0 0 0 3px rgba(72, 140, 191, 0.15);
+		}
+
+		.form-input[readonly] {
+			opacity: 0.7;
+			cursor: not-allowed;
+			background: rgba(0, 0, 0, 0.03);
+		}
+
+		[data-theme="dark"] .form-input[readonly] {
+			background: rgba(255, 255, 255, 0.03);
+		}
+
+		.input-toggle-eye {
+			position: absolute;
+			right: 12px;
+			top: 50%;
+			transform: translateY(-50%);
+			cursor: pointer;
+			color: var(--text-muted);
+			display: flex;
+			align-items: center;
+		}
+
+		.btn-save {
+			width: 100%;
+			height: 44px;
+			background: var(--primary-gradient);
+			color: #ffffff;
+			border: none;
+			border-radius: 8px;
+			font-size: 14.5px;
+			font-weight: 700;
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 8px;
+			transition: all 0.2s;
+			box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
+			margin-top: 10px;
+		}
+
+		.btn-save:hover {
+			opacity: 0.95;
+			transform: translateY(-1px);
+			box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
+		}
+
+		.btn-save:disabled {
+			opacity: 0.6;
+			cursor: not-allowed;
+			transform: none;
+		}
+
+		.alert-feedback {
+			padding: 10px 14px;
+			border-radius: 8px;
+			font-size: 13.5px;
+			font-weight: 600;
+			margin-bottom: 16px;
+			display: none;
+			align-items: center;
+			gap: 8px;
+		}
+
+		.alert-feedback.success {
+			background: #ecfdf5;
+			color: #059669;
+			border: 1px solid rgba(16, 185, 129, 0.25);
+			display: flex;
+		}
+
+		.alert-feedback.error {
+			background: #fef2f2;
+			color: #dc2626;
+			border: 1px solid rgba(239, 68, 68, 0.25);
+			display: flex;
+		}
+	</style>
+	<link rel="icon" href="../wp-content/uploads/2026/01/title.png" sizes="32x32" />
+</head>
+<body class="wp-singular page-template-default page" data-theme="default">
+	<script>
+		(function () {
+			let currentMode = null;
+			try { currentMode = localStorage.getItem('RubyDarkMode') || 'default'; } catch(e) { currentMode = 'default'; }
+			document.body.setAttribute('data-theme', currentMode === 'dark' ? 'dark' : 'default');
+		})();
+	</script>
+
+	<!-- Header -->
+	<div id="site-header" class="header-wrap rb-section header-set-1 header-1 header-wrapper style-shadow">
+		<div class="navbar-wrap">
+			<div class="rb-container edge-padding">
+				<div class="navbar-inner" style="display:flex; justify-content:space-between; align-items:center; padding:15px 0;">
+					<div class="logo-wrap is-image-logo site-branding">
+						<a href="../index.html" class="logo" title="Mimora">
+							<img class="logo-default" height="120" width="384" src="../wp-content/uploads/2026/01/logo.png" alt="Mimora">
+						</a>
+					</div>
+					<div class="navbar-right" style="display:flex; align-items:center; gap:20px;">
+						<a href="../index.html" style="font-weight:700; color:var(--g-color); text-decoration:none; display:flex; align-items:center; gap:6px;">
+							<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+							Back to Tools
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Main Profile Content -->
+	<div class="profile-page-wrap">
+
+		<!-- Top Profile Hero Banner -->
+		<div class="profile-hero-card">
+			<div class="profile-hero-left">
+				<div class="profile-avatar-wrapper">
+					<img id="hero-avatar-img" class="profile-avatar-img" style="display:none;" alt="Profile Picture">
+					<div id="hero-avatar-placeholder" class="profile-avatar-placeholder">U</div>
+					
+					<!-- Hidden file input for picture upload -->
+					<input type="file" id="avatar-file-input" accept="image/*" style="display:none;">
+					<label for="avatar-file-input" class="profile-avatar-upload-btn" title="Change Picture">
+						<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+							<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+							<circle cx="12" cy="13" r="4"></circle>
+						</svg>
+					</label>
+				</div>
+				<div class="profile-hero-info">
+					<h1>
+						<span id="hero-display-name">Loading...</span>
+						<span id="hero-verified-badge" class="verified-badge" style="display:none;">
+							<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+							Verified
+						</span>
+					</h1>
+					<p class="profile-hero-username" id="hero-username">@user</p>
+					<p class="profile-hero-email">
+						<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+						<span id="hero-email">email@example.com</span>
+					</p>
+					<div class="avatar-actions-sub">
+						<button type="button" id="remove-avatar-btn" class="btn-sub-action" style="display:none;">Remove photo</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Two Column Grid: Profile Information & Security -->
+		<div class="profile-grid">
+
+			<!-- Column 1: Personal Info -->
+			<div class="profile-section-card">
+				<div class="section-header">
+					<div class="section-header-icon">
+						<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+					</div>
+					<div>
+						<h2>Personal Details</h2>
+						<p>Update your photo, name and contact email</p>
+					</div>
+				</div>
+
+				<div id="profile-info-alert" class="alert-feedback"></div>
+
+				<form id="profile-info-form">
+					<div class="form-group">
+						<label class="form-label" for="input-fullname">Full Name</label>
+						<div class="form-input-wrap">
+							<input type="text" id="input-fullname" class="form-input" placeholder="Your Full Name" required>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="form-label" for="input-username">Username</label>
+						<div class="form-input-wrap">
+							<input type="text" id="input-username" class="form-input" readonly title="Username cannot be modified">
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="form-label" for="input-email">Email Address</label>
+						<div class="form-input-wrap">
+							<input type="email" id="input-email" class="form-input" placeholder="you@example.com" required>
+						</div>
+					</div>
+
+					<button type="submit" id="btn-save-profile" class="btn-save">
+						<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+						<span>Save Profile Changes</span>
+					</button>
+				</form>
+			</div>
+
+			<!-- Column 2: Security & Password -->
+			<div class="profile-section-card">
+				<div class="section-header">
+					<div class="section-header-icon" style="background:rgba(239, 68, 68, 0.1); color:#ef4444;">
+						<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+					</div>
+					<div>
+						<h2>Change Password</h2>
+						<p>Ensure your account remains safe and secure</p>
+					</div>
+				</div>
+
+				<div id="password-alert" class="alert-feedback"></div>
+
+				<form id="profile-password-form">
+					<div class="form-group">
+						<label class="form-label" for="input-current-pass">Current Password</label>
+						<div class="form-input-wrap">
+							<input type="password" id="input-current-pass" class="form-input" placeholder="Enter current password" required>
+							<span class="input-toggle-eye" data-target="input-current-pass">
+								<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+							</span>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="form-label" for="input-new-pass">New Password</label>
+						<div class="form-input-wrap">
+							<input type="password" id="input-new-pass" class="form-input" placeholder="At least 6 characters" required>
+							<span class="input-toggle-eye" data-target="input-new-pass">
+								<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+							</span>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="form-label" for="input-confirm-new-pass">Confirm New Password</label>
+						<div class="form-input-wrap">
+							<input type="password" id="input-confirm-new-pass" class="form-input" placeholder="Repeat new password" required>
+							<span class="input-toggle-eye" data-target="input-confirm-new-pass">
+								<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+							</span>
+						</div>
+					</div>
+
+					<button type="submit" id="btn-save-password" class="btn-save" style="background:linear-gradient(135deg, #1e293b 0%, #0f172a 100%);">
+						<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 8 8 12 12 16"></polyline><line x1="16" y1="12" x2="8" y2="12"></line></svg>
+						<span>Update Password</span>
+					</button>
+				</form>
+			</div>
+
+		</div>
+	</div>
+
+	<script>
+		(function () {
+			const STORAGE_KEY = 'mimora_current_user';
+			let currentUser = null;
+			let currentAvatarBase64 = null;
+
+			function getCurrentUser() {
+				try {
+					const raw = localStorage.getItem(STORAGE_KEY);
+					return raw ? JSON.parse(raw) : null;
+				} catch (e) {
+					return null;
+				}
+			}
+
+			function setCurrentUser(user) {
+				if (!user) {
+					localStorage.removeItem(STORAGE_KEY);
+				} else {
+					localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
+				}
+			}
+
+			// Check authentication
+			currentUser = getCurrentUser();
+			if (!currentUser) {
+				window.location.href = '/?login=1';
+				return;
+			}
+
+			currentAvatarBase64 = currentUser.avatar || null;
+
+			// Populate UI with current user data
+			function renderUserData() {
+				const displayName = currentUser.name || currentUser.username || 'User';
+				const initial = displayName.charAt(0).toUpperCase();
+
+				document.getElementById('hero-display-name').textContent = displayName;
+				document.getElementById('hero-username').textContent = '@' + (currentUser.username || 'user');
+				document.getElementById('hero-email').textContent = currentUser.email || '';
+
+				if (currentUser.verified) {
+					document.getElementById('hero-verified-badge').style.display = 'inline-flex';
+				}
+
+				const avatarImg = document.getElementById('hero-avatar-img');
+				const avatarPlaceholder = document.getElementById('hero-avatar-placeholder');
+				const removeBtn = document.getElementById('remove-avatar-btn');
+
+				if (currentAvatarBase64) {
+					avatarImg.src = currentAvatarBase64;
+					avatarImg.style.display = 'block';
+					avatarPlaceholder.style.display = 'none';
+					removeBtn.style.display = 'inline-block';
+				} else {
+					avatarImg.style.display = 'none';
+					avatarPlaceholder.textContent = initial;
+					avatarPlaceholder.style.display = 'flex';
+					removeBtn.style.display = 'none';
+				}
+
+				document.getElementById('input-fullname').value = currentUser.name || '';
+				document.getElementById('input-username').value = '@' + (currentUser.username || '');
+				document.getElementById('input-email').value = currentUser.email || '';
+			}
+
+			renderUserData();
+
+			// Handle Avatar Upload & Crop/Resize via Canvas
+			const avatarInput = document.getElementById('avatar-file-input');
+			avatarInput.addEventListener('change', function (e) {
+				const file = e.target.files[0];
+				if (!file) return;
+
+				if (!file.type.startsWith('image/')) {
+					alert('Please select an image file (PNG, JPG, WebP).');
+					return;
+				}
+
+				const reader = new FileReader();
+				reader.onload = function (evt) {
+					const img = new Image();
+					img.onload = function () {
+						// Resize to crisp square avatar (240x240)
+						const canvas = document.createElement('canvas');
+						const size = 240;
+						canvas.width = size;
+						canvas.height = size;
+						const ctx = canvas.getContext('2d');
+
+						// Center crop
+						const minEdge = Math.min(img.width, img.height);
+						const startX = (img.width - minEdge) / 2;
+						const startY = (img.height - minEdge) / 2;
+
+						ctx.drawImage(img, startX, startY, minEdge, minEdge, 0, 0, size, size);
+
+						// Export compact WebP / JPEG base64
+						currentAvatarBase64 = canvas.toDataURL('image/webp', 0.88);
+						renderUserData();
+					};
+					img.src = evt.target.result;
+				};
+				reader.readAsDataURL(file);
+			});
+
+			// Remove Avatar Button
+			document.getElementById('remove-avatar-btn').addEventListener('click', function () {
+				currentAvatarBase64 = '';
+				renderUserData();
+			});
+
+			// Toggle password visibility
+			document.querySelectorAll('.input-toggle-eye').forEach(btn => {
+				btn.addEventListener('click', function () {
+					const targetId = this.getAttribute('data-target');
+					const input = document.getElementById(targetId);
+					if (input.type === 'password') {
+						input.type = 'text';
+					} else {
+						input.type = 'password';
+					}
+				});
+			});
+
+			// Handle Personal Details Form Submit
+			const profileForm = document.getElementById('profile-info-form');
+			const profileAlert = document.getElementById('profile-info-alert');
+			const saveProfileBtn = document.getElementById('btn-save-profile');
+
+			profileForm.addEventListener('submit', async function (e) {
+				e.preventDefault();
+				const name = document.getElementById('input-fullname').value.trim();
+				const email = document.getElementById('input-email').value.trim();
+
+				if (!name || !email) {
+					profileAlert.className = 'alert-feedback error';
+					profileAlert.textContent = 'Please fill in all fields.';
+					return;
+				}
+
+				saveProfileBtn.disabled = true;
+				saveProfileBtn.querySelector('span').textContent = 'Saving Changes...';
+				profileAlert.style.display = 'none';
+
+				try {
+					const res = await fetch('/api/update-profile', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							id: currentUser.id,
+							username: currentUser.username,
+							name: name,
+							email: email,
+							avatar: currentAvatarBase64 || ''
+						})
+					});
+
+					const data = await res.json();
+					if (res.ok && data.success) {
+						currentUser = data.user;
+						setCurrentUser(currentUser);
+						renderUserData();
+						profileAlert.className = 'alert-feedback success';
+						profileAlert.innerHTML = '✓ Profile details and picture updated successfully!';
+					} else {
+						profileAlert.className = 'alert-feedback error';
+						profileAlert.textContent = data.message || 'Failed to update profile.';
+					}
+				} catch (err) {
+					profileAlert.className = 'alert-feedback error';
+					profileAlert.textContent = 'Connection error. Please try again.';
+				} finally {
+					saveProfileBtn.disabled = false;
+					saveProfileBtn.querySelector('span').textContent = 'Save Profile Changes';
+				}
+			});
+
+			// Handle Change Password Form Submit
+			const passForm = document.getElementById('profile-password-form');
+			const passAlert = document.getElementById('password-alert');
+			const savePassBtn = document.getElementById('btn-save-password');
+
+			passForm.addEventListener('submit', async function (e) {
+				e.preventDefault();
+				const currentPassword = document.getElementById('input-current-pass').value;
+				const newPassword = document.getElementById('input-new-pass').value;
+				const confirmPassword = document.getElementById('input-confirm-new-pass').value;
+
+				if (newPassword.length < 6) {
+					passAlert.className = 'alert-feedback error';
+					passAlert.textContent = 'New password must be at least 6 characters.';
+					return;
+				}
+
+				if (newPassword !== confirmPassword) {
+					passAlert.className = 'alert-feedback error';
+					passAlert.textContent = 'New passwords do not match. Please verify.';
+					return;
+				}
+
+				savePassBtn.disabled = true;
+				savePassBtn.querySelector('span').textContent = 'Updating Password...';
+				passAlert.style.display = 'none';
+
+				try {
+					const res = await fetch('/api/change-password', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							id: currentUser.id,
+							username: currentUser.username,
+							currentPassword: currentPassword,
+							newPassword: newPassword
+						})
+					});
+
+					const data = await res.json();
+					if (res.ok && data.success) {
+						passForm.reset();
+						passAlert.className = 'alert-feedback success';
+						passAlert.innerHTML = '✓ Password has been updated successfully!';
+					} else {
+						passAlert.className = 'alert-feedback error';
+						passAlert.textContent = data.message || 'Failed to update password.';
+					}
+				} catch (err) {
+					passAlert.className = 'alert-feedback error';
+					passAlert.textContent = 'Connection error. Please try again.';
+				} finally {
+					savePassBtn.disabled = false;
+					savePassBtn.querySelector('span').textContent = 'Update Password';
+				}
+			});
+		})();
+	</script>
+</body>
+</html>

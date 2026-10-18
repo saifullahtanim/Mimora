@@ -1,0 +1,96 @@
+/* FFmpeg.wasm shared loading panel — used by all client-side video tools */
+
+.ffmpeg-loading-panel {
+	display: none; /* shown by JS during load/process states */
+	padding: 24px 20px;
+	background: #f9fafb;
+	border: 1px solid #e5e7eb;
+	border-radius: 12px;
+	text-align: center;
+}
+.ffmpeg-loading-panel.is-visible {
+	display: block;
+}
+
+.ffmpeg-loading-icon {
+	font-size: 28px;
+	line-height: 1;
+	margin-bottom: 8px;
+	display: block;
+}
+
+.ffmpeg-loading-label {
+	font-size: 16px;
+	font-weight: 600;
+	color: #111827;
+	margin: 0 0 14px;
+}
+
+.ffmpeg-loading-bar {
+	width: 100%;
+	max-width: 420px;
+	height: 10px;
+	margin: 0 auto 10px;
+	background: #e5e7eb;
+	border-radius: 999px;
+	overflow: hidden;
+	position: relative;
+}
+.ffmpeg-loading-bar-fill {
+	height: 100%;
+	width: 0%;
+	background: linear-gradient(90deg, #cc0000, #ff4444);
+	transition: width 0.15s ease;
+}
+
+.ffmpeg-loading-percent {
+	display: inline-block;
+	min-width: 44px;
+	font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+	font-size: 13px;
+	color: #4b5563;
+}
+
+.ffmpeg-loading-hint {
+	font-size: 13px;
+	color: #6b7280;
+	margin: 8px 0 0;
+}
+
+.ffmpeg-loading-eta {
+	font-size: 13px;
+	color: #6b7280;
+	margin: 4px 0 0;
+	font-variant-numeric: tabular-nums;
+}
+
+/* Error variant */
+.ffmpeg-loading-panel.is-error {
+	background: #fef2f2;
+	border-color: #fecaca;
+}
+.ffmpeg-loading-panel.is-error .ffmpeg-loading-label {
+	color: #991b1b;
+}
+.ffmpeg-loading-retry {
+	margin-top: 14px;
+	padding: 8px 18px;
+	background: #cc0000;
+	color: #fff;
+	border: none;
+	border-radius: 8px;
+	font-size: 14px;
+	font-weight: 600;
+	cursor: pointer;
+}
+.ffmpeg-loading-retry:hover { background: #a30000; }
+
+/* Indeterminate spinner (used during the brief "compiling" sub-state) */
+.ffmpeg-loading-bar.is-indeterminate .ffmpeg-loading-bar-fill {
+	width: 30% !important;
+	animation: ffmpeg-indeterm 1.2s infinite ease-in-out;
+}
+@keyframes ffmpeg-indeterm {
+	0%   { transform: translateX(-100%); }
+	100% { transform: translateX(450%); }
+}

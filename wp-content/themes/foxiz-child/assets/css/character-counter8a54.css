@@ -1,0 +1,697 @@
+/* Character Counter
+-------------------------------------- */
+
+.chcnt-page {
+    --chcnt-accent: #e84393;
+    --chcnt-accent-90: #e84393e6;
+    --chcnt-accent-light: color-mix(in srgb, #e84393 10%, transparent);
+    --chcnt-border: var(--flex-gray-15, rgba(0, 0, 0, 0.08));
+    --chcnt-surface: var(--solid-white, #fff);
+    --chcnt-radius: var(--round-7, 7px);
+    --chcnt-transition: var(--effect, 0.25s ease);
+    position: relative;
+    padding: 36px 0 80px;
+}
+
+/* Hero
+-------------------------------------- */
+
+.chcnt-hero {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 18px 0 28px;
+    text-align: center;
+}
+
+.chcnt-title {
+    margin-bottom: 12px;
+    font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+}
+
+.chcnt-subtitle {
+    max-width: 640px;
+    margin: 0 auto;
+    font-size: clamp(0.9rem, 1.5vw, 1rem);
+    line-height: 1.65;
+    color: var(--excerpt-color);
+}
+
+/* Card
+-------------------------------------- */
+
+.chcnt-tool-section {
+    max-width: 1080px;
+    margin: 0 auto 28px;
+}
+
+.chcnt-card {
+    border: 1px solid #ddd;
+    border-radius: 16px;
+    background: var(--chcnt-surface);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03), 0 6px 24px rgba(0, 0, 0, 0.07);
+    padding: 32px;
+}
+
+/* ═══════════════════════════════════
+   Two-Column Layout
+   ═══════════════════════════════════ */
+
+.chcnt-layout {
+    display: flex;
+    gap: 28px;
+}
+
+.chcnt-layout-left {
+    flex: 1;
+    min-width: 0;
+}
+
+.chcnt-layout-right {
+    width: 280px;
+    flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════
+   Textarea
+   ═══════════════════════════════════ */
+
+.chcnt-textarea {
+    display: block;
+    width: 100%;
+    min-height: 380px;
+    padding: 16px;
+    font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', 'Consolas', 'Monaco', monospace;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    color: var(--headline-fcolor, #222);
+    background: var(--chcnt-surface);
+    border: 1.5px solid var(--chcnt-border);
+    border-radius: 12px;
+    resize: vertical;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+}
+
+.chcnt-textarea:focus {
+    outline: none;
+    border-color: var(--chcnt-accent);
+    box-shadow: 0 0 0 3px var(--chcnt-accent-light);
+}
+
+.chcnt-textarea::placeholder {
+    color: var(--body-fcolor, #999);
+    opacity: 0.5;
+}
+
+/* ═══════════════════════════════════
+   Textarea Footer
+   ═══════════════════════════════════ */
+
+.chcnt-textarea-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 4px 0;
+}
+
+.chcnt-char-count {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--excerpt-color, #888);
+}
+
+.chcnt-textarea-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.chcnt-btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    color: var(--body-fcolor, #888);
+    background: transparent;
+    border: 1px solid var(--chcnt-border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--chcnt-transition);
+}
+
+.chcnt-btn-icon svg {
+    width: 15px;
+    height: 15px;
+}
+
+.chcnt-btn-icon:hover {
+    color: var(--chcnt-accent);
+    border-color: color-mix(in srgb, var(--chcnt-accent) 40%, transparent);
+    background: var(--chcnt-accent-light);
+}
+
+/* ═══════════════════════════════════
+   Stats Grid
+   ═══════════════════════════════════ */
+
+.chcnt-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.chcnt-stat {
+    border: 1px solid var(--chcnt-border);
+    border-radius: 10px;
+    padding: 12px 10px;
+    text-align: center;
+    background: #fafbfc;
+    transition: border-color 0.2s;
+}
+
+.chcnt-stat:hover {
+    border-color: color-mix(in srgb, var(--chcnt-accent) 30%, transparent);
+}
+
+.chcnt-stat-value {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--chcnt-accent);
+    line-height: 1.2;
+    margin-bottom: 2px;
+}
+
+.chcnt-stat-label {
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--excerpt-color, #888);
+}
+
+/* ═══════════════════════════════════
+   Time Row
+   ═══════════════════════════════════ */
+
+.chcnt-time-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.chcnt-time-item {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #fafbfc;
+    border: 1px solid var(--chcnt-border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    font-size: 0.9rem;
+    color: var(--body-fcolor, #666);
+}
+
+.chcnt-time-item svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    color: var(--chcnt-accent);
+}
+
+.chcnt-time-item strong {
+    color: var(--headline-fcolor, #222);
+    font-weight: 700;
+}
+
+/* ═══════════════════════════════════
+   Social Media Limits
+   ═══════════════════════════════════ */
+
+.chcnt-social-section {
+    margin: 24px 0;
+}
+
+.chcnt-social-heading {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: var(--headline-fcolor, #333);
+}
+
+.chcnt-social-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.chcnt-social-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--chcnt-border);
+}
+
+.chcnt-social-item:last-child {
+    border-bottom: none;
+}
+
+.chcnt-social-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    min-width: 120px;
+    color: var(--headline-fcolor, #333);
+}
+
+.chcnt-social-count {
+    font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', 'Consolas', 'Monaco', monospace;
+    font-size: 0.85rem;
+    min-width: 90px;
+    text-align: right;
+    color: var(--body-fcolor, #666);
+}
+
+.chcnt-social-bar {
+    flex: 1;
+    height: 8px;
+    background: #e8ecf0;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.chcnt-social-fill {
+    height: 100%;
+    border-radius: 8px;
+    background: var(--chcnt-accent);
+    transition: width 0.3s;
+    width: 0%;
+}
+
+.chcnt-social-fill[data-status="warning"] {
+    background: #f39c12;
+}
+
+.chcnt-social-fill[data-status="danger"] {
+    background: #e74c3c;
+}
+
+/* ═══════════════════════════════════
+   Letter Density
+   ═══════════════════════════════════ */
+
+.chcnt-density-section {
+    margin: 24px 0;
+}
+
+.chcnt-density-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 18px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--excerpt-color, #888);
+    background: transparent;
+    border: 1px solid var(--chcnt-border);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: var(--chcnt-transition);
+}
+
+.chcnt-density-toggle svg {
+    width: 14px;
+    height: 14px;
+    transition: transform 0.25s;
+}
+
+.chcnt-density-toggle:hover {
+    color: var(--chcnt-accent);
+    border-color: color-mix(in srgb, var(--chcnt-accent) 40%, transparent);
+}
+
+.chcnt-density-toggle.chcnt-density-open svg {
+    transform: rotate(180deg);
+}
+
+.chcnt-density-panel {
+    padding-top: 16px;
+}
+
+.chcnt-density-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.chcnt-density-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 4px 0;
+}
+
+.chcnt-density-letter {
+    font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', 'Consolas', 'Monaco', monospace;
+    font-weight: 700;
+    font-size: 0.9rem;
+    min-width: 28px;
+    text-transform: uppercase;
+    color: var(--headline-fcolor, #333);
+}
+
+.chcnt-density-bar-track {
+    flex: 1;
+    height: 6px;
+    background: #e8ecf0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.chcnt-density-bar-fill {
+    height: 100%;
+    background: var(--chcnt-accent);
+    border-radius: 6px;
+    transition: width 0.3s;
+}
+
+.chcnt-density-count {
+    font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', 'Consolas', 'Monaco', monospace;
+    font-size: 0.82rem;
+    min-width: 36px;
+    text-align: right;
+    color: var(--headline-fcolor, #333);
+}
+
+.chcnt-density-pct {
+    font-size: 0.78rem;
+    color: var(--excerpt-color, #888);
+    min-width: 48px;
+    text-align: right;
+}
+
+.chcnt-density-empty {
+    font-size: 0.88rem;
+    color: var(--excerpt-color, #888);
+    padding: 12px 0;
+}
+
+/* ═══════════════════════════════════
+   SEO Content
+   ═══════════════════════════════════ */
+
+.chcnt-seo-content {
+    margin-top: 54px;
+    padding-top: 36px;
+    border-top: 1px solid var(--chcnt-border);
+}
+
+/* ═══════════════════════════════════
+   FAQ Section
+   ═══════════════════════════════════ */
+
+.chcnt-faq {
+    margin-top: 54px;
+    padding-top: 36px;
+    border-top: 1px solid var(--chcnt-border);
+}
+
+.chcnt-faq-inner {
+    padding: 0;
+}
+
+.chcnt-faq-label {
+    display: inline-block;
+    margin-bottom: 6px;
+    padding: 3px 12px;
+    font-family: var(--meta-family);
+    font-size: var(--meta-fsize);
+    font-weight: var(--meta-b-fweight, 600);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--chcnt-accent);
+    background: var(--chcnt-accent-light);
+    border-radius: 20px;
+}
+
+.chcnt-faq-title {
+    margin-bottom: 24px;
+    font-size: clamp(1.5rem, 2.5vw, 2rem);
+}
+
+.chcnt-faq-list {
+    position: relative;
+}
+
+.chcnt-faq-item {
+    border-bottom: 1px solid var(--chcnt-border);
+}
+
+.chcnt-faq-item:last-child {
+    border-bottom: none;
+}
+
+.chcnt-faq-question {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 18px 0;
+    text-align: left;
+    color: inherit;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    gap: 20px;
+    cursor: pointer;
+}
+
+.chcnt-faq-question:hover,
+.chcnt-faq-question:focus {
+    color: var(--chcnt-accent);
+    background: transparent;
+    box-shadow: none;
+}
+
+.chcnt-faq-question-text {
+    font-family: var(--h4-family);
+    font-size: clamp(1rem, 2vw, 1.125rem);
+    font-weight: var(--h4-fweight, 700);
+    line-height: 1.45;
+}
+
+.chcnt-faq-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
+    color: var(--chcnt-accent);
+    border: 1px solid var(--chcnt-border);
+    border-radius: 50%;
+    background: var(--chcnt-accent-light);
+    transition: var(--chcnt-transition);
+}
+
+.chcnt-faq-toggle svg {
+    width: 14px;
+    height: 14px;
+    transition: transform 0.2s ease;
+}
+
+.chcnt-faq-item.chcnt-faq-open .chcnt-faq-toggle svg {
+    transform: rotate(180deg);
+}
+
+.chcnt-faq-answer {
+    display: none;
+    padding-bottom: 18px;
+}
+
+.chcnt-faq-item.chcnt-faq-open .chcnt-faq-answer {
+    display: block;
+}
+
+.chcnt-faq-item:first-child .chcnt-faq-answer {
+    display: block;
+}
+
+.chcnt-faq-item:first-child .chcnt-faq-toggle svg {
+    transform: rotate(180deg);
+}
+
+.chcnt-faq-item:first-child:not(.chcnt-faq-open):not(.chcnt-faq-touched) .chcnt-faq-answer {
+    display: block;
+}
+
+.chcnt-faq-item:first-child:not(.chcnt-faq-open).chcnt-faq-touched .chcnt-faq-answer {
+    display: none;
+}
+
+.chcnt-faq-item:first-child:not(.chcnt-faq-open).chcnt-faq-touched .chcnt-faq-toggle svg {
+    transform: rotate(0deg);
+}
+
+.chcnt-faq-answer-inner {
+    max-width: 840px;
+    color: var(--excerpt-color);
+    line-height: 1.7;
+    font-size: 0.95rem;
+}
+
+.chcnt-faq-answer-inner p {
+    margin: 0;
+}
+
+/* ═══════════════════════════════════
+   Toast
+   ═══════════════════════════════════ */
+
+.chcnt-toast-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 100000;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    pointer-events: none;
+}
+
+.chcnt-toast {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #fff;
+    background: var(--dark-accent, #191c20);
+    border-radius: var(--chcnt-radius);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    pointer-events: auto;
+    animation: chcntToastIn 0.3s ease;
+}
+
+.chcnt-toast.chcnt-toast-out {
+    animation: chcntToastOut 0.25s ease forwards;
+}
+
+@keyframes chcntToastIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes chcntToastOut {
+    to {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+}
+
+/* ═══════════════════════════════════
+   Responsive
+   ═══════════════════════════════════ */
+
+@media (max-width: 1024px) {
+    .chcnt-page {
+        padding-top: 28px;
+    }
+
+    .chcnt-layout {
+        flex-direction: column;
+    }
+
+    .chcnt-layout-right {
+        width: 100%;
+    }
+
+    .chcnt-stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    }
+
+    .chcnt-textarea {
+        min-height: 200px;
+    }
+
+    .chcnt-time-row {
+        flex-direction: row;
+        gap: 12px;
+    }
+}
+
+@media (max-width: 767px) {
+    .chcnt-page {
+        padding: 18px 0 56px;
+    }
+
+    .chcnt-hero {
+        padding: 24px 0 20px;
+    }
+
+    .chcnt-card {
+        padding: 20px 16px;
+    }
+
+    .chcnt-textarea {
+        min-height: 150px;
+    }
+
+    .chcnt-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .chcnt-time-row {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .chcnt-time-item {
+        padding: 12px 16px;
+    }
+
+    .chcnt-social-name {
+        min-width: auto;
+        font-size: 0.82rem;
+    }
+
+    .chcnt-social-count {
+        min-width: auto;
+        font-size: 0.78rem;
+    }
+
+    .chcnt-social-item {
+        gap: 10px;
+    }
+
+    .chcnt-seo-content {
+        margin-top: 42px;
+    }
+
+    .chcnt-faq {
+        margin-top: 42px;
+    }
+
+    .chcnt-faq-question {
+        gap: 14px;
+    }
+
+    .chcnt-toast-container {
+        bottom: 12px;
+        right: 12px;
+        left: 12px;
+    }
+}

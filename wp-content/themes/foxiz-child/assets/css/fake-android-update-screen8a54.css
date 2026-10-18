@@ -1,0 +1,502 @@
+/* =================================================================
+ * Fake Android Update Screen
+ * One .fau-view, two styles chosen by [data-style]:
+ *   classic — recovery installer (robot + thin bar), the "Android is
+ *             upgrading…" dialog, and the optional "No command." screen
+ *   modern  — Settings system-update page with the wavy progress line,
+ *             a restart and "Phone is starting…"
+ * [data-phase] decides which part of the style is on screen.
+ *
+ * The same view renders in the card preview and fullscreen, so sizes are
+ * container query units measured against .fau-view (and, for the modern
+ * page, against the phone-width .fau-device column).
+ *
+ * Custom properties are declared on BOTH the page and the overlay: the shared
+ * controller moves the overlay out to <body> on launch, so anything scoped
+ * only to .fau-page stops inheriting the moment the prank starts.
+ * ================================================================= */
+
+.fau-page,
+.fau-overlay {
+	--fau-accent: #0f6b3c;
+	--fau-accent-hover: #0b5530;
+	--fau-accent-ring: rgba(15, 107, 60, 0.2);
+	--fau-robot: #a4c639;
+	--fau-robot-shade: #7f9a2c;
+	--fau-border: #e5e7eb;
+}
+
+/* .prank-setting is display:flex, which would beat the hidden attribute. */
+.fau-page [hidden] {
+	display: none !important;
+}
+
+/* ---------- Card preview: a portrait phone in the frame ---------- */
+/* min-width/max-width: the settings column is taller than a 16:10 frame, and
+ * a stretched aspect-ratio box would take its width from the row height and
+ * paint over the panel. */
+.fau-preview-frame {
+	min-width: 0;
+	max-width: 100%;
+	min-height: 300px;
+	background: radial-gradient(circle at 50% 28%, #222a36 0%, #0b0d10 72%);
+}
+
+.fau-phone {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	height: 88%;
+	aspect-ratio: 9 / 19.5;
+	transform: translate(-50%, -50%);
+	border-radius: 11% / 5%;
+	overflow: hidden;
+	background: #000;
+	box-shadow: 0 0 0 3px #262b33, 0 0 0 4px #4b525d, 0 12px 32px rgba(0, 0, 0, 0.5);
+}
+
+/* ---------- The view (preview + fullscreen) ---------- */
+.fau-view,
+.fau-view * {
+	box-sizing: border-box;
+}
+
+.fau-view {
+	position: absolute;
+	inset: 0;
+	container-type: size;
+	overflow: hidden;
+	background: #000;
+	color: #fff;
+	font-family: system-ui, Roboto, "Segoe UI", Arial, sans-serif;
+	font-weight: 400;
+	line-height: 1.35;
+	letter-spacing: normal;
+	text-align: left;
+	-webkit-font-smoothing: antialiased;
+	user-select: none;
+	-webkit-user-select: none;
+}
+
+.fau-view[data-style="classic"] .fau-modern,
+.fau-view[data-style="modern"] .fau-classic {
+	display: none;
+}
+
+/* ================= Classic ================= */
+.fau-classic,
+.fau-recovery,
+.fau-upgrade,
+.fau-nocommand {
+	position: absolute;
+	inset: 0;
+}
+
+.fau-recovery,
+.fau-upgrade,
+.fau-nocommand {
+	display: none;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+/* Only these phases draw anything; reboot / reboot2 / blank stay black. */
+.fau-view[data-phase="install"] .fau-recovery,
+.fau-view[data-phase="upgrade"] .fau-upgrade,
+.fau-view[data-phase="starting"] .fau-upgrade,
+.fau-view[data-phase="nocommand"] .fau-nocommand {
+	display: flex;
+}
+
+.fau-robot {
+	display: block;
+	width: min(46cqw, 30cqh);
+	height: auto;
+	overflow: visible;
+	color: var(--fau-robot);
+}
+
+.fau-bot-door { fill: var(--fau-robot-shade); }
+
+.fau-recovery-text,
+.fau-nocommand-text {
+	margin-top: min(6cqw, 3.4cqh);
+	font-size: min(4.6cqw, 2.8cqh);
+	color: #fff;
+	letter-spacing: 0.01em;
+	text-align: center;
+}
+
+/* AOSP draws a square 252x7 bar: grey track, white fill. */
+.fau-recovery-bar {
+	width: min(64cqw, 40cqh);
+	height: max(3px, min(1.8cqw, 1.1cqh));
+	margin-top: min(4.5cqw, 2.6cqh);
+	background: #606060;
+}
+
+.fau-recovery-fill {
+	display: block;
+	width: 0;
+	height: 100%;
+	background: #fff;
+}
+
+.fau-dialog {
+	width: min(84cqw, 52cqh);
+	padding: min(6.5cqw, 4cqh) min(6.5cqw, 4cqh) min(8cqw, 5cqh);
+	background: #424242;
+	border-radius: 2px;
+	box-shadow: 0 8px 28px rgba(0, 0, 0, 0.6);
+}
+
+.fau-dialog-title {
+	font-size: min(5.3cqw, 3.3cqh);
+	font-weight: 500;
+	color: #fff;
+}
+
+.fau-dialog-msg {
+	margin-top: min(4.5cqw, 2.8cqh);
+	font-size: min(4.1cqw, 2.55cqh);
+	color: rgba(255, 255, 255, 0.72);
+	font-variant-numeric: tabular-nums;
+}
+
+.fau-robot--down { width: min(56cqw, 36cqh); }
+
+.fau-alert { fill: #e53935; }
+
+/* ================= Modern ================= */
+.fau-view[data-theme="dark"] {
+	--fau-m-bg: #111318;
+	--fau-m-fg: #e2e2e9;
+	--fau-m-muted: #c4c6d0;
+	--fau-m-primary: #a8c7fa;
+	--fau-m-track: #354155;
+}
+
+.fau-view[data-theme="light"] {
+	--fau-m-bg: #f9f9ff;
+	--fau-m-fg: #191c20;
+	--fau-m-muted: #44474e;
+	--fau-m-primary: #0b57d0;
+	--fau-m-track: #d3e3fd;
+}
+
+.fau-modern {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	justify-content: center;
+	background: var(--fau-m-bg);
+	color: var(--fau-m-fg);
+}
+
+/* Full width on any portrait screen (including 16:9 phones and in-app
+ * browsers with toolbars); a phone-shaped column on landscape monitors. */
+.fau-device {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	height: 100%;
+	container-type: inline-size;
+}
+
+@container (min-aspect-ratio: 4 / 5) {
+	.fau-device { width: min(100cqw, 56cqh); }
+}
+
+.fau-status {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex: 0 0 auto;
+	height: 10cqi;
+	padding: 0 6.5cqi;
+	font-size: 3.7cqi;
+	font-weight: 500;
+	font-variant-numeric: tabular-nums;
+}
+
+.fau-status-icons {
+	display: inline-flex;
+	align-items: center;
+	gap: 1.4cqi;
+}
+
+.fau-status-icons svg {
+	display: block;
+	width: 4.2cqi;
+	height: 4.2cqi;
+}
+
+.fau-column {
+	display: flex;
+	flex: 1 1 auto;
+	flex-direction: column;
+	padding: 14cqi 6.5cqi 0;
+}
+
+.fau-update-icon {
+	align-self: center;
+	width: 12cqi;
+	height: 12cqi;
+	color: var(--fau-m-primary);
+}
+
+.fau-headline {
+	margin-top: 10cqi;
+	font-size: 8.4cqi;
+	font-weight: 400;
+	line-height: 1.18;
+	letter-spacing: -0.01em;
+}
+
+.fau-subtitle {
+	margin-top: 3cqi;
+	font-size: 4.1cqi;
+	line-height: 1.4;
+	color: var(--fau-m-muted);
+}
+
+.fau-wave {
+	height: 4.4cqi;
+	margin-top: 8cqi;
+}
+
+.fau-wave-svg {
+	display: block;
+	width: 100%;
+	height: 100%;
+	overflow: visible;
+}
+
+.fau-wave-path,
+.fau-wave-track {
+	fill: none;
+	stroke-width: 1.15cqi;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+.fau-wave-path { stroke: var(--fau-m-primary); }
+.fau-wave-track { stroke: var(--fau-m-track); }
+
+.fau-body {
+	margin: 8cqi 0 0;
+	font-size: 3.9cqi;
+	line-height: 1.5;
+	color: var(--fau-m-muted);
+}
+
+.fau-gesture {
+	position: absolute;
+	left: 50%;
+	bottom: 2.6cqi;
+	width: 28cqi;
+	height: 1.25cqi;
+	border-radius: 999px;
+	background: var(--fau-m-fg);
+	opacity: 0.55;
+	transform: translateX(-50%);
+}
+
+.fau-boot {
+	position: absolute;
+	inset: 0;
+	display: none;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 9cqi;
+	color: #fff;
+}
+
+.fau-boot-dots {
+	display: flex;
+	gap: 3.2cqi;
+}
+
+.fau-boot-dots i {
+	width: 2.6cqi;
+	height: 2.6cqi;
+	border-radius: 50%;
+	background: #fff;
+	opacity: 0.25;
+	animation: fau-dot 1.2s ease-in-out infinite;
+}
+
+.fau-boot-dots i:nth-child(2) { animation-delay: 0.15s; }
+.fau-boot-dots i:nth-child(3) { animation-delay: 0.3s; }
+.fau-boot-dots i:nth-child(4) { animation-delay: 0.45s; }
+
+@keyframes fau-dot {
+	0%, 100% { opacity: 0.25; transform: scale(0.85); }
+	40% { opacity: 1; transform: scale(1); }
+}
+
+.fau-boot-text {
+	font-size: 4.1cqi;
+	opacity: 0.85;
+}
+
+/* Restart, boot and the black gaps: no page, no status bar. */
+.fau-view[data-style="modern"][data-phase="black"] .fau-modern,
+.fau-view[data-style="modern"][data-phase="black2"] .fau-modern,
+.fau-view[data-style="modern"][data-phase="boot"] .fau-modern {
+	background: #000;
+}
+
+.fau-view[data-style="modern"][data-phase="black"] .fau-device > *,
+.fau-view[data-style="modern"][data-phase="black2"] .fau-device > *,
+.fau-view[data-style="modern"][data-phase="boot"] .fau-device > :not(.fau-boot) {
+	display: none;
+}
+
+.fau-view[data-style="modern"][data-phase="boot"] .fau-boot {
+	display: flex;
+}
+
+/* ---------- Fullscreen overlay ---------- */
+.fau-overlay { background: #000; }
+
+/* A pinch-zoomed update screen gives the joke away; taps still reach the
+ * corner exit target. */
+.fau-overlay.is-active {
+	touch-action: none;
+	overscroll-behavior: none;
+}
+
+.fau-screen {
+	position: absolute;
+	inset: 0;
+	cursor: default;
+}
+
+/* Keep the corner exit target without showing any browser-looking UI. */
+.fau-overlay.is-active ~ .prank-exit-bar {
+	z-index: 2147483647;
+	top: 0;
+	right: 0;
+	width: 72px;
+	height: 72px;
+	opacity: 0;
+	pointer-events: auto;
+	transition: none;
+}
+
+.fau-overlay.is-active ~ .prank-exit-bar .prank-exit-btn {
+	width: 100%;
+	height: 100%;
+	padding: 0;
+}
+
+/* ---------- Settings panel ---------- */
+.fau-select {
+	width: 100%;
+	padding: 9px 12px;
+	font-size: 1rem;
+	font-weight: 600;
+	font-family: inherit;
+	color: #111827;
+	background: #fff;
+	border: 1px solid var(--fau-border);
+	border-radius: 8px;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+	cursor: pointer;
+	outline: none;
+	transition: border-color var(--effect, 0.2s ease), box-shadow var(--effect, 0.2s ease);
+}
+
+.fau-select:hover { border-color: var(--flex-gray-30, #d1d5db); }
+
+.fau-select:focus-visible {
+	border-color: var(--fau-accent);
+	box-shadow: 0 0 0 3px var(--fau-accent-ring);
+}
+
+.fau-check {
+	display: flex;
+	align-items: center;
+	gap: 9px;
+	font-size: 0.95rem;
+	font-weight: 600;
+	color: var(--headline-fcolor, #374151);
+	cursor: pointer;
+	user-select: none;
+}
+
+.fau-check input {
+	flex: 0 0 16px;
+	width: 16px;
+	height: 16px;
+	accent-color: var(--fau-accent);
+	cursor: pointer;
+}
+
+.fau-check input:focus-visible {
+	outline: 2px solid var(--fau-accent);
+	outline-offset: 2px;
+}
+
+/* WCAG AA: white on #0f6b3c is ~6.6:1 (the Android brand green is far too light). */
+.fau-page .fau-launch-btn {
+	background: var(--fau-accent);
+	border-color: var(--fau-accent);
+}
+
+.fau-page .fau-launch-btn:hover {
+	background: var(--fau-accent-hover);
+	border-color: var(--fau-accent-hover);
+	box-shadow: 0 4px 12px rgba(15, 107, 60, 0.28);
+}
+
+.fau-page .fau-launch-btn:focus-visible,
+.fau-page .prank-fullscreen-btn:focus-visible {
+	outline: 2px solid var(--fau-accent);
+	outline-offset: 2px;
+}
+
+.fau-safety-note {
+	display: flex;
+	align-items: flex-start;
+	gap: 10px;
+	margin: 18px 0 0;
+	font-size: 0.9rem;
+	line-height: 1.6;
+	color: #4b5563;
+}
+
+.fau-safety-note svg {
+	flex: 0 0 auto;
+	width: 18px;
+	height: 18px;
+	margin-top: 2px;
+	color: var(--fau-accent);
+}
+
+.fau-credit {
+	margin: 10px 0 0 28px;
+	font-size: 0.8rem;
+	line-height: 1.55;
+	color: #6b7280;
+}
+
+.fau-credit a {
+	color: inherit;
+	text-decoration: underline;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.fau-boot-dots i {
+		animation: none;
+		opacity: 0.7;
+	}
+}
+
+@media (max-width: 900px) {
+	.fau-preview-frame { aspect-ratio: 1 / 1; }
+}

@@ -1,0 +1,2019 @@
+/* Windows XP Simulator
+ *
+ * A pixel-respectful CSS recreation of Windows XP Luna theme:
+ *   - Bliss-inspired wallpaper
+ *   - Blue Luna taskbar gradient
+ *   - Green Luna Start button
+ *   - Tahoma typography
+ *   - Authentic window chrome (gradients, beveled buttons)
+ *
+ * Naming convention: .xpsim-* for everything inside the simulator overlay.
+ * Author: how7o, 2026.
+ */
+
+/* ============================================================
+ * Landing-page chrome (preview frame on the public-facing page)
+ * ============================================================ */
+
+.xpsim-page .prank-preview-frame {
+    aspect-ratio: 16/10;
+    overflow: hidden;
+}
+
+.xpsim-preview-thumb {
+    position: absolute;
+    inset: 0;
+    /* Real Bliss wallpaper image — same one the simulator desktop uses. */
+    background: url("../images/winxp/background.jpg") center / cover no-repeat, #245994;
+    overflow: hidden;
+}
+
+.xpsim-preview-wallpaper { display: none; }
+
+.xpsim-preview-icons {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    color: #fff;
+    font: 700 9px Tahoma, Geneva, Verdana, sans-serif;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.8), 0 0 2px rgba(0, 0, 0, 0.7);
+}
+
+.xpsim-preview-icon {
+    text-align: center;
+    width: 56px;
+}
+
+.xpsim-preview-icon::before {
+    content: "";
+    display: block;
+    width: 28px;
+    height: 28px;
+    margin: 0 auto 3px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+.xpsim-preview-icon:nth-child(1)::before { background-image: url("../images/winxp/my_computer.png"); }
+.xpsim-preview-icon:nth-child(2)::before { background-image: url("../images/winxp/recycle_bin.png"); }
+
+.xpsim-preview-taskbar {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 24px;
+    background: url("../images/winxp/taskbar.png") repeat-x 0 0;
+    background-size: auto 24px;
+    display: flex;
+    align-items: stretch;
+    color: #fff;
+    font: 700 9px Tahoma, sans-serif;
+}
+
+.xpsim-preview-startbtn {
+    /* Use the real Start-button sprite, scaled down to fit the preview */
+    width: 72px;
+    height: 24px;
+    background: url("../images/winxp/start_button.png") no-repeat 0 0;
+    background-size: 72px auto;
+    text-indent: -9999px;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.xpsim-preview-startbtn::before { content: none; }
+
+.xpsim-preview-clock {
+    background: url("../images/winxp/clock.png") repeat-x 0 0;
+    background-size: auto 24px;
+    padding: 0 8px 0 14px;
+    color: #fff;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.4);
+    font-weight: 400;
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+/* ============================================================
+ * Fullscreen overlay
+ * ============================================================ */
+
+.xpsim-overlay {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    z-index: 99999;
+    display: none;
+    overflow: hidden;
+    font: 11px Tahoma, "Segoe UI", Geneva, Verdana, sans-serif;
+    color: #000;
+    cursor: default;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.xpsim-overlay.is-active {
+    display: block;
+}
+
+.xpsim-overlay * {
+    box-sizing: border-box;
+}
+
+.xpsim-overlay button {
+    font-family: inherit;
+}
+
+/* ============================================================
+ * Boot screen
+ * ============================================================ */
+
+.xpsim-boot {
+    position: absolute;
+    inset: 0;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    text-align: center;
+    z-index: 5;
+    transition: opacity 0.6s ease;
+}
+
+.xpsim-boot.is-fading {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Reuses the same windows-xp-logo.png the fake-windows-xp-update prank
+ * uses. Sized to match the real XP boot screen where the logo is roughly
+ * 1/3 of the screen width and is properly centered (no offset). */
+.xpsim-boot-logo-img {
+    display: block;
+    width: 380px;
+    height: auto;
+    margin: 0 auto 56px;
+}
+
+@media (min-width: 1600px) {
+    .xpsim-boot-logo-img { width: 460px; }
+}
+
+.xpsim-boot-progress {
+    width: 200px;
+}
+
+.xpsim-boot-progress-track {
+    /* Real XP boot bar — black trough with hairline gray border + soft
+     * rounded corners (the trough itself is ever-so-slightly rounded). */
+    position: relative;
+    width: 100%;
+    height: 22px;
+    background: #000;
+    border: 1px solid #5a5a5a;
+    border-radius: 4px;
+    box-shadow: inset 0 0 0 1px #0a0a0a;
+    overflow: hidden;
+}
+
+.xpsim-boot-progress-bar {
+    /* Three blue blocks slide left → right. Each block is 16x12 with a
+     * 6px gap (22px stride). Total bar is 60px wide. */
+    position: absolute;
+    top: 4px;
+    left: 0;
+    height: 12px;
+    width: 60px;
+    background-image:
+        linear-gradient(180deg, #c7e3ff 0%, #4a9bf6 50%, #1f6cd6 100%),
+        linear-gradient(180deg, #c7e3ff 0%, #4a9bf6 50%, #1f6cd6 100%),
+        linear-gradient(180deg, #c7e3ff 0%, #4a9bf6 50%, #1f6cd6 100%);
+    background-size: 16px 12px, 16px 12px, 16px 12px;
+    background-position: 0 0, 22px 0, 44px 0;
+    background-repeat: no-repeat;
+    animation: xpsim-boot-slide 1.3s linear infinite;
+}
+
+@keyframes xpsim-boot-slide {
+    from { left: -60px; }
+    to   { left: 200px; }
+}
+
+.xpsim-boot-copyright {
+    position: absolute;
+    bottom: 32px;
+    left: 32px;
+    color: #888;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+}
+
+/* "Microsoft®" italic at the bottom-right of the boot screen */
+.xpsim-boot-corp {
+    position: absolute;
+    bottom: 32px;
+    right: 32px;
+    color: #fff;
+    font: italic bold 16px "Trebuchet MS", Tahoma, sans-serif;
+    letter-spacing: 0.02em;
+}
+
+.xpsim-boot-corp sup {
+    font-size: 9px;
+    vertical-align: super;
+    font-weight: 400;
+}
+
+/* ============================================================
+ * Desktop — real Bliss wallpaper image
+ * ============================================================
+ * The Bliss JPG is the iconic XP wallpaper. CSS / SVG approximations
+ * never read as authentic; the real photo does.
+ */
+
+.xpsim-desktop {
+    position: absolute;
+    inset: 0;
+    background: url("../images/winxp/background.jpg") center/cover no-repeat, #245994;
+    display: none;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.xpsim-desktop.is-visible {
+    display: block;
+    animation: xpsim-fade-in 0.5s ease;
+}
+
+@keyframes xpsim-fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Desktop icons */
+.xpsim-icons {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 2;
+}
+
+.xpsim-icon {
+    background: transparent;
+    border: 1px dotted transparent;
+    color: #fff;
+    font: 11px Tahoma, sans-serif;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.85), 0 0 2px rgba(0, 0, 0, 0.7);
+    padding: 6px 4px 4px;
+    width: 80px;
+    cursor: default;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    border-radius: 0;
+}
+
+.xpsim-icon:focus,
+.xpsim-icon.is-selected {
+    background: rgba(0, 60, 180, 0.4);
+    border: 1px dotted #fff;
+    outline: none;
+}
+
+.xpsim-icon-img {
+    width: 32px;
+    height: 32px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    flex-shrink: 0;
+    filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.5));
+}
+
+.xpsim-icon-label {
+    word-break: break-word;
+    line-height: 1.2;
+    text-align: center;
+    max-width: 72px;
+}
+
+/* Icon image set — real Microsoft Luna icon PNGs (32x32 desktop / 24x24 menu).
+ * Files live in foxiz-child/assets/images/winxp/ and the relative path is
+ * resolved from this stylesheet's location. */
+
+.xpsim-icon-mycomputer    { background-image: url("../images/winxp/my_computer.png"); }
+.xpsim-icon-mydocs        { background-image: url("../images/winxp/my_documents.png"); }
+.xpsim-icon-recyclebin    { background-image: url("../images/winxp/recycle_bin.png"); }
+.xpsim-icon-ie            { background-image: url("../images/winxp/ie-ico.png"); }
+.xpsim-icon-notepad       { background-image: url("../images/winxp/startmenu/textdoc.png"); }
+.xpsim-icon-paint         { background-image: url("../images/winxp/startmenu/mywebsite.png"); }
+.xpsim-icon-calculator    { background-image: url("../images/winxp/startmenu/run.png"); }
+.xpsim-icon-mediaplayer    { background-image: url("../images/winxp/startmenu/windows_media_player.png"); }
+.xpsim-icon-winamp         { background-image: url("../images/winxp/startmenu/winamp.png"); }
+.xpsim-icon-thunderbird    { background-image: url("../images/winxp/startmenu/thunderbird.png"); }
+.xpsim-icon-totalcommander { background-image: url("../images/winxp/startmenu/totalcommander.png"); }
+.xpsim-icon-tetris         { background-image: url("../images/winxp/tetris-ico.png"); }
+.xpsim-icon-minesweeper    { background-image: url("../images/winxp/startmenu/minesweeper.png"); }
+.xpsim-icon-commandPrompt  { background-image: url("../images/winxp/startmenu/commandPrompt.png"); }
+.xpsim-icon-myrecent       { background-image: url("../images/winxp/startmenu/myrecent.png"); }
+.xpsim-icon-mymusic        { background-image: url("../images/winxp/startmenu/mymusic.png"); }
+.xpsim-icon-mycomp         { background-image: url("../images/winxp/startmenu/mycomp.png"); }
+.xpsim-icon-mynetwork      { background-image: url("../images/winxp/startmenu/mynetwork.png"); }
+.xpsim-icon-printers       { background-image: url("../images/winxp/startmenu/printers.png"); }
+.xpsim-icon-outlook       { background-image: url("../images/winxp/startmenu/oe16.png"); }
+.xpsim-icon-controlpanel  { background-image: url("../images/winxp/startmenu/controlpanel.png"); }
+.xpsim-icon-run           { background-image: url("../images/winxp/startmenu/run.png"); }
+.xpsim-icon-search        { background-image: url("../images/winxp/startmenu/search.png"); }
+.xpsim-icon-help          { background-image: url("../images/winxp/startmenu/helpsupport.png"); }
+.xpsim-icon-logoff        { background-image: url("../images/winxp/logoff.png"); }
+.xpsim-icon-shutdown      { background-image: url("../images/winxp/shutdown.png"); }
+.xpsim-icon-network       { background-image: url("../images/winxp/my_network_places.png"); }
+
+/* ============================================================
+ * Window manager — base window
+ * ============================================================ */
+
+.xpsim-windows {
+    position: absolute;
+    inset: 0 0 34px 0;
+    z-index: 4;
+    pointer-events: none;
+}
+
+.xpsim-window {
+    position: absolute;
+    pointer-events: auto;
+    min-width: 220px;
+    min-height: 140px;
+    background: #ece9d8;
+    /* Luna outline — left, right, bottom only. The title bar IS the top
+     * edge, so a top border would create a visible seam above it. */
+    border-left: 3px solid #0058d8;
+    border-right: 3px solid #0058d8;
+    border-bottom: 3px solid #0058d8;
+    border-radius: 8px 8px 0 0;
+    box-shadow:
+        0 2px 6px rgba(0, 0, 0, 0.35),
+        0 10px 28px rgba(0, 0, 0, 0.22);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: xpsim-window-open 0.18s ease;
+}
+
+@keyframes xpsim-window-open {
+    from { transform: scale(0.96); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.xpsim-window.is-maximized {
+    border-radius: 0;
+    border-width: 0;
+}
+
+.xpsim-window.is-minimized {
+    display: none;
+}
+
+.xpsim-window.is-inactive {
+    border-color: #7693d5;
+}
+
+/* Inactive title bar: reuse the same window_bar.png image but desaturate
+ * + lighten it so it reads as clearly "not focused" — matches real XP's
+ * washed-out inactive header. The text inside also softens to ~75% alpha. */
+.xpsim-window.is-inactive .xpsim-titlebar {
+    filter: saturate(0.35) brightness(1.18) opacity(0.92);
+}
+
+.xpsim-window.is-inactive .xpsim-titlebar-title {
+    color: rgba(255, 255, 255, 0.78);
+}
+
+.xpsim-titlebar {
+    height: 30px;
+    /* Real Luna title bar — 16x30 vertical slice tiled horizontally. */
+    background: url("../images/winxp/window_bar.png") repeat-x 0 0;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    padding: 0 0 0 6px;
+    flex-shrink: 0;
+    cursor: move;
+    user-select: none;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+    font-weight: 700;
+    font-size: 11px;
+}
+
+.xpsim-titlebar-icon {
+    width: 16px;
+    height: 16px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    margin-right: 4px;
+    flex-shrink: 0;
+}
+
+.xpsim-titlebar-title {
+    flex: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.xpsim-titlebar-buttons {
+    display: flex;
+    gap: 0;
+    margin-left: 6px;
+    margin-right: 0;
+    flex-shrink: 0;
+}
+
+.xpsim-tb-btn {
+    /* window_buttons.png sprite layout (matches geekprank spec):
+     *   Min  (28×30) at  x=0,    hover y=-30
+     *   Max  (25×30) at  x=-28,  hover y=-60
+     *   Close(30×30) at  x=-52,  hover y=-90
+     *   Restore(28×30) at x=-94 (when window is maximized)
+     * Hover states are STAGGERED per button — each gets its own y row. */
+    height: 30px;
+    border: 0;
+    padding: 0;
+    background: url("../images/winxp/window_buttons.png") no-repeat;
+    color: transparent;
+    font-size: 0;
+    cursor: pointer;
+}
+
+.xpsim-tb-btn svg { display: none; }
+
+.xpsim-tb-min   { width: 28px; background-position: 0 0; }
+.xpsim-tb-min:hover, .xpsim-tb-min:active   { background-position: 0 -30px; }
+
+.xpsim-tb-max   { width: 25px; background-position: -28px 0; }
+.xpsim-tb-max:hover, .xpsim-tb-max:active   { background-position: -28px -60px; }
+
+/* When the window is maximized, the max button shows the "restore" glyph */
+.xpsim-window.is-maximized .xpsim-tb-max         { width: 28px; background-position: -94px 0; }
+.xpsim-window.is-maximized .xpsim-tb-max:hover,
+.xpsim-window.is-maximized .xpsim-tb-max:active  { background-position: -94px -60px; }
+
+.xpsim-tb-close { width: 28px; background-position: -52px 0; }
+.xpsim-tb-close:hover, .xpsim-tb-close:active   { background-position: -52px -90px; }
+
+.xpsim-window-body {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    background: #ece9d8;
+}
+
+/* Resize handles */
+.xpsim-resize {
+    position: absolute;
+    z-index: 1;
+}
+
+.xpsim-resize-e { top: 6px; right: 0; bottom: 6px; width: 4px; cursor: ew-resize; }
+.xpsim-resize-w { top: 6px; left: 0; bottom: 6px; width: 4px; cursor: ew-resize; }
+.xpsim-resize-s { left: 6px; right: 6px; bottom: 0; height: 4px; cursor: ns-resize; }
+.xpsim-resize-n { left: 6px; right: 6px; top: 0; height: 4px; cursor: ns-resize; }
+.xpsim-resize-se { right: 0; bottom: 0; width: 8px; height: 8px; cursor: nwse-resize; }
+.xpsim-resize-sw { left: 0; bottom: 0; width: 8px; height: 8px; cursor: nesw-resize; }
+
+.xpsim-window.is-maximized .xpsim-resize { display: none; }
+
+/* ============================================================
+ * Window menu bar (File / Edit / View etc.)
+ * ============================================================ */
+
+.xpsim-menubar {
+    background: #ece9d8;
+    border-bottom: 1px solid #b8b6a4;
+    display: flex;
+    height: 22px;
+    flex-shrink: 0;
+    padding: 1px 2px;
+}
+
+.xpsim-menubar-item {
+    background: transparent;
+    border: 0;
+    color: #000;
+    padding: 1px 8px;
+    cursor: default;
+    font: 11px Tahoma, sans-serif;
+    border-radius: 2px;
+}
+
+.xpsim-menubar-item:hover {
+    background: #2a6cd8;
+    color: #fff;
+}
+
+/* Window status bar */
+.xpsim-statusbar {
+    border-top: 1px solid #b8b6a4;
+    background: #ece9d8;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    padding: 0 6px;
+    font-size: 11px;
+    flex-shrink: 0;
+    color: #1a1a1a;
+}
+
+/* ============================================================
+ * Notepad app
+ * ============================================================ */
+
+.xpsim-notepad {
+    flex: 1;
+    border: 0;
+    background: #fff;
+    color: #000;
+    font: 12px "Lucida Console", "Courier New", monospace;
+    padding: 2px 4px;
+    resize: none;
+    outline: none;
+    line-height: 1.35;
+}
+
+/* ============================================================
+ * Calculator app
+ * ============================================================ */
+
+.xpsim-calc {
+    background: #ece9d8;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+}
+
+.xpsim-calc-display {
+    background: #fff;
+    border: 2px inset #b8b6a4;
+    text-align: right;
+    padding: 4px 6px;
+    font: 14px "Lucida Console", monospace;
+    min-height: 24px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: clip;
+    direction: ltr;
+}
+
+.xpsim-calc-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 3px;
+    flex: 1;
+}
+
+.xpsim-calc-btn {
+    background: linear-gradient(180deg, #fefefe 0%, #d4d0c8 100%);
+    border: 1px solid #808080;
+    border-top-color: #fff;
+    border-left-color: #fff;
+    color: #000;
+    font: 11px Tahoma, sans-serif;
+    cursor: pointer;
+    padding: 0;
+    min-height: 24px;
+}
+
+.xpsim-calc-btn:active {
+    border-color: #404040 #fff #fff #404040;
+    background: linear-gradient(180deg, #d4d0c8 0%, #fefefe 100%);
+}
+
+.xpsim-calc-btn--op { color: #c4001e; font-weight: 700; }
+.xpsim-calc-btn--clear { color: #c4001e; font-weight: 700; }
+.xpsim-calc-btn--eq { color: #0033b8; font-weight: 700; grid-row: span 2; }
+.xpsim-calc-btn--span2 { grid-column: span 2; }
+
+/* ============================================================
+ * Paint app
+ * ============================================================ */
+
+.xpsim-paint {
+    flex: 1;
+    display: flex;
+    background: #ece9d8;
+    overflow: hidden;
+}
+
+.xpsim-paint-tools {
+    width: 56px;
+    background: #ece9d8;
+    border-right: 1px solid #aca99e;
+    padding: 4px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    align-content: start;
+}
+
+.xpsim-paint-tool {
+    background: linear-gradient(180deg, #fefefe 0%, #d4d0c8 100%);
+    border: 1px solid #808080;
+    border-top-color: #fff;
+    border-left-color: #fff;
+    color: #000;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+}
+
+.xpsim-paint-tool.is-active {
+    border-color: #404040 #fff #fff #404040;
+    background: #c4c2b8;
+    box-shadow: inset 1px 1px 0 #808080;
+}
+
+.xpsim-paint-canvas-wrap {
+    flex: 1;
+    background: #808080;
+    padding: 8px;
+    overflow: auto;
+}
+
+.xpsim-paint-canvas {
+    background: #fff;
+    border: 1px solid #404040;
+    cursor: crosshair;
+    display: block;
+}
+
+.xpsim-paint-palette {
+    height: 36px;
+    border-top: 1px solid #aca99e;
+    background: #ece9d8;
+    display: grid;
+    grid-template-columns: repeat(14, 18px);
+    gap: 2px;
+    padding: 4px 8px;
+    align-content: center;
+}
+
+.xpsim-paint-swatch {
+    width: 16px;
+    height: 16px;
+    border: 1px solid #404040;
+    cursor: pointer;
+    padding: 0;
+}
+
+.xpsim-paint-swatch.is-active {
+    border-color: #000;
+    box-shadow: 0 0 0 1px #fff, 0 0 0 2px #000;
+}
+
+/* ============================================================
+ * Internet Explorer app
+ * ============================================================ */
+
+.xpsim-ie {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+}
+
+/* IE windowslogo (right edge of the file menu — small Windows flag) */
+.xpsim-ie-windowslogo {
+    margin-left: auto;
+    padding: 0 4px !important;
+}
+
+.xpsim-ie-windowslogo img {
+    display: block;
+    height: 16px;
+    width: auto;
+}
+
+.xpsim-filemenu.xpsim-ie-filemenu { justify-content: flex-start; }
+
+/* IE "Links" indicator on the right of the address bar */
+.xpsim-ie-links {
+    color: #7f7c73;
+    font: 11px Tahoma, sans-serif;
+    padding: 0 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    border-left: 1px solid #d8d2bd;
+    flex-shrink: 0;
+}
+
+.xpsim-ie-links img {
+    height: 12px;
+    width: auto;
+}
+
+/* IE quick-links bar — sits between the address bar and the page content.
+ * Web | Images | Videos | ... on the left, iGoogle / Search settings / Sign in on the right. */
+.xpsim-ie-linksbar {
+    border-top: 1px solid #fff;
+    border-bottom: 1px solid #d8d2bd;
+    background: #fff;
+    padding: 4px 12px;
+    font: 12px Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    gap: 12px;
+}
+
+.xpsim-ie-linksbar a {
+    color: #0033cc;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.xpsim-ie-linksbar a:hover { text-decoration: none; }
+
+.xpsim-ie-linksbar strong { color: #000; }
+
+.xpsim-ie-linksbar-right {
+    margin-left: auto;
+    display: flex;
+    gap: 14px;
+}
+
+/* Google homepage interactive bits — search input focus + button states */
+.xpsim-google-search:focus {
+    outline: none;
+    border-color: #5b8def !important;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.18), 0 0 4px rgba(91, 141, 239, 0.4) !important;
+}
+
+.xpsim-google-btn:hover {
+    background: linear-gradient(180deg, #ffffff 0%, #e8e8e8 100%) !important;
+    border-color: #666 !important;
+}
+
+.xpsim-google-btn:active {
+    background: linear-gradient(180deg, #d0d0d0 0%, #f7f7f7 100%) !important;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.18) !important;
+}
+
+.xpsim-ie-content {
+    flex: 1;
+    overflow: auto;
+    background: #fff;
+    color: #000;
+    font: 13px "Times New Roman", Times, serif;
+}
+
+.xpsim-ie-page {
+    padding: 14px 18px;
+    line-height: 1.5;
+    max-width: none;
+}
+
+.xpsim-ie-page h1 {
+    font: bold 22px Arial, sans-serif;
+    margin: 0 0 10px;
+}
+
+.xpsim-ie-page h2 {
+    font: bold 16px Arial, sans-serif;
+    margin: 18px 0 8px;
+    color: #003399;
+}
+
+.xpsim-ie-page a {
+    color: #0033cc;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.xpsim-ie-page a:visited {
+    color: #551a8b;
+}
+
+.xpsim-ie-page p { margin: 0 0 10px; }
+
+.xpsim-ie-statusbar {
+    border-top: 1px solid #aca99e;
+    background: #ece9d8;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    padding: 0 6px;
+    font-size: 11px;
+    flex-shrink: 0;
+}
+
+/* ============================================================
+ * My Computer / Explorer app
+ * ============================================================ */
+
+.xpsim-explorer {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    overflow: hidden;
+}
+
+/* ----- File menu (File / Edit / View / ...) — geekprank-spec ----- */
+.xpsim-filemenu {
+    background-color: #f0f0e7;
+    border-bottom: 1px solid #d8d2bd;
+    display: flex;
+    flex-shrink: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.xpsim-filemenu-item {
+    display: inline-block;
+    padding: 2px 3px;
+}
+
+.xpsim-filemenu-item button {
+    display: inline-block;
+    color: #000;
+    padding: 2px 6px;
+    border: 1px solid #f0f0e7;
+    font-size: 11px;
+    background: transparent;
+    cursor: default;
+    font-family: Tahoma, sans-serif;
+}
+
+.xpsim-filemenu-item button:hover {
+    border: 1px solid #d8d2bd;
+    background-color: #fff;
+}
+
+/* ----- Image-icon toolbar (Back / Forward / Up / Search / Folders ...) ----- */
+.xpsim-explorer-toolbar {
+    border-top: 1px solid #fff;
+    border-bottom: 1px solid #d8d2bd;
+    background-color: #efede0;
+    padding: 0 3px;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-shrink: 0;
+}
+
+.xpsim-explorer-toolbar a,
+.xpsim-explorer-toolbar button {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid #efede0;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+}
+
+.xpsim-explorer-toolbar a:hover,
+.xpsim-explorer-toolbar button:hover {
+    border: 1px solid #7a98af;
+    background-color: #fff;
+    border-radius: 4px;
+}
+
+.xpsim-explorer-toolbar img {
+    display: block;
+    pointer-events: none;
+}
+
+.xpsim-explorer-toolbar .xpsim-toolbar-sep {
+    border: 0;
+    background: transparent;
+    align-self: stretch;
+    cursor: default;
+    padding: 0;
+}
+
+/* ----- Address bar ----- */
+.xpsim-addressbar {
+    background-color: #efecdc;
+    border-top: 1px solid #fff;
+    border-bottom: 1px solid #cdcabb;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    padding: 0;
+}
+
+.xpsim-addressbar-label {
+    display: inline-block;
+    color: #7f7c73;
+    padding: 5px 12px 0;
+    letter-spacing: 0;
+    font-size: 11px;
+}
+
+.xpsim-addressbar-input-wrap {
+    border: 1px solid #7f9db9;
+    /* 22px total = 2px border + 2px padding + 18px content area, which
+     * comfortably fits the 16px-tall pc-icon.png and the 15px input. */
+    height: 22px;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    padding: 0 0 0 2px;
+    margin-right: 0;
+}
+
+.xpsim-addressbar-input-wrap img {
+    /* pc-icon.png is 12x16 — render at natural size, no forced square. */
+    margin: 0 4px 0 2px;
+    width: 12px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+.xpsim-addressbar-input-wrap input {
+    border: none;
+    outline: none;
+    flex: 1;
+    height: 15px;
+    padding-left: 3px;
+    font: 11px Tahoma, sans-serif;
+    color: #000;
+    background: transparent;
+}
+
+.xpsim-greengo {
+    display: inline-flex;
+    align-items: center;
+    width: 65px;
+    line-height: 20px;
+    color: #000;
+    padding: 0 0 0 6px;
+    border-left: 1px solid #fff;
+    cursor: pointer;
+    background: transparent;
+    border-top: 0;
+    border-right: 0;
+    border-bottom: 0;
+    font: 11px Tahoma, sans-serif;
+}
+
+.xpsim-greengo img {
+    /* greenGo.png is 20x20 — render at natural size. */
+    margin-right: 5px;
+    vertical-align: middle;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+.xpsim-explorer-body {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+}
+
+.xpsim-explorer-sidebar {
+    width: 180px;
+    background: linear-gradient(180deg, #7494ec 0%, #4060c8 100%);
+    color: #fff;
+    padding: 8px 6px;
+    overflow: auto;
+    flex-shrink: 0;
+    font-size: 11px;
+}
+
+.xpsim-explorer-sidebar h3 {
+    margin: 0 0 6px;
+    padding: 4px 8px;
+    background: linear-gradient(180deg, #f9b340 0%, #c08020 100%);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 3px;
+}
+
+.xpsim-explorer-sidebar ul {
+    list-style: none;
+    margin: 0 0 12px;
+    padding: 4px 6px 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+
+.xpsim-explorer-sidebar li {
+    padding: 2px 0;
+    cursor: default;
+}
+
+.xpsim-explorer-sidebar a {
+    color: #fff;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.xpsim-explorer-sidebar a:hover { text-decoration: underline; }
+
+.xpsim-explorer-main {
+    flex: 1;
+    background: #fff;
+    overflow: auto;
+    padding: 14px;
+}
+
+.xpsim-explorer-section {
+    margin-bottom: 18px;
+}
+
+.xpsim-explorer-section h4 {
+    margin: 0 0 8px;
+    padding: 0 0 4px;
+    border-bottom: 1px solid #c4c0b0;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.xpsim-explorer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 100px);
+    gap: 8px;
+}
+
+.xpsim-explorer-item {
+    background: transparent;
+    border: 1px dotted transparent;
+    padding: 6px 4px;
+    cursor: default;
+    text-align: center;
+    color: #000;
+    font: 11px Tahoma, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.xpsim-explorer-item.is-selected {
+    background: rgba(50, 100, 220, 0.18);
+    border: 1px dotted #2a6cd8;
+}
+
+.xpsim-explorer-item .xpsim-icon-img { width: 32px; height: 32px; }
+
+/* ============================================================
+ * Solitaire app
+ * ============================================================ */
+
+.xpsim-sol {
+    flex: 1;
+    background: #007a00;
+    padding: 14px;
+    position: relative;
+    overflow: hidden;
+}
+
+.xpsim-sol-top {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 22px;
+    height: 96px;
+}
+
+.xpsim-sol-foundations {
+    display: flex;
+    gap: 10px;
+    margin-left: auto;
+}
+
+.xpsim-sol-tableau {
+    display: flex;
+    gap: 10px;
+}
+
+.xpsim-sol-pile {
+    width: 64px;
+    height: 96px;
+    border-radius: 6px;
+    border: 1px dashed rgba(255, 255, 255, 0.4);
+    background: rgba(0, 0, 0, 0.15);
+    position: relative;
+    flex-shrink: 0;
+}
+
+.xpsim-sol-card {
+    position: absolute;
+    width: 64px;
+    height: 96px;
+    border-radius: 6px;
+    background: #fff;
+    border: 1px solid #404040;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 4px 5px;
+    font: bold 14px Tahoma, sans-serif;
+    user-select: none;
+    cursor: grab;
+}
+
+.xpsim-sol-card.is-back {
+    background:
+        repeating-linear-gradient(45deg, #1a4798 0px, #1a4798 4px, #2a5fc8 4px, #2a5fc8 8px);
+    color: transparent;
+}
+
+.xpsim-sol-card.is-red { color: #cc0000; }
+.xpsim-sol-card.is-black { color: #000; }
+.xpsim-sol-card[data-locked="1"] { cursor: default; }
+
+.xpsim-sol-card-suit {
+    position: absolute;
+    bottom: 4px;
+    right: 6px;
+    font-size: 14px;
+}
+
+.xpsim-sol-card-rank {
+    line-height: 1;
+}
+
+.xpsim-sol-status {
+    position: absolute;
+    bottom: 6px;
+    left: 14px;
+    color: #fff;
+    font-size: 11px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.6);
+}
+
+/* ============================================================
+ * Minesweeper app
+ * ============================================================ */
+
+.xpsim-mine {
+    flex: 1;
+    background: #c0c0c0;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.xpsim-mine-header {
+    background: #c0c0c0;
+    border: 2px inset #808080;
+    width: 100%;
+    padding: 4px 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.xpsim-mine-counter {
+    background: #000;
+    color: #ff0000;
+    font: bold 18px "Lucida Console", monospace;
+    padding: 2px 6px;
+    border: 1px inset #808080;
+    min-width: 40px;
+    text-align: right;
+}
+
+.xpsim-mine-face {
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(180deg, #fefefe 0%, #d4d0c8 100%);
+    border: 2px outset #808080;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+}
+
+.xpsim-mine-face:active {
+    border-style: inset;
+}
+
+.xpsim-mine-grid {
+    border: 2px inset #808080;
+    background: #c0c0c0;
+    display: grid;
+    gap: 0;
+}
+
+.xpsim-mine-cell {
+    width: 18px;
+    height: 18px;
+    background: #c0c0c0;
+    border: 2px outset #fff;
+    border-right-color: #808080;
+    border-bottom-color: #808080;
+    color: #000;
+    font: bold 13px Tahoma, sans-serif;
+    line-height: 14px;
+    text-align: center;
+    cursor: pointer;
+    padding: 0;
+}
+
+.xpsim-mine-cell.is-revealed {
+    background: #c0c0c0;
+    border: 1px solid #808080;
+}
+
+.xpsim-mine-cell.is-mine {
+    background: #ff0000;
+}
+
+.xpsim-mine-cell[data-n="1"] { color: #0000ff; }
+.xpsim-mine-cell[data-n="2"] { color: #008000; }
+.xpsim-mine-cell[data-n="3"] { color: #ff0000; }
+.xpsim-mine-cell[data-n="4"] { color: #000080; }
+.xpsim-mine-cell[data-n="5"] { color: #800000; }
+.xpsim-mine-cell[data-n="6"] { color: #008080; }
+.xpsim-mine-cell[data-n="7"] { color: #000000; }
+.xpsim-mine-cell[data-n="8"] { color: #808080; }
+
+/* ============================================================
+ * Winamp 2.x — interactive controls overlaid on the skin image
+ * winamp-back.png is 274x317 with all the chrome baked in.
+ * ============================================================ */
+/* Borderless windows — used by Winamp. The window has no XP title bar,
+ * no resize handles, no border, and a transparent background. The skin
+ * image itself supplies the visual frame. The body is also transparent so
+ * the skin's shaped chrome shows through and the user can drag from
+ * anywhere on it. */
+.xpsim-window.xpsim-window-borderless {
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.45);
+    overflow: visible;
+}
+
+.xpsim-window-borderless > .xpsim-window-body {
+    background: transparent;
+    padding: 0;
+    cursor: move;
+}
+
+.xpsim-winamp {
+    width: 274px;
+    height: 317px;
+    background: url("../images/winxp/winamp-back.png") no-repeat top left;
+    position: relative;
+    margin: 0 auto;
+}
+
+/* Close + minimize buttons sitting on top of the skin's own titlebar.
+ * The skin image already shows the visual buttons; these <a> elements
+ * are invisible click targets stacked over them. */
+.xpsim-winamp-close,
+.xpsim-winamp-min {
+    position: absolute;
+    top: 3px;
+    width: 9px;
+    height: 9px;
+    cursor: pointer;
+    z-index: 5;
+    background: transparent;
+}
+.xpsim-winamp-close { right: 6px; }
+.xpsim-winamp-min   { right: 28px; }
+
+/* Visualizer area (upper-left of player skin) */
+.xpsim-winamp-visualizer {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    width: 49px;
+    height: 34px;
+    pointer-events: none;
+}
+.xpsim-winamp.is-playing .xpsim-winamp-visualizer {
+    background: url("../images/winxp/visualizer.gif") no-repeat 23px 18px;
+}
+
+/* Song title — green LCD-style text */
+.xpsim-winamp-title {
+    position: absolute;
+    top: 12px;
+    left: 104px;
+    width: 157px;
+    height: 12px;
+    color: #00ff00;
+    font: 11px "Lucida Console", "Courier New", monospace;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: clip;
+    pointer-events: none;
+}
+
+/* Track progress bar */
+.xpsim-winamp-track {
+    position: absolute;
+    top: 60px;
+    left: 13px;
+    width: 247px;
+    height: 12px;
+    overflow: hidden;
+}
+.xpsim-winamp-trail {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 29px;
+    height: 10px;
+    background: url("../images/winxp/winamp-trail.png") no-repeat 0 0;
+    transition: left 0.18s linear;
+}
+
+/* Transport buttons (Previous / Play / Pause / Stop / Next) — positioned
+ * over the buttons baked into the skin image. Each button is 21x17. */
+.xpsim-winamp-buttons {
+    position: absolute;
+    top: 88px;
+    left: 12px;
+    width: 247px;
+    height: 17px;
+    display: flex;
+    gap: 0;
+}
+.xpsim-winamp-btn {
+    width: 23px;
+    height: 17px;
+    display: inline-block;
+    cursor: pointer;
+    background: transparent;
+}
+.xpsim-winamp-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+.xpsim-winamp-btn-prev  { width: 23px; }
+.xpsim-winamp-btn-play  { width: 23px; }
+.xpsim-winamp-btn-pause { width: 23px; }
+.xpsim-winamp-btn-stop  { width: 23px; }
+.xpsim-winamp-btn-next  { width: 23px; }
+
+/* Playlist — sits in the lower half of the skin */
+.xpsim-winamp-playlist {
+    position: absolute;
+    top: 158px;
+    left: 9px;
+    width: 256px;
+    height: 116px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.xpsim-winamp-playlist ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.xpsim-winamp-playlist li {
+    color: #00ff00;
+    font: 11px "Lucida Console", "Courier New", monospace;
+    padding: 1px 4px;
+    cursor: default;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 14px;
+    /* Pad right so the duration <span> never overlaps the song title */
+    padding-right: 36px;
+    position: relative;
+}
+
+.xpsim-winamp-playlist li span {
+    position: absolute;
+    right: 4px;
+    top: 1px;
+    background: inherit;
+}
+.xpsim-winamp-playlist li.is-selected {
+    background-color: #0000c6;
+    color: #ffffff;
+}
+.xpsim-winamp-playlist li:hover {
+    color: #ffffff;
+}
+.xpsim-winamp-playlist li span {
+    float: right;
+    color: inherit;
+    margin-left: 6px;
+}
+
+/* The Winamp window's body has its own dark skin so override the default
+ * #ece9d8 fill that all other windows use. */
+.xpsim-window[data-id] .xpsim-window-body:has(.xpsim-winamp) {
+    background: #000;
+    padding: 0;
+}
+
+/* ============================================================
+ * Generic dialog / coming-soon modal
+ * ============================================================ */
+
+.xpsim-dialog {
+    flex: 1;
+    background: #ece9d8;
+    padding: 18px 22px 14px;
+    display: flex;
+    flex-direction: column;
+}
+
+.xpsim-dialog-body {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 18px;
+    /* No flex-grow: body sizes to its natural content so the gap to the
+     * OK button stays at the 18px margin-bottom — no extra slack. */
+}
+
+.xpsim-dialog-icon {
+    width: 32px;
+    height: 32px;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%2342a5f5' stroke='%23204a78' stroke-width='1'/><text x='16' y='22' text-anchor='middle' font-family='Arial' font-weight='bold' font-size='20' fill='%23ffffff'>i</text></svg>");
+    background-size: contain;
+    flex-shrink: 0;
+}
+
+.xpsim-dialog-text {
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+.xpsim-dialog-actions {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+}
+
+.xpsim-dialog-btn {
+    background: linear-gradient(180deg, #fbfaf6 0%, #c4c0b0 100%);
+    border: 1px solid #404040;
+    padding: 3px 18px;
+    cursor: pointer;
+    font: 11px Tahoma, sans-serif;
+    min-width: 70px;
+    border-radius: 3px;
+}
+
+.xpsim-dialog-btn:hover {
+    border-color: #2a6cd8;
+}
+
+.xpsim-dialog-btn:active {
+    border-color: #2a6cd8;
+    background: linear-gradient(180deg, #c4c0b0 0%, #fbfaf6 100%);
+}
+
+/* ============================================================
+ * Start menu
+ * ============================================================ */
+
+.xpsim-startmenu {
+    position: absolute;
+    bottom: 34px;
+    left: 0;
+    width: 380px;
+    background: #fff;
+    border: 1px solid #0a3aaa;
+    border-radius: 6px 6px 0 0;
+    overflow: hidden;
+    display: none;
+    flex-direction: column;
+    z-index: 10;
+    box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.4);
+}
+
+.xpsim-startmenu.is-open {
+    display: flex;
+    animation: xpsim-startmenu-open 0.18s ease;
+}
+
+@keyframes xpsim-startmenu-open {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.xpsim-startmenu-header {
+    background:
+        linear-gradient(180deg, #1664c0 0%, #0e4998 100%);
+    color: #fff;
+    padding: 8px 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 3px solid #f9a825;
+}
+
+.xpsim-startmenu-avatar {
+    width: 48px;
+    height: 48px;
+    background: url("../images/winxp/default_icon.jpg") center / cover no-repeat;
+    border: 2px solid #fff;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    flex-shrink: 0;
+}
+
+.xpsim-startmenu-username {
+    font-size: 14px;
+    font-weight: 700;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.4);
+}
+
+.xpsim-startmenu-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: linear-gradient(180deg, #fff 0%, #fff 80%, #e6e1d8 100%);
+}
+
+.xpsim-startmenu-col-left {
+    background: #fff;
+    padding: 6px 0;
+    border-right: 1px solid #c4c0b0;
+}
+
+.xpsim-startmenu-col-right {
+    background: #d3e5fa;
+    padding: 6px 0;
+}
+
+.xpsim-startmenu-item {
+    background: transparent;
+    border: 0;
+    width: 100%;
+    text-align: left;
+    padding: 4px 10px;
+    cursor: default;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #000;
+    font: 11px Tahoma, sans-serif;
+}
+
+.xpsim-startmenu-item .xpsim-icon-img {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+/* Right-column items use the larger 32px "system places" icon size,
+ * matching the visual weight of the pinned items on the left. */
+.xpsim-startmenu-col-right .xpsim-startmenu-item .xpsim-icon-img {
+    width: 32px;
+    height: 32px;
+}
+
+/* Pinned items (Internet / E-mail) get bigger icons + 2-line label. */
+.xpsim-startmenu-item.xpsim-pinned {
+    padding: 6px 10px;
+    align-items: center;
+}
+
+.xpsim-startmenu-item.xpsim-pinned .xpsim-icon-img {
+    width: 32px;
+    height: 32px;
+}
+
+/* "All Programs" sits at the bottom of the left column with a green arrow. */
+.xpsim-startmenu-allprograms {
+    margin-top: auto;
+    border-top: 1px solid #c4c0b0;
+    padding: 2px 0;
+    background: #fff;
+}
+
+.xpsim-startmenu-allprograms-btn {
+    font-weight: 700;
+    padding: 6px 10px 6px 64px;
+    justify-content: flex-end;
+    gap: 6px;
+}
+
+.xpsim-allprograms-arrow {
+    width: 16px;
+    height: 16px;
+    background: url("../images/winxp/programs_arrow.png") no-repeat center / contain;
+    flex-shrink: 0;
+}
+
+.xpsim-startmenu-col-left {
+    display: flex;
+    flex-direction: column;
+}
+
+.xpsim-startmenu-item:hover {
+    background: #2a6cd8;
+    color: #fff;
+}
+
+.xpsim-startmenu-item:hover .xpsim-startmenu-sub {
+    color: #cee0ff;
+}
+
+.xpsim-startmenu-sub {
+    color: #666;
+    font-size: 10px;
+}
+
+.xpsim-startmenu-divider {
+    height: 1px;
+    background: #c4c0b0;
+    margin: 4px 8px;
+}
+
+.xpsim-startmenu-footer {
+    background: linear-gradient(180deg, #5993e6 0%, #345c9b 100%);
+    color: #fff;
+    padding: 6px 10px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.xpsim-startmenu-foot {
+    background: transparent;
+    border: 0;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: default;
+    font: 11px Tahoma, sans-serif;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.4);
+    padding: 2px 6px;
+    border-radius: 3px;
+}
+
+.xpsim-startmenu-foot:hover {
+    background: rgba(255, 255, 255, 0.18);
+}
+
+.xpsim-startmenu-foot .xpsim-icon-img {
+    /* logoff.png and shutdown.png are 32x65 two-frame sprites
+     * (normal frame at top, hover frame at bottom). Render only the top
+     * frame at proper proportions.
+     * Override the base .xpsim-icon-img drop-shadow — these key icons
+     * have an off-white fill that turns the shadow into a visible
+     * rectangle under the icon. No shadow on the power buttons. */
+    width: 22px;
+    height: 22px;
+    background-size: 22px auto;
+    background-position: top center;
+    background-repeat: no-repeat;
+    filter: none;
+}
+
+/* ============================================================
+ * Taskbar
+ * ============================================================ */
+
+.xpsim-taskbar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    /* Match the natural height of taskbar.png (34px) and the start_button.png
+     * sprite (each state is 102x34). 30px clipped the lower gloss band of
+     * the image, which is what was creating the "doubled" look. */
+    height: 34px;
+    background: url("../images/winxp/taskbar.png") repeat-x 0 0;
+    display: flex;
+    align-items: stretch;
+    z-index: 9;
+}
+
+.xpsim-startbtn {
+    /* start_button.png is a 102x102 sprite — three vertical 102x34 states
+     * stacked: normal (y=0), hover (y=-34), active (y=-68). The image
+     * includes the green gradient, the flag, the shine, and the "start"
+     * text — so the button IS the image. */
+    width: 102px;
+    height: 34px;
+    border: 0;
+    padding: 0;
+    background: url("../images/winxp/start_button.png") 0 0 no-repeat;
+    color: transparent;
+    font-size: 0;
+    cursor: pointer;
+    flex-shrink: 0;
+    overflow: hidden;
+    position: relative;
+}
+
+.xpsim-startbtn:hover {
+    background-position: 0 -34px;
+}
+
+.xpsim-startbtn.is-active {
+    background-position: 0 -68px;
+}
+
+/* The flag-and-text spans inside are not needed when using the sprite —
+ * hide them so they don't paint over the image. */
+.xpsim-startbtn-flag,
+.xpsim-startbtn-text {
+    display: none;
+}
+
+.xpsim-startbtn-text {
+    position: relative;
+}
+
+/* Quick Launch tray — small icons just right of the Start button.
+ * Each icon is a 25×68 sprite: normal state at y=0, hover state at y=-34. */
+.xpsim-quicklaunch {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 0 6px 0 6px;
+    flex-shrink: 0;
+    height: 100%;
+}
+
+.xpsim-quick {
+    width: 25px;
+    height: 34px;
+    border: 0;
+    padding: 0;
+    background-position: 50% 0;
+    background-repeat: no-repeat;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.xpsim-quick:hover {
+    background-position: 50% -34px;
+}
+
+.xpsim-quick-desktop { background-image: url("../images/winxp/quick_launch_destkop.png"); }
+.xpsim-quick-ie      { background-image: url("../images/winxp/quick_launch_ie.png"); }
+.xpsim-quick-winamp  { background-image: url("../images/winxp/quick_launch_winamp.png"); }
+.xpsim-quick-cmd     { background-image: url("../images/winxp/quick_launch_cmd.png"); }
+
+.xpsim-taskbar-tasks {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 0 4px;
+    overflow: hidden;
+    min-width: 0;
+}
+
+/* Open-window task buttons in the taskbar.
+ * Background is open_button.png — a 134×136 sprite of four 134×34 states
+ * stacked vertically: normal (0), hover (-34), active (-68), highlight (-102).
+ * The sprite's right ~12px contains the rounded tab + dark corner pixels.
+ * We clip those off by keeping the button width below 122px (overflow:
+ * hidden on the button + max-width: 120 chops the sprite at its body edge
+ * for a clean flat right side and no visible "gap" between adjacent tabs). */
+.xpsim-task {
+    background: url("../images/winxp/open_button.png") no-repeat 0 0;
+    color: #fff;
+    border: 0;
+    padding: 6px 8px 0 28px;
+    font: 11px Tahoma, sans-serif;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 34px;
+    min-width: 140px;
+    max-width: 140px;
+    flex: 0 0 140px;
+    text-align: left;
+    overflow: hidden;
+    /* Required so the absolutely-positioned task icon has a positioned
+     * ancestor; without this the icon escapes to the viewport. */
+    position: relative;
+}
+
+.xpsim-task .xpsim-icon-img {
+    width: 16px;
+    height: 16px;
+    position: absolute;
+    left: 6px;
+    top: 9px;
+}
+
+.xpsim-task .xpsim-task-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+    /* Required so the ellipsis actually triggers — flex items default to
+     * min-width: auto, which lets the text expand past the container. */
+    min-width: 0;
+}
+
+.xpsim-task:hover           { background-position: 0 -34px; }
+.xpsim-task.is-active       { background-position: 0 -68px; }
+.xpsim-task.is-active:hover { background-position: 0 -68px; }
+
+.xpsim-systray {
+    /* Real Luna systray slice (7×34 image tiled horizontally) */
+    background: url("../images/winxp/clock.png") repeat-x 0 0;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 10px 0 14px;
+    flex-shrink: 0;
+    font-size: 11px;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.45);
+}
+
+.xpsim-systray-icons {
+    display: flex;
+    gap: 6px;
+}
+
+.xpsim-systray-icon {
+    width: 16px;
+    height: 16px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+.xpsim-systray-volume {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M2 6 L2 10 L4 10 L8 13 L8 3 L4 6 Z' fill='%23ffffff'/><path d='M10 5 Q12 8 10 11' stroke='%23ffffff' stroke-width='1' fill='none'/><path d='M11.5 3 Q14 8 11.5 13' stroke='%23ffffff' stroke-width='1' fill='none'/></svg>");
+}
+
+.xpsim-systray-network {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect x='2' y='6' width='5' height='5' fill='%23ffffff' stroke='%23000' stroke-width='0.4'/><rect x='9' y='6' width='5' height='5' fill='%23ffffff' stroke='%23000' stroke-width='0.4'/><line x1='4.5' y1='10' x2='4.5' y2='13' stroke='%23ffffff'/><line x1='11.5' y1='10' x2='11.5' y2='13' stroke='%23ffffff'/><line x1='4' y1='13' x2='12' y2='13' stroke='%23ffffff'/></svg>");
+}
+
+.xpsim-systray-clock {
+    color: #fff;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.4);
+    font-weight: 400;
+    min-width: 56px;
+    text-align: center;
+}
+
+/* ============================================================
+ * Context menu (right-click)
+ * ============================================================ */
+
+.xpsim-ctxmenu {
+    position: absolute;
+    background: #fff;
+    border: 1px solid #404040;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+    z-index: 100;
+    min-width: 160px;
+    padding: 2px 0;
+    font: 11px Tahoma, sans-serif;
+    display: none;
+}
+
+.xpsim-ctxmenu.is-open { display: block; }
+
+.xpsim-ctxmenu button {
+    background: transparent;
+    border: 0;
+    width: 100%;
+    text-align: left;
+    padding: 4px 24px 4px 24px;
+    cursor: default;
+    color: #000;
+    font: inherit;
+}
+
+.xpsim-ctxmenu button:hover:not(:disabled) {
+    background: #2a6cd8;
+    color: #fff;
+}
+
+.xpsim-ctxmenu button:disabled {
+    color: #888;
+    cursor: default;
+}
+
+.xpsim-ctxmenu hr {
+    border: 0;
+    border-top: 1px solid #c4c0b0;
+    margin: 2px 0;
+}
+
+/* ============================================================
+ * SEO + FAQ on the public page (separator pattern)
+ * ============================================================ */
+
+.xpsim-seo-content,
+.xpsim-faq {
+    margin-top: 56px;
+    padding-top: 36px;
+    border-top: 1px solid var(--flex-gray-15, rgba(0, 0, 0, 0.08));
+}
+
+.xpsim-seo-content-inner { padding: 0; }
+
+.xpsim-seo-content-inner h2 {
+    font-size: clamp(1.2rem, 2.5vw, 1.55rem);
+    margin: 28px 0 12px;
+}
+
+.xpsim-seo-content-inner h2:first-child { margin-top: 0; }
+
+.xpsim-seo-content-inner p,
+.xpsim-seo-content-inner li {
+    font-size: 0.98rem;
+    line-height: 1.7;
+    color: var(--meta-color, #444);
+}
+
+.xpsim-faq-inner { padding: 0; }
+
+.xpsim-faq-title {
+    font-size: clamp(1.3rem, 2.8vw, 1.7rem);
+    margin: 0 0 18px;
+}
+
+.xpsim-faq-item {
+    border-bottom: 1px solid var(--flex-gray-15, rgba(0, 0, 0, 0.08));
+    padding: 14px 0;
+}
+
+.xpsim-faq-item summary {
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    list-style: none;
+    position: relative;
+    padding-right: 28px;
+}
+
+.xpsim-faq-item summary::-webkit-details-marker { display: none; }
+
+.xpsim-faq-item summary::after {
+    content: "+";
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.4rem;
+    line-height: 1;
+}
+
+.xpsim-faq-item[open] summary::after { content: "−"; }
+
+.xpsim-faq-answer { padding-top: 10px; }
+
+.xpsim-faq-answer p {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--meta-color, #444);
+}
+
+.xpsim-updated {
+    margin-top: 24px;
+    font-size: 0.82rem;
+    color: #6b7280;
+}
+
+/* ============================================================
+ * Mobile fallback
+ * ============================================================ */
+
+@media (max-width: 768px) {
+    .xpsim-startmenu {
+        width: 90%;
+    }
+    .xpsim-icons {
+        gap: 8px;
+    }
+    /* Theme-wide rule: do NOT override .xpsim-faq-inner padding here. */
+}

@@ -1,0 +1,89 @@
+/* =================================================================
+ * Fake macOS Update Screen — fullscreen overlay
+ * Black background, Apple logo, thin progress bar
+ *
+ * Reference sizes from real macOS + fakeupdate.net / GitHub repos:
+ *   Logo: ~120px, progress bar: ~300px × 5px, bar bg: #333
+ * ================================================================= */
+
+.fmac-overlay {
+	background: #000;
+	color: #fff;
+	font-family: -apple-system, "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	display: none;
+	align-items: center;
+	justify-content: center;
+}
+.fmac-overlay.is-active {
+	display: flex;
+}
+.fmac-screen {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 20px;
+	animation: fmacFadeIn 0.6s ease-out;
+}
+@keyframes fmacFadeIn {
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
+
+/* ---------- Apple logo ---------- */
+.fmac-logo {
+	width: 160px;
+	height: 160px;
+	margin-bottom: 50px;
+}
+
+/* ---------- Progress bar ---------- */
+.fmac-progress-bar {
+	width: 300px;
+	height: 7px;
+	background: #333;
+	border-radius: 7px;
+	overflow: hidden;
+	margin-bottom: 22px;
+}
+.fmac-progress-fill {
+	height: 100%;
+	width: 0%;
+	background: #fff;
+	border-radius: 5px;
+	transition: width 0.8s linear;
+}
+
+/* ---------- Remaining text ---------- */
+.fmac-remaining {
+	font-size: 13px;
+	font-weight: 400;
+	color: rgba(255, 255, 255, 0.5);
+	letter-spacing: 0.01em;
+}
+
+/* ---------- Mini variant (inside .prank-preview-frame) ---------- */
+.fmac-screen-mini {
+	height: 100%;
+	justify-content: center;
+	animation: none;
+}
+.fmac-screen-mini .fmac-logo {
+	width: 52px;
+	height: 52px;
+	margin-bottom: 20px;
+}
+.fmac-screen-mini .fmac-progress-bar {
+	width: 140px;
+	height: 3px;
+	margin-bottom: 8px;
+}
+.fmac-screen-mini .fmac-remaining {
+	font-size: 9px;
+}
+
+/* ---------- Large monitors ---------- */
+@media (min-width: 1920px) {
+	.fmac-logo { width: 190px; height: 190px; margin-bottom: 60px; }
+	.fmac-progress-bar { width: 400px; height: 8px; }
+	.fmac-remaining { font-size: 15px; }
+}

@@ -1,0 +1,427 @@
+/* =================================================================
+ * Prank Screens Index — landing page styles
+ * Hub page for all fake OS update screens, BSOD, hacker typer, etc.
+ * ================================================================= */
+
+.prank-index-page {
+	padding: 40px 0 80px;
+}
+
+/* ---------- Hero ---------- */
+.prank-index-hero {
+	padding: 40px 0 20px;
+	text-align: center;
+}
+.prank-index-hero-inner {
+	max-width: 780px;
+	margin: 0 auto;
+}
+.prank-index-title {
+	font-size: clamp(28px, 4vw, 44px);
+	font-weight: 800;
+	line-height: 1.15;
+	margin: 0 0 16px;
+	letter-spacing: -0.02em;
+	color: #111827;
+}
+.prank-index-subtitle {
+	font-size: clamp(15px, 1.6vw, 18px);
+	line-height: 1.55;
+	color: var(--rb-meta-color, #6b7280);
+	margin: 0 0 12px;
+}
+.prank-index-note {
+	font-size: 13px;
+	color: #9ca3af;
+	margin: 0;
+	padding: 6px 14px;
+	display: inline-block;
+	background: #f3f4f6;
+	border-radius: 999px;
+}
+
+/* ---------- Toolbar ---------- */
+.prank-index-toolbar {
+	padding: 30px 0 20px;
+}
+.prank-index-toolbar-inner {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 20px;
+	flex-wrap: wrap;
+}
+.prank-index-filters {
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+}
+.prank-filter-pill {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 8px 16px;
+	border-radius: 999px;
+	border: 1px solid #e5e7eb;
+	background: #fff;
+	font-size: 13px;
+	font-weight: 600;
+	color: #374151;
+	cursor: pointer;
+	transition: all 0.15s ease;
+}
+.prank-filter-pill:hover {
+	border-color: #8b5cf6;
+	color: #6d28d9;
+}
+.prank-filter-pill.active {
+	background: #6d28d9;
+	border-color: #6d28d9;
+	color: #fff;
+}
+.prank-filter-count {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 22px;
+	padding: 0 6px;
+	height: 18px;
+	font-size: 11px;
+	font-weight: 700;
+	border-radius: 999px;
+	background: rgba(0, 0, 0, 0.08);
+}
+.prank-filter-pill.active .prank-filter-count {
+	background: rgba(255, 255, 255, 0.25);
+}
+
+.prank-index-search {
+	position: relative;
+	flex: 0 0 280px;
+	max-width: 320px;
+}
+.prank-index-search .prank-search-icon {
+	position: absolute;
+	left: 14px;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 18px;
+	height: 18px;
+	color: #9ca3af;
+	pointer-events: none;
+	z-index: 1;
+}
+.prank-index-search input.prank-search-input[type="text"] {
+	width: 100%;
+	padding: 10px 14px 10px 42px;
+	margin: 0;
+	border: 1px solid #e5e7eb;
+	border-radius: 10px;
+	font-size: 14px;
+	line-height: 1.4;
+	outline: none;
+	background: #fff;
+	box-shadow: none;
+	transition: border-color 0.15s, box-shadow 0.15s;
+}
+.prank-index-search input.prank-search-input[type="text"]:focus {
+	border-color: #8b5cf6;
+	box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+}
+
+/* ---------- Sections + Cards ---------- */
+.prank-index-sections {
+	padding: 30px 0 0;
+}
+.prank-index-section {
+	margin-bottom: 48px;
+}
+.prank-index-section-header {
+	margin-bottom: 20px;
+}
+.prank-index-section-title {
+	font-size: 22px;
+	font-weight: 700;
+	margin: 0;
+	color: #111827;
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+}
+.prank-index-section-title::before {
+	content: '';
+	display: inline-block;
+	width: 4px;
+	height: 22px;
+	background: #6d28d9;
+	border-radius: 2px;
+}
+.prank-index-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+	gap: 16px;
+}
+.prank-index-card-link {
+	text-decoration: none;
+	color: inherit;
+	display: block;
+}
+.prank-index-card {
+	background: #fff;
+	border: 1px solid #e5e7eb;
+	border-radius: 14px;
+	padding: 20px;
+	height: 100%;
+	transition: all 0.2s ease;
+	position: relative;
+	overflow: hidden;
+}
+.prank-index-card::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 3px;
+	background: #6d28d9;
+	opacity: 0;
+	transition: opacity 0.2s;
+}
+.prank-index-card:hover {
+	border-color: #c4b5fd;
+	transform: translateY(-2px);
+	box-shadow: 0 10px 30px -10px rgba(139, 92, 246, 0.25);
+}
+.prank-index-card:hover::before {
+	opacity: 1;
+}
+.prank-index-card-inner {
+	display: flex;
+	gap: 14px;
+	align-items: flex-start;
+}
+.prank-index-card-icon {
+	flex: 0 0 44px;
+	width: 44px;
+	height: 44px;
+	border-radius: 10px;
+	background: #f5f3ff;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #6d28d9;
+}
+.prank-index-card-icon svg {
+	width: 24px;
+	height: 24px;
+}
+.prank-index-card-content {
+	flex: 1;
+	min-width: 0;
+}
+.prank-index-card-title {
+	font-size: 15px;
+	font-weight: 700;
+	margin: 0 0 4px;
+	color: #111827;
+}
+.prank-index-card-description {
+	font-size: 13px;
+	line-height: 1.5;
+	color: #6b7280;
+	margin: 0;
+}
+.prank-index-no-results {
+	text-align: center;
+	padding: 60px 20px;
+	color: #9ca3af;
+	font-size: 15px;
+}
+
+/* ---------- SEO Body Content (rendered from WP post content) ---------- */
+.prank-index-content {
+	margin-top: 54px;
+	padding: 36px 0 20px;
+	border-top: 1px solid #e5e7eb;
+}
+.prank-index-content-inner {
+	font-size: 1rem;
+	line-height: 1.75;
+	color: #374151;
+}
+.prank-index-content-inner h2 {
+	font-size: clamp(1.4rem, 2.4vw, 1.75rem);
+	font-weight: 800;
+	color: #111827;
+	margin: 40px 0 14px;
+	line-height: 1.3;
+}
+.prank-index-content-inner h2:first-child {
+	margin-top: 0;
+}
+.prank-index-content-inner h3 {
+	font-size: 1.15rem;
+	font-weight: 700;
+	color: #111827;
+	margin: 28px 0 10px;
+}
+.prank-index-content-inner p {
+	margin: 0 0 16px;
+}
+.prank-index-content-inner ul,
+.prank-index-content-inner ol {
+	margin: 0 0 18px;
+	padding-left: 22px;
+}
+.prank-index-content-inner li {
+	margin-bottom: 6px;
+}
+.prank-index-content-inner strong {
+	color: #111827;
+	font-weight: 700;
+}
+.prank-index-content-inner a {
+	color: #6d28d9;
+	text-decoration: underline;
+	text-underline-offset: 2px;
+}
+.prank-index-content-inner a:hover {
+	color: #4c1d95;
+}
+
+/* ---------- FAQ (mirrors site-wide FAQ pattern) ---------- */
+.prank-index-faq {
+	margin: 54px 0 20px;
+	padding-top: 36px;
+	border-top: 1px solid #e5e7eb;
+}
+.prank-index-faq-inner {
+	padding: 0;
+	background: transparent;
+	box-shadow: none;
+}
+.prank-index-faq-label {
+	display: inline-block;
+	margin-bottom: 6px;
+	padding: 3px 12px;
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: #6d28d9;
+	background: #f5f3ff;
+	border-radius: 20px;
+}
+.prank-index-faq-title {
+	margin: 0 0 24px;
+	font-size: clamp(1.5rem, 2.5vw, 2rem);
+	font-weight: 800;
+	color: #111827;
+}
+.prank-index-faq-list {
+	position: relative;
+}
+.prank-index-faq-item {
+	border-bottom: 1px solid #e5e7eb;
+}
+.prank-index-faq-item:last-child {
+	border-bottom: none;
+}
+.prank-index-faq-question {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	padding: 18px 0;
+	text-align: left;
+	color: inherit;
+	border: 0;
+	border-radius: 0;
+	background: transparent;
+	box-shadow: none;
+	gap: 20px;
+	cursor: pointer;
+	font-family: inherit;
+}
+.prank-index-faq-question:hover,
+.prank-index-faq-question:focus {
+	color: #6d28d9;
+	background: transparent;
+	box-shadow: none;
+	outline: none;
+}
+.prank-index-faq-question > span:first-child {
+	font-size: clamp(1rem, 2vw, 1.125rem);
+	font-weight: 700;
+	line-height: 1.45;
+}
+.prank-index-faq-toggle {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 34px;
+	height: 34px;
+	flex: 0 0 34px;
+	color: #6d28d9;
+	border: 1px solid #e5e7eb;
+	border-radius: 50%;
+	background: #f5f3ff;
+	transition: all 0.2s ease;
+}
+.prank-index-faq-toggle svg {
+	width: 14px;
+	height: 14px;
+	transition: transform 0.2s ease;
+}
+.prank-index-faq-item.prank-faq-open .prank-index-faq-toggle svg {
+	transform: rotate(180deg);
+}
+.prank-index-faq-answer {
+	display: none;
+	padding-bottom: 18px;
+}
+.prank-index-faq-item.prank-faq-open .prank-index-faq-answer {
+	display: block;
+}
+/* First item open by default */
+.prank-index-faq-item:first-child .prank-index-faq-answer {
+	display: block;
+}
+.prank-index-faq-item:first-child .prank-index-faq-toggle svg {
+	transform: rotate(180deg);
+}
+.prank-index-faq-item:first-child:not(.prank-faq-open):not(.prank-faq-touched) .prank-index-faq-answer {
+	display: block;
+}
+.prank-index-faq-item:first-child:not(.prank-faq-open).prank-faq-touched .prank-index-faq-answer {
+	display: none;
+}
+.prank-index-faq-item:first-child:not(.prank-faq-open).prank-faq-touched .prank-index-faq-toggle svg {
+	transform: rotate(0deg);
+}
+.prank-index-faq-answer-inner {
+	color: #4b5563;
+	line-height: 1.75;
+	font-size: 1rem;
+}
+.prank-index-faq-answer-inner p {
+	margin: 0 0 10px;
+}
+.prank-index-faq-answer-inner p:last-child {
+	margin-bottom: 0;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 767px) {
+	.prank-index-toolbar-inner {
+		flex-direction: column;
+		align-items: stretch;
+	}
+	.prank-index-search {
+		flex: 1;
+		max-width: none;
+	}
+	.prank-index-grid {
+		grid-template-columns: 1fr;
+	}
+}

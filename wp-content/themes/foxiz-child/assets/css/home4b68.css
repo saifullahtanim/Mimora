@@ -1,0 +1,378 @@
+/* ==========================================================================
+   Home Directory page.
+   ========================================================================== */
+
+.home-page {
+	padding-bottom: 40px;
+}
+
+/* --- hero --- */
+
+.home-hero {
+	text-align: center;
+	padding: 52px 0 34px;
+}
+
+.home-hero-title {
+	font-size: 42px;
+	font-weight: 900;
+	letter-spacing: -.5px;
+	line-height: 1.15;
+	margin: 0;
+}
+
+.home-hero-subtitle {
+	margin: 13px auto 0;
+	font-size: 18px;
+	color: #6b7280;
+	max-width: 760px;
+}
+
+.home-search {
+	max-width: 640px;
+	margin: 24px auto 0;
+	position: relative;
+}
+
+/* ID-anchored to out-rank the theme's generic input styling. */
+.home-search input#homeSearchInput {
+	width: 100%;
+	height: 54px;
+	border: 2px solid #e5e7eb;
+	border-radius: 14px;
+	padding: 0 52px 0 48px;
+	margin: 0;
+	font-family: inherit;
+	font-size: 16px;
+	line-height: 50px;
+	outline: none;
+	box-shadow: 0 6px 18px rgba(15, 23, 42, .06);
+	background: #fff;
+	color: #0f172a;
+}
+
+.home-search input#homeSearchInput:focus {
+	border-color: #f97316;
+}
+
+.home-search-mag {
+	position: absolute;
+	left: 16px;
+	top: 16px;
+	width: 20px;
+	height: 20px;
+	color: #6b7280;
+}
+
+.home-search kbd {
+	position: absolute;
+	right: 14px;
+	top: 15px;
+	background: #f3f4f6;
+	border: 1px solid #e5e7eb;
+	border-radius: 6px;
+	font-size: 12px;
+	padding: 2px 7px;
+	color: #6b7280;
+}
+
+.home-search-drop {
+	position: absolute;
+	top: 60px;
+	left: 0;
+	right: 0;
+	background: #fff;
+	border: 1px solid #e5e7eb;
+	border-radius: 14px;
+	box-shadow: 0 16px 40px rgba(15, 23, 42, .14);
+	text-align: left;
+	max-height: 320px;
+	overflow-y: auto;
+	z-index: 60;
+}
+
+.home-search-drop a {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 11px 16px;
+	font-size: 15px;
+	border-bottom: 1px solid #f3f4f6;
+	color: inherit;
+	text-decoration: none;
+}
+
+.home-search-drop a:last-child {
+	border-bottom: none;
+}
+
+.home-search-drop a:hover,
+.home-search-drop a.is-active {
+	background: #fff7ed;
+}
+
+.home-search-drop .cat {
+	margin-left: auto;
+	font-size: 12px;
+	color: #6b7280;
+}
+
+.home-search-drop .none {
+	display: block;
+	padding: 14px 16px;
+	font-size: 14px;
+	color: #6b7280;
+}
+
+/* --- category chips --- */
+
+.home-chips {
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+	justify-content: center;
+	margin-top: 24px;
+}
+
+.home-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	border-radius: 99px;
+	padding: 8px 16px;
+	font-size: 14px;
+	font-weight: 600;
+	background: #f3f4f6;
+	color: #374151;
+	transition: .15s;
+	text-decoration: none;
+}
+
+.home-chip i {
+	width: 7px;
+	height: 7px;
+	border-radius: 50%;
+	background: var(--dot, #f97316);
+}
+
+.home-chip:hover {
+	background: #e8eaee;
+	color: #0f172a;
+}
+
+/* --- sections & bands --- */
+
+.home-sec {
+	padding: 44px 0 40px;
+}
+
+.home-sec.home-band {
+	background: #f8fafc;
+}
+
+/* --- prank panel (contained, warm orange) --- */
+
+.home-prank-sec {
+	padding: 44px 0 40px;
+}
+
+.home-prank-panel {
+	background: linear-gradient(180deg, #fff7ed, #ffedd5);
+	border-radius: 24px;
+	padding: 34px 30px 32px;
+}
+
+.home-prank-grid {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 14px;
+}
+
+.home-prank-card {
+	display: block;
+	background: #fff;
+	border: 1px solid #ddd;
+	border-radius: 14px;
+	overflow: hidden;
+	box-shadow: 0 2px 8px rgba(15, 23, 42, .04);
+	transition: .15s;
+	color: inherit;
+	text-decoration: none;
+}
+
+.home-prank-card:hover {
+	border-color: #7c3aed;
+	box-shadow: 0 8px 22px rgba(15, 23, 42, .10);
+	transform: translateY(-2px);
+}
+
+.home-prank-thumb {
+	display: block;
+	height: 112px;
+	position: relative;
+	overflow: hidden;
+	border-bottom: 1px solid #f3f4f6;
+}
+
+.home-prank-thumb .prank-os-thumb {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+}
+
+.home-prank-title {
+	font-size: 16.5px;
+	font-weight: 800;
+	padding: 14px 17px;
+	margin: 0;
+	color: #0f172a;
+}
+
+/* --- tutorials / blog columns --- */
+
+.home-articles-sec {
+	margin-top: 24px;
+	padding: 56px 0 48px;
+}
+
+.home-articles-sec > .rb-container > .h7-sec-head {
+	margin-bottom: 46px;
+}
+
+.home-two-col {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 40px;
+}
+
+/* Column headings are sub-level inside the section. */
+.home-articles-col .h7-sec-head {
+	margin-bottom: 14px;
+}
+
+.home-articles-col .h7-sec-title {
+	font-size: 19px;
+}
+
+.home-articles-col .h7-cico {
+	flex: 0 0 36px;
+	height: 36px;
+	border-radius: 9px;
+}
+
+.home-articles-col .h7-cico svg {
+	width: 18px;
+	height: 18px;
+}
+
+.home-article-card {
+	display: flex;
+	gap: 15px;
+	align-items: center;
+	background: #fff;
+	border: 1px solid #ddd;
+	border-radius: 16px;
+	padding: 13px 16px 13px 13px;
+	margin-bottom: 12px;
+	box-shadow: 0 2px 8px rgba(15, 23, 42, .04);
+	transition: .15s;
+	color: inherit;
+	text-decoration: none;
+}
+
+.home-article-card:hover {
+	border-color: var(--cat, #f97316);
+	box-shadow: 0 8px 22px rgba(15, 23, 42, .10);
+	transform: translateY(-2px);
+}
+
+.home-article-card img {
+	width: 110px;
+	height: 76px;
+	object-fit: cover;
+	border-radius: 11px;
+	flex: 0 0 110px;
+}
+
+.home-article-title {
+	font-size: 16px;
+	font-weight: 800;
+	line-height: 1.35;
+	margin: 0;
+}
+
+.home-article-meta {
+	display: block;
+	font-size: 13px;
+	color: #6b7280;
+	margin-top: 5px;
+}
+
+/* --- SEO body + FAQ --- */
+
+.home-seo-content {
+	padding: 30px 0 0;
+}
+
+.home-seo-content-inner {
+	padding: 0;
+}
+
+.home-faq {
+	padding: 44px 0 30px;
+}
+
+.home-faq-inner {
+	padding: 0;
+}
+
+.home-faq-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 12px;
+}
+
+.home-faq-item {
+	background: #fff;
+	border: 1px solid #ddd;
+	border-radius: 16px;
+	padding: 18px 20px;
+	box-shadow: 0 2px 8px rgba(15, 23, 42, .04);
+}
+
+.home-faq-q {
+	font-size: 16px;
+	font-weight: 800;
+	margin: 0 0 6px;
+}
+
+.home-faq-a {
+	font-size: 14.5px;
+	color: #374151;
+	margin: 0;
+	line-height: 1.5;
+}
+
+/* --- responsive --- */
+
+@media (max-width: 1000px) {
+	.home-hero-title {
+		font-size: 32px;
+	}
+
+	.home-prank-grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+
+	.home-two-col,
+	.home-faq-grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+@media (max-width: 560px) {
+	.home-prank-grid {
+		grid-template-columns: 1fr;
+	}
+}

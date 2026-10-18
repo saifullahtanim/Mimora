@@ -1,0 +1,123 @@
+/* =================================================================
+ * Fake Windows 11 Update — reusable stage component
+ * Used in two contexts:
+ *   1. Inside .prank-overlay (fullscreen)
+ *   2. Inside .prank-preview-frame (small landing-page preview)
+ * Dot positions are percentages so the spinner scales with the box.
+ * ================================================================= */
+
+/* ---------- Stage container (the blue update screen) ---------- */
+.fwu11-stage {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: #0067c0;
+	color: #fff;
+	font-family: "Segoe UI Variable", "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
+	font-weight: 300;
+	overflow: hidden;
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+}
+.fwu11-screen {
+	text-align: center;
+	width: 100%;
+	max-width: 900px;
+	padding: 20px;
+	animation: fwu11FadeIn 0.5s ease-out;
+}
+@keyframes fwu11FadeIn {
+	from { opacity: 0; }
+	to   { opacity: 1; }
+}
+
+/* ---------- Authentic Windows-style spinner ----------
+ * 5 dots that chase each other around a circle in a tight cluster.
+ * Each dot is on its own rotating wrapper with a staggered animation
+ * delay, so the dots form a ~70° comet-tail arc that travels the full
+ * 360° loop — exactly like the real Windows 10/11 update spinner.
+ */
+.fwu11-spinner {
+	position: relative;
+	width: 80px;
+	height: 80px;
+	margin: 0 auto 44px;
+}
+.fwu11-dot-wrap {
+	position: absolute;
+	inset: 0;
+	animation: fwu11SpinnerRotate 1.8s cubic-bezier(0.42, 0, 0.58, 1) infinite;
+}
+.fwu11-dot-wrap:nth-child(1) { animation-delay:  0s;    }
+.fwu11-dot-wrap:nth-child(2) { animation-delay: -0.10s; }
+.fwu11-dot-wrap:nth-child(3) { animation-delay: -0.20s; }
+.fwu11-dot-wrap:nth-child(4) { animation-delay: -0.30s; }
+.fwu11-dot-wrap:nth-child(5) { animation-delay: -0.40s; }
+.fwu11-dot {
+	position: absolute;
+	top: 0;
+	left: 46.25%;       /* 50% - half-of-7.5% */
+	width: 7.5%;        /* 6px in an 80px box */
+	height: 7.5%;
+	background: #fff;
+	border-radius: 50%;
+}
+
+@keyframes fwu11SpinnerRotate {
+	from { transform: rotate(0deg); }
+	to   { transform: rotate(360deg); }
+}
+
+/* ---------- Text ----------
+ * Windows 11 update screen ratio: bottom line is ~75% of main text size,
+ * NOT half. e.g. 26px main → 19px bottom.
+ */
+.fwu11-main-text {
+	font-size: 26px;
+	font-weight: 300;
+	line-height: 1.55;
+	margin: 0;
+	letter-spacing: 0.005em;
+	color: #fff;
+	font-variant-numeric: tabular-nums;
+}
+.fwu11-bottom-text {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 8%;
+	font-size: 19px;
+	font-weight: 300;
+	line-height: 1.5;
+	margin: 0;
+	color: #fff;
+	text-align: center;
+}
+
+/* ---------- Large monitors ---------- */
+@media (min-width: 1600px) {
+	.fwu11-stage:not(.fwu11-stage-mini) .fwu11-spinner { width: 96px; height: 96px; margin-bottom: 56px; }
+	.fwu11-stage:not(.fwu11-stage-mini) .fwu11-main-text { font-size: 32px; }
+	.fwu11-stage:not(.fwu11-stage-mini) .fwu11-bottom-text { font-size: 23px; }
+}
+
+/* =================================================================
+ * MINI variant — used inside the landing-page preview frame
+ * ================================================================= */
+.fwu11-stage-mini .fwu11-spinner {
+	width: 42px;
+	height: 42px;
+	margin-bottom: 22px;
+}
+.fwu11-stage-mini .fwu11-main-text {
+	font-size: 14px;
+	line-height: 1.5;
+}
+.fwu11-stage-mini .fwu11-bottom-text {
+	font-size: 10.5px;
+	bottom: 9%;
+}
+.fwu11-stage-mini .fwu11-screen { padding: 14px; }

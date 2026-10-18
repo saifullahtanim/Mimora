@@ -1,0 +1,491 @@
+/**
+ * Fake Console Update Screen — Xbox / PlayStation / Nintendo Switch.
+ *
+ * Layout follows the theme-wide rule: plain hero, one white tool card, and
+ * content sections below it separated by a top border rather than boxed.
+ *
+ * The custom properties are declared on BOTH the page and the overlay on
+ * purpose: the shared controller moves the overlay out to <body> on launch,
+ * so anything scoped only to .fcon-page stops inheriting the moment the
+ * prank starts.
+ */
+
+@font-face {
+	font-family: "Selawik";
+	src: url("../fonts/selawik/selawik-regular.woff") format("woff");
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+
+.fcon-page,
+.fcon-overlay {
+	--fcon-accent: #107c10;
+	--fcon-xbox: #107c10;
+	--fcon-ps: #2e6db4;
+	--fcon-switch: #e60012;
+	--fcon-border: #e5e7eb;
+}
+
+/* ---------- Card preview (mini console update screen) ---------- */
+/* Keep the mini screen at the television's 16:9 ratio even when the
+ * settings column is taller. Size from the grid column, not its height. */
+.fcon-preview-frame {
+	width: 100%;
+	min-width: 0;
+	max-width: 100%;
+	aspect-ratio: 16 / 9;
+	align-self: center;
+}
+
+
+.fcon-preview {
+	position: absolute;
+	inset: 0;
+	color: #fff;
+}
+
+/* Xbox One / Series update layout; container units also scale the preview. */
+.fcon-xbox-view {
+	position: absolute;
+	inset: 0;
+	container-type: size;
+	background: #080808;
+	color: #fff;
+	font-family: "Segoe UI", "Selawik", Arial, sans-serif;
+	font-weight: 400;
+	text-align: left;
+	line-height: 1.35;
+	letter-spacing: normal;
+}
+
+.fcon-xbox-copy {
+	position: absolute;
+	left: 8%;
+	top: 25.5%;
+	width: 62%;
+}
+
+.fcon-xbox-view .fcon-xbox-title {
+	margin: 0;
+	padding: 0;
+	color: inherit;
+	font-family: inherit;
+	font-size: 3.75cqw;
+	font-weight: 400;
+	line-height: 1.2;
+	letter-spacing: normal;
+	text-transform: none;
+}
+
+.fcon-xbox-view .fcon-xbox-sub {
+	margin: 6.7cqh 0 0;
+	padding: 0;
+	color: inherit;
+	font-family: inherit;
+	font-size: 1.875cqw;
+	font-weight: 400;
+	line-height: 1.4;
+	letter-spacing: normal;
+}
+
+.fcon-xbox-download {
+	position: absolute;
+	top: 31.9%;
+	right: 16.6%;
+	width: 5.6%;
+	height: auto;
+	color: #f2f2f2;
+}
+
+.fcon-xbox-progress {
+	position: absolute;
+	left: 8%;
+	right: 8%;
+	bottom: 4.5%;
+	font-size: 1.4cqw;
+	line-height: 1.4;
+	font-variant-numeric: tabular-nums;
+}
+
+.fcon-xbox-progress-labels,
+.fcon-xbox-progress-note {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 1cqw;
+}
+
+.fcon-xbox-progress-labels { margin-bottom: 0.9cqh; }
+.fcon-xbox-step { white-space: nowrap; }
+.fcon-xbox-total { min-width: 3ch; text-align: right; }
+
+.fcon-xbox-segments { display: flex; gap: 0.4cqw; height: 0.65cqh; }
+.fcon-xbox-segments > span { flex: 1; background: #3d3d3d; border-radius: 1cqh; overflow: hidden; }
+.fcon-xbox-segments i { display: block; width: 0; height: 100%; background: #00a83b; }
+
+/* Preparing uses a single track, with no stage label, subtitle or arrow. */
+.fcon-screen[data-skin="xbox"][data-phase="prepare"] .fcon-xbox-sub,
+.fcon-screen[data-skin="xbox"][data-phase="prepare"] .fcon-xbox-download,
+.fcon-screen[data-skin="xbox"][data-phase="prepare"] .fcon-xbox-step { visibility: hidden; }
+.fcon-screen[data-skin="xbox"][data-phase="prepare"] .fcon-xbox-segments > span:not(:first-child) { display: none; }
+.fcon-screen[data-skin="xbox"][data-phase="prepare"] .fcon-xbox-segments i { min-width: 0.5%; }
+
+.fcon-screen > .fcon-xbox-view { display: none; }
+.fcon-screen[data-skin="xbox"] > .fcon-xbox-view { display: block; }
+.fcon-screen[data-skin="xbox"] > :not(.fcon-xbox-view):not(.fcon-nag) { display: none; }
+.fcon-screen[data-skin="xbox"][data-phase="restart"] .fcon-xbox-view { background: #000; }
+.fcon-screen[data-skin="xbox"][data-phase="restart"] .fcon-xbox-view > * { visibility: hidden; }
+
+/* ---------- Generic console view (PlayStation / Switch) ----------
+ * Mirrors the Xbox approach: one markup block, container units, so the very
+ * same view renders correctly in the small card preview and at fullscreen.
+ * The background lives on the view (not on .fcon-screen) because the preview
+ * frame has no .fcon-screen ancestor to inherit a skin from. */
+.fcon-generic-view {
+	position: absolute;
+	inset: 0;
+	container-type: size;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 3.5cqh;
+	color: #fff;
+	font-family: "Segoe UI", "Selawik", Arial, sans-serif;
+	text-align: center;
+	line-height: 1.35;
+}
+
+.fcon-generic-view--ps { background: linear-gradient(178deg, #2e6db4 0%, #1c4c86 55%, #0d2a4d 100%); }
+.fcon-generic-view--switch { background: #000; }
+
+.fcon-generic-view .fcon-logo { width: 9cqw; height: 9cqw; }
+.fcon-generic-view .fcon-logo svg { width: 100%; height: 100%; display: block; }
+
+.fcon-generic-view .fcon-title {
+	margin: 0;
+	font-size: 4.6cqw;
+	font-weight: 600;
+	line-height: 1.2;
+}
+
+.fcon-generic-view .fcon-sub {
+	margin: 0;
+	max-width: 62cqw;
+	font-size: 2.3cqw;
+	line-height: 1.45;
+	opacity: 0.82;
+}
+
+.fcon-generic-view .fcon-bar {
+	width: 52cqw;
+	height: 1.1cqh;
+	min-height: 3px;
+	border-radius: 999px;
+	background: rgba(255, 255, 255, 0.22);
+	overflow: hidden;
+}
+
+.fcon-generic-view .fcon-bar span {
+	display: block;
+	width: 0;
+	height: 100%;
+	border-radius: 999px;
+	background: #fff;
+	transition: width 0.25s linear;
+}
+
+.fcon-generic-view .fcon-ring { position: relative; width: 22cqw; height: 22cqw; }
+.fcon-generic-view .fcon-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+
+.fcon-generic-view .fcon-pct {
+	font-size: 3cqw;
+	font-weight: 600;
+	font-variant-numeric: tabular-nums;
+}
+
+.fcon-generic-view .fcon-foot {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 7cqh;
+	font-size: 2.2cqw;
+	font-weight: 600;
+	opacity: 0.9;
+}
+
+/* Each console draws only its own progress indicator. */
+.fcon-generic-view--ps .fcon-ring { display: none; }
+.fcon-generic-view--switch .fcon-bar { display: none; }
+
+/* The Switch prints its percentage inside the ring. */
+.fcon-generic-view--switch .fcon-pct {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+/* Failure beat between cycles. */
+.fcon-generic-view .fcon-title.is-fail { color: #ffd9d9; }
+
+/* Console screens keep the corner exit target without displaying browser UI. */
+.fcon-overlay.is-active ~ .prank-exit-bar {
+	z-index: 2147483647;
+	top: 0;
+	right: 0;
+	width: 72px;
+	height: 72px;
+	opacity: 0;
+	pointer-events: auto;
+	transition: none;
+}
+.fcon-overlay.is-active ~ .prank-exit-bar .prank-exit-btn {
+	width: 100%;
+	height: 100%;
+	padding: 0;
+}
+
+@media (max-aspect-ratio: 1/1) {
+	.fcon-screen .fcon-xbox-copy { top: 28%; width: 76%; }
+	.fcon-screen .fcon-xbox-title { font-size: 7cqw; }
+	.fcon-screen .fcon-xbox-sub { margin-top: 3cqh; font-size: 3.6cqw; }
+	.fcon-screen .fcon-xbox-download { top: 53%; right: 44%; width: 12%; }
+	.fcon-screen .fcon-xbox-progress { bottom: 6%; font-size: 2.5cqw; }
+	.fcon-screen .fcon-xbox-progress-labels { flex-wrap: wrap; gap: 1.5cqh; }
+	.fcon-screen .fcon-xbox-progress-note { width: 100%; }
+}
+
+/* ---------- Settings panel ---------- */
+
+.fcon-select {
+	width: 100%;
+	padding: 9px 12px;
+	font-size: 1rem;
+	font-weight: 600;
+	font-family: inherit;
+	color: #111827;
+	background: #fff;
+	border: 1px solid var(--fcon-border);
+	border-radius: 8px;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+	cursor: pointer;
+	outline: none;
+	transition: border-color var(--effect, 0.2s ease), box-shadow var(--effect, 0.2s ease);
+}
+
+.fcon-select:hover { border-color: var(--flex-gray-30, #d1d5db); }
+
+.fcon-select:focus-visible {
+	border-color: var(--fcon-accent);
+	box-shadow: 0 0 0 3px rgba(16, 124, 16, 0.18);
+}
+
+.fcon-check {
+	display: flex;
+	align-items: center;
+	gap: 9px;
+	font-size: 0.95rem;
+	font-weight: 600;
+	color: #374151;
+	cursor: pointer;
+}
+
+.fcon-check input { width: 16px; height: 16px; accent-color: var(--fcon-accent); cursor: pointer; }
+
+.fcon-check input:focus-visible { outline: 2px solid var(--fcon-accent); outline-offset: 2px; }
+
+/*
+ * WCAG AA: #107c10 on white is only ~4.1:1, so the button ground is darkened
+ * to #0b5d0b (~6.3:1) rather than using the brand green straight.
+ */
+.fcon-page .fcon-launch-btn {
+	background: #0b5d0b;
+	border-color: #0b5d0b;
+}
+
+.fcon-page .fcon-launch-btn:hover {
+	background: #084608;
+	border-color: #084608;
+	box-shadow: 0 4px 12px rgba(11, 93, 11, 0.28);
+}
+
+.fcon-safety-note {
+	display: flex;
+	align-items: flex-start;
+	gap: 10px;
+	margin: 18px 0 0;
+	font-size: 0.9rem;
+	line-height: 1.6;
+	color: #4b5563;
+}
+
+.fcon-safety-note svg { flex: 0 0 auto; width: 18px; height: 18px; margin-top: 2px; color: var(--fcon-accent); }
+
+/* ---------- Fullscreen overlay ---------- */
+
+.fcon-screen {
+	position: relative;
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 26px;
+	width: 100%;
+	padding: 6vh 6vw;
+	font-family: "Segoe UI", -apple-system, system-ui, sans-serif;
+	color: #fff;
+	text-align: center;
+	user-select: none;
+	-webkit-user-select: none;
+}
+
+.fcon-screen[data-skin="xbox"] {
+	background: #080808;
+}
+
+.fcon-screen[data-skin="ps"] {
+	background: linear-gradient(178deg, #2e6db4 0%, #1c4c86 55%, #0d2a4d 100%);
+}
+
+.fcon-screen[data-skin="switch"] {
+	background: #000;
+}
+
+/* Logos: all three ship in the markup, the skin decides which one shows. */
+.fcon-logo { width: clamp(56px, 8vw, 96px); height: clamp(56px, 8vw, 96px); }
+.fcon-logo svg { width: 100%; height: 100%; display: block; }
+.fcon-logo > * { display: none; }
+.fcon-screen[data-skin="ps"] .fcon-logo-ps,
+.fcon-screen[data-skin="switch"] .fcon-logo-switch { display: block; }
+
+.fcon-title {
+	margin: 0;
+	font-size: clamp(1.35rem, 3.2vw, 2.4rem);
+	font-weight: 600;
+	line-height: 1.25;
+}
+
+.fcon-sub {
+	margin: -12px 0 0;
+	max-width: 34ch;
+	font-size: clamp(0.95rem, 1.5vw, 1.2rem);
+	line-height: 1.5;
+	opacity: 0.82;
+}
+
+/* Bar (Xbox / PlayStation) */
+.fcon-bar {
+	width: min(58vw, 520px);
+	height: 8px;
+	border-radius: 999px;
+	background: rgba(255, 255, 255, 0.2);
+	overflow: hidden;
+}
+
+.fcon-bar span {
+	display: block;
+	width: 0;
+	height: 100%;
+	border-radius: 999px;
+	background: #fff;
+	transition: width 0.25s linear;
+}
+
+/* Ring (Nintendo Switch) */
+.fcon-ring { width: clamp(120px, 17vw, 190px); height: clamp(120px, 17vw, 190px); }
+.fcon-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.fcon-ring-track { fill: none; stroke: rgba(255, 255, 255, 0.18); stroke-width: 6; }
+.fcon-ring-fill {
+	fill: none;
+	stroke: #fff;
+	stroke-width: 6;
+	stroke-linecap: round;
+	stroke-dasharray: 339.292;
+	stroke-dashoffset: 339.292;
+	transition: stroke-dashoffset 0.25s linear;
+}
+
+.fcon-screen[data-skin="switch"] .fcon-bar { display: none; }
+
+/*
+ * Only the RING is Switch-only — .fcon-ring itself always stays in flow
+ * because it also carries the percentage. Hiding the wrapper here is what
+ * silently removed the percent readout from the Xbox and PlayStation skins.
+ */
+.fcon-screen:not([data-skin="switch"]) .fcon-ring {
+	width: auto;
+	height: auto;
+}
+
+.fcon-screen:not([data-skin="switch"]) .fcon-ring svg { display: none; }
+
+.fcon-pct {
+	font-size: clamp(1.1rem, 2.2vw, 1.7rem);
+	font-weight: 600;
+	font-variant-numeric: tabular-nums;
+	letter-spacing: 0.02em;
+}
+
+/* The Switch draws its percentage inside the ring. */
+.fcon-screen[data-skin="switch"] .fcon-ring { position: relative; }
+.fcon-screen[data-skin="switch"] .fcon-pct {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.fcon-foot {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: clamp(22px, 5vh, 54px);
+	font-size: clamp(0.9rem, 1.5vw, 1.15rem);
+	font-weight: 600;
+	letter-spacing: 0.02em;
+	opacity: 0.9;
+}
+
+/* Failure beat between cycles. */
+.fcon-screen[data-phase="fail"] .fcon-bar span,
+.fcon-screen[data-phase="fail"] .fcon-ring-fill { opacity: 0.45; }
+.fcon-screen[data-phase="fail"] .fcon-title { color: #ffd9d9; }
+
+/* Nag: the only answer to any button press. */
+.fcon-nag {
+	position: absolute;
+	left: 50%;
+	top: clamp(26px, 7vh, 76px);
+	transform: translate(-50%, -8px);
+	display: flex;
+	align-items: center;
+	gap: 9px;
+	max-width: min(86vw, 520px);
+	padding: 12px 18px;
+	border-radius: 10px;
+	background: rgba(0, 0, 0, 0.62);
+	border: 1px solid rgba(255, 255, 255, 0.24);
+	font-size: clamp(0.9rem, 1.5vw, 1.05rem);
+	font-weight: 600;
+	opacity: 0;
+	transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+.fcon-nag.is-on { opacity: 1; transform: translate(-50%, 0); }
+
+.fcon-nag svg { flex: 0 0 auto; width: 18px; height: 18px; }
+
+@media (prefers-reduced-motion: reduce) {
+	.fcon-bar span,
+	.fcon-ring-fill,
+	.fcon-nag { transition: none; }
+}
+
+@media (max-width: 600px) {
+	.fcon-screen { gap: 20px; padding: 5vh 6vw; }
+	.fcon-sub { max-width: 30ch; }
+	.fcon-bar { width: 72vw; }
+}

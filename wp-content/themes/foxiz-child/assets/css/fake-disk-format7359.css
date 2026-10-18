@@ -1,0 +1,386 @@
+/* =================================================================
+ * Fake Disk Format
+ * Two fullscreen skins driven by [data-skin] on .fdf-screen:
+ *   dos     — MS-DOS console: typed format command, warning, Y/N prompt,
+ *             percent counter + head/cylinder readout, completion report
+ *   windows — "Formatting Local Disk (C:)" dialog on a desktop background
+ * [data-crt] toggles the scanline/glow treatment on the DOS skin.
+ * Layers on top of prank-shared.css (one card + separator sections).
+ * ================================================================= */
+
+/* Declared on BOTH the page root and the overlay root on purpose. The shared
+ * prank controller moves .fdf-overlay out to <body> on launch, so anything
+ * scoped only to .fdf-page stops inheriting into the overlay the moment it is
+ * portalled — var() then resolves to nothing and the property silently falls
+ * back. (This bit the fake-virus-scan build; do not "tidy" it back to one
+ * selector.) */
+.fdf-page,
+.fdf-overlay {
+	--fdf-accent: #15803d;
+	--fdf-amber: #d97706;
+	--fdf-dos-fg: #c8c8c8;
+}
+
+/* ---------- Card preview (mini DOS console) ---------- */
+/* Width clamp: the settings panel is taller than a 16:10 preview, and a
+ * stretched aspect-ratio frame would otherwise derive its width from the row
+ * height and overlap the panel. */
+.fdf-preview-frame {
+	background: #0c0c0c;
+	min-width: 0;
+	max-width: 100%;
+}
+
+.fdf-preview {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 2px;
+	padding: 7% 8%;
+	font-family: Consolas, "Cascadia Mono", "Lucida Console", "Courier New", monospace;
+	font-size: clamp(8px, 1.7vw, 12px);
+	line-height: 1.4;
+	color: #cccccc;
+	text-align: left;
+}
+
+.fdf-preview-line {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.fdf-preview-line--dim { opacity: 0.62; }
+
+.fdf-preview-caret {
+	display: inline-block;
+	width: 0.6em;
+	height: 1em;
+	margin-left: 2px;
+	background: #cccccc;
+	vertical-align: text-bottom;
+	animation: fdfBlink 1s steps(1) infinite;
+}
+
+@keyframes fdfBlink {
+	0%, 49%   { opacity: 1; }
+	50%, 100% { opacity: 0; }
+}
+
+/* ---------- Settings controls ---------- */
+.fdf-select {
+	width: 100%;
+	padding: 9px 12px;
+	font-size: 1rem;
+	font-weight: 600;
+	font-family: inherit;
+	color: #111827;
+	background: #fff;
+	border: 1px solid #e5e7eb;
+	border-radius: 8px;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+	cursor: pointer;
+	outline: none;
+	transition: border-color var(--effect, 0.2s ease), box-shadow var(--effect, 0.2s ease);
+}
+
+.fdf-select:hover { border-color: var(--flex-gray-30, #d1d5db); }
+
+.fdf-select:focus-visible {
+	border-color: var(--fdf-accent);
+	box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.16);
+}
+
+.fdf-check {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	font-size: 0.95rem;
+	font-weight: 600;
+	color: var(--headline-fcolor, #374151);
+	cursor: pointer;
+	user-select: none;
+}
+
+.fdf-check input[type="checkbox"] {
+	width: 18px;
+	height: 18px;
+	accent-color: var(--fdf-accent);
+	cursor: pointer;
+	flex: 0 0 18px;
+}
+
+.fdf-check input[type="checkbox"]:focus-visible {
+	outline: 2px solid var(--fdf-accent);
+	outline-offset: 2px;
+	border-radius: 4px;
+}
+
+.fdf-page .fdf-launch-btn {
+	background: var(--fdf-accent);
+	border-color: var(--fdf-accent);
+}
+
+.fdf-page .fdf-launch-btn:hover {
+	background: #166534;
+	border-color: #166534;
+	box-shadow: 0 4px 12px rgba(21, 128, 61, 0.28);
+}
+
+.fdf-page .fdf-launch-btn:focus-visible,
+.fdf-page .prank-fullscreen-btn:focus-visible {
+	outline: 2px solid var(--fdf-accent);
+	outline-offset: 2px;
+}
+
+/* ---------- Safety note under the tool card ---------- */
+.fdf-safety-note {
+	display: flex;
+	align-items: flex-start;
+	gap: 10px;
+	margin: 24px 0 0;
+	padding: 14px 16px;
+	background: #f9fafb;
+	border: 1px solid var(--prank-border);
+	border-radius: 10px;
+	font-size: 0.9rem;
+	line-height: 1.6;
+	color: var(--meta-fcolor, #4b5563);
+}
+
+.fdf-safety-note svg {
+	width: 18px;
+	height: 18px;
+	flex: none;
+	margin-top: 2px;
+	color: var(--fdf-accent);
+}
+
+/* =================================================================
+ * Fullscreen overlay
+ * ================================================================= */
+.fdf-overlay { background: #000; }
+
+.fdf-screen {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	cursor: default;
+}
+
+/* ---------- MS-DOS console ---------- */
+/* Default look is cmd.exe: Consolas, #cccccc on #0c0c0c, no glow, tight
+ * leading. The retro CRT flavour (data-crt="on") adds the phosphor glow and
+ * scanlines and switches to the older raster-style font. */
+.fdf-console {
+	display: none;
+	position: absolute;
+	inset: 0;
+	margin: 0;
+	padding: 8px 10px;
+	background: #0c0c0c;
+	color: #cccccc;
+	font-family: Consolas, "Cascadia Mono", "Lucida Console", "Courier New", monospace;
+	font-size: clamp(13px, 1.5vw, 19px);
+	line-height: 1.32;
+	white-space: pre-wrap;
+	word-break: break-word;
+	overflow: hidden;
+}
+
+.fdf-screen[data-skin="dos"] .fdf-console { display: block; }
+
+.fdf-screen[data-crt="on"] .fdf-console {
+	padding: 2.5vh 3vw;
+	background: #000;
+	color: var(--fdf-dos-fg);
+	font-family: "Lucida Console", "Courier New", monospace;
+	line-height: 1.45;
+	text-shadow: 0 0 7px rgba(200, 200, 200, 0.28);
+}
+
+.fdf-caret {
+	display: inline-block;
+	width: 0.58em;
+	height: 1.05em;
+	background: #cccccc;
+	vertical-align: text-bottom;
+	animation: fdfBlink 1s steps(1) infinite;
+}
+
+.fdf-screen[data-crt="on"] .fdf-caret { background: var(--fdf-dos-fg); }
+
+/* CRT treatment — scanlines + a soft vignette. Purely decorative. */
+.fdf-scanlines {
+	display: none;
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	background:
+		radial-gradient(ellipse 90% 80% at 50% 50%, transparent 55%, rgba(0, 0, 0, 0.55) 100%),
+		repeating-linear-gradient(180deg, rgba(0, 0, 0, 0.22) 0 1px, transparent 1px 3px);
+}
+
+.fdf-screen[data-skin="dos"][data-crt="on"] .fdf-scanlines { display: block; }
+
+/* Confirmation dialog — amber warning icon, buttons disable once the refusal
+ * beat plays so nothing can be double-clicked mid-transition. */
+.fdf-error-body .fdf-warn-icon { color: var(--fdf-amber); }
+
+.fdf-warn .fdf-dialog-actions { gap: 8px; }
+
+.fdf-dialog-btn[disabled] {
+	opacity: 0.5;
+	cursor: default;
+}
+
+.fdf-warn p { margin: 0; line-height: 1.55; }
+
+/* ---------- Windows desktop + format dialog ---------- */
+.fdf-desktop {
+	display: none;
+	position: absolute;
+	inset: 0;
+	align-items: center;
+	justify-content: center;
+	background:
+		radial-gradient(ellipse 70% 60% at 35% 30%, rgba(255, 255, 255, 0.09), transparent 70%),
+		linear-gradient(160deg, #0b3b6f 0%, #10508f 55%, #0a2f5c 100%);
+	font-family: "Segoe UI", system-ui, sans-serif;
+}
+
+.fdf-screen[data-skin="windows"] .fdf-desktop { display: flex; }
+
+.fdf-dialog,
+.fdf-error {
+	width: min(440px, 86vw);
+	background: #f0f0f0;
+	color: #1f2937;
+	border-radius: 6px;
+	box-shadow: 0 18px 50px rgba(0, 0, 0, 0.5);
+	overflow: hidden;
+}
+
+.fdf-error {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%) translateY(-14px);
+	z-index: 2;
+	width: min(400px, 82vw);
+}
+
+.fdf-dialog-bar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 9px 12px;
+	background: #005a9e;
+	color: #fff;
+	font-size: 0.86rem;
+	font-weight: 600;
+}
+
+.fdf-dialog-bar--error { background: #a4262c; }
+
+.fdf-dialog-x {
+	font-size: 15px;
+	line-height: 1;
+	opacity: 0.85;
+}
+
+.fdf-dialog-body {
+	padding: 18px 16px 6px;
+	font-size: 0.9rem;
+}
+
+.fdf-dialog-status {
+	margin: 0 0 10px;
+	font-weight: 600;
+}
+
+.fdf-dialog-bar-track {
+	height: 16px;
+	background: #e6e6e6;
+	border: 1px solid #cfcfcf;
+	border-radius: 3px;
+	overflow: hidden;
+}
+
+/* No width transition — repainted every animation frame. */
+.fdf-dialog-bar-fill {
+	width: 0;
+	height: 100%;
+	background: linear-gradient(180deg, #26a0da 0%, #0078d7 100%);
+}
+
+.fdf-dialog-sub {
+	margin: 10px 0 0;
+	font-size: 0.8rem;
+	color: #4b5563;
+}
+
+.fdf-dialog-actions {
+	display: flex;
+	justify-content: flex-end;
+	padding: 14px 16px 16px;
+}
+
+.fdf-dialog-btn {
+	min-width: 88px;
+	padding: 7px 16px;
+	font-size: 0.85rem;
+	font-family: inherit;
+	background: #e1e1e1;
+	color: #1f2937;
+	border: 1px solid #adadad;
+	border-radius: 3px;
+	cursor: pointer;
+}
+
+.fdf-dialog-btn:hover { background: #d6d6d6; }
+
+.fdf-dialog-btn--primary {
+	background: #005a9e;
+	border-color: #005a9e;
+	color: #fff;
+}
+
+.fdf-dialog-btn--primary:hover { background: #004578; }
+
+.fdf-dialog-btn:focus-visible {
+	outline: 2px solid #1f2937;
+	outline-offset: 2px;
+}
+
+.fdf-error-body {
+	display: flex;
+	gap: 12px;
+	align-items: flex-start;
+}
+
+.fdf-error-body svg {
+	width: 26px;
+	height: 26px;
+	flex: none;
+	color: #a4262c;
+}
+
+.fdf-error-body p { margin: 0; }
+
+/* ---------- Motion / small screens ---------- */
+@media (prefers-reduced-motion: reduce) {
+	.fdf-caret,
+	.fdf-preview-caret {
+		animation: none;
+	}
+}
+
+@media (max-width: 767px) {
+	.fdf-console { font-size: 12px; padding: 2vh 4vw; }
+	.fdf-safety-note { font-size: 0.85rem; }
+}

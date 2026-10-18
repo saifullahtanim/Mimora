@@ -1,0 +1,148 @@
+/** PS5 system software update view; shared markup scales with its container. */
+@font-face {
+	font-family: "PS Update Sans";
+	src: url("../fonts/source-sans-3/source-sans-3-latin.woff2") format("woff2");
+	font-weight: 300 600;
+	font-style: normal;
+	font-display: swap;
+}
+
+.psu-page,
+.psu-overlay { --fcon-accent: #235cc4; }
+.psu-page .fcon-launch-btn { background: #174da8; border-color: #174da8; }
+.psu-page .fcon-launch-btn:hover { background: #123d85; border-color: #123d85; }
+.psu-page .fcon-select:focus-visible { box-shadow: 0 0 0 3px rgba(35, 92, 196, 0.18); }
+
+.psu-view {
+	position: absolute;
+	inset: 0;
+	container-type: size;
+	overflow: hidden;
+	color: #d5d3d7;
+	background: radial-gradient(ellipse at 95% 0%, rgba(145, 124, 110, 0.17), transparent 58%), linear-gradient(115deg, #222129, #302d33);
+	font-family: "SST", "PS Update Sans", "Helvetica Neue", Arial, sans-serif;
+	font-weight: 300;
+	text-align: center;
+	line-height: 1.25;
+	letter-spacing: normal;
+}
+
+.psu-view p { margin: 0; padding: 0; font: inherit; color: inherit; letter-spacing: inherit; }
+.psu-view .psu-heading {
+	position: absolute;
+	left: 4.9%;
+	top: 6.6%;
+	margin: 0;
+	padding: 0;
+	font: inherit;
+	font-size: 2.4cqw;
+	line-height: 1.25;
+	color: inherit;
+	text-transform: none;
+	letter-spacing: normal;
+}
+
+.psu-particles { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.psu-particles g { animation: psu-drift 18s ease-in-out infinite alternate; transform-origin: center; }
+.psu-particles circle:nth-child(7n) { filter: blur(2px); }
+.psu-particles circle:nth-child(11n) { filter: blur(4px); }
+.fcon-preview .psu-particles g { animation: none; }
+
+.psu-prepare-copy { display: none; }
+.psu-progress { position: absolute; left: 22.7%; width: 54.6%; top: 34%; font-size: 2.4cqw; }
+.psu-install-label { line-height: 1.25; }
+.psu-progress-meta { margin-top: 2.5cqh; line-height: 1.25; }
+.psu-prepare-label { display: none; }
+.psu-percent { font-variant-numeric: tabular-nums; }
+.psu-track { position: relative; height: 0.4cqh; min-height: 1px; margin-top: 1.9cqh; background: rgba(205, 201, 208, 0.2); border-radius: 1px; }
+.psu-fill { position: relative; display: block; height: 100%; width: 0; background: #c9c7ce; border-radius: inherit; }
+.psu-fill::after {
+	content: "";
+	position: absolute;
+	top: 50%;
+	left: 0;
+	width: 5cqw;
+	height: 0.55cqh;
+	background: radial-gradient(ellipse, rgba(255, 244, 218, 0.85), rgba(230, 205, 158, 0.15) 45%, transparent 72%);
+	filter: blur(2px);
+	transform: translate(-50%, -50%);
+	animation: psu-shimmer 5s ease-in-out infinite;
+}
+.psu-progress[aria-valuenow="0"] .psu-fill::after { display: none; }
+
+.psu-view .psu-warning {
+	position: absolute;
+	top: 60.5%;
+	left: 8%;
+	width: 84%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 0.8cqw;
+	font-size: 2.4cqw;
+	line-height: 1.25;
+}
+.psu-warning svg { width: 2.2cqw; height: 2.2cqw; flex: 0 0 auto; color: #f4f3f5; }
+
+.psu-wait,
+.psu-restarting,
+.psu-console { display: none; }
+.psu-wait { position: absolute; top: 43%; left: 10%; width: 80%; font-size: 2.4cqw; }
+.psu-spinner { display: block; width: 1.8cqw; height: 1.8cqw; margin: 2.8cqh auto 0; border: 1px solid transparent; border-top-color: #eee; border-right-color: #999; border-radius: 50%; animation: psu-spin 1.1s linear infinite; }
+
+/* Preparation is the settings-style screen before the console restarts. */
+.psu-view[data-phase="prepare"] {
+	background: radial-gradient(ellipse at 17% -5%, rgba(58, 48, 145, 0.65), transparent 40%), radial-gradient(ellipse at 7% 108%, #383642, transparent 50%), linear-gradient(105deg, #171627, #090b0e);
+}
+.psu-view[data-phase="prepare"] .psu-particles { display: none; }
+.psu-view[data-phase="prepare"] .psu-prepare-copy { display: block; position: absolute; left: 17.9%; top: 36.2%; width: 64.2%; text-align: left; font-size: 1.625cqw; font-weight: 400; line-height: 1.4; }
+.psu-view[data-phase="prepare"] .psu-progress { top: 50.7%; font-size: 1.3cqw; font-weight: 400; }
+.psu-view[data-phase="prepare"] .psu-install-label { display: none; }
+.psu-view[data-phase="prepare"] .psu-progress-meta { display: flex; justify-content: space-between; gap: 1cqw; margin: 0; }
+.psu-view[data-phase="prepare"] .psu-prepare-label { display: inline; }
+.psu-view[data-phase="prepare"] .psu-track { margin-top: 1cqh; }
+.psu-view[data-phase="prepare"] .psu-warning { top: 67.5%; font-size: 1.65cqw; font-weight: 600; gap: 1.4cqw; }
+.psu-view[data-phase="prepare"] .psu-warning svg { width: 2.2cqw; height: 2.2cqw; }
+
+.psu-view[data-phase="waiting"] .psu-progress,
+.psu-view[data-phase="waiting"] .psu-warning { display: none; }
+.psu-view[data-phase="waiting"] .psu-wait { display: block; }
+
+.psu-view[data-phase="restarting"] { background: #000; }
+.psu-view[data-phase="restarting"] > :not(.psu-restarting):not(.psu-console) { display: none; }
+.psu-view[data-phase="restarting"] .psu-console { display: block; position: absolute; left: 69%; top: 14%; width: 16%; height: 86%; animation: psu-console-light 2.4s ease-out both; }
+.psu-console i { position: absolute; top: 0; width: 0.2cqw; height: 100%; background: linear-gradient(transparent, #a5a5a5 18%, #d4d4d4 60%, #151515); box-shadow: 0 0 0.7cqw #666, 0 0 2cqw #292929; }
+.psu-console i:first-child { left: 0; transform: rotate(-5deg); }
+.psu-console i:last-child { right: 0; transform: rotate(5deg); }
+.psu-view[data-phase="restarting"] .psu-restarting { display: block; position: absolute; left: 11.2%; top: 40%; text-align: left; width: 65%; font-size: 3cqw; }
+.psu-restarting p + p { margin-top: 4cqh; font-size: 1.8cqw; line-height: 1.4; }
+.psu-view:is([data-phase="blank"], [data-phase="reboot"]) { background: #000; }
+.psu-view:is([data-phase="blank"], [data-phase="reboot"]) > * { visibility: hidden; }
+
+@keyframes psu-console-light { from { opacity: 0; } to { opacity: 0.75; } }
+@keyframes psu-drift { from { transform: translate(-6px, 8px); opacity: 0.8; } to { transform: translate(8px, -12px); opacity: 1; } }
+@keyframes psu-shimmer { 0%, 100% { left: 8%; opacity: 0.25; } 50% { left: 85%; opacity: 0.9; } }
+@keyframes psu-spin { to { transform: rotate(360deg); } }
+
+@media (max-aspect-ratio: 1/1) {
+	.fcon-screen .psu-heading { left: 7%; top: 8%; font-size: 6cqw; }
+	.fcon-screen .psu-progress { left: 10%; width: 80%; top: 35%; font-size: 6cqw; }
+	.fcon-screen .psu-warning { top: 60%; left: 9%; width: 82%; gap: 2cqw; align-items: flex-start; font-size: 4.5cqw; }
+	.fcon-screen .psu-warning svg { width: 5cqw; height: 5cqw; margin-top: 0.3cqw; }
+	.fcon-screen .psu-view[data-phase="prepare"] .psu-prepare-copy { left: 10%; width: 80%; top: 29%; font-size: 4.2cqw; }
+	.fcon-screen .psu-view[data-phase="prepare"] .psu-progress { top: 48%; font-size: 3.6cqw; }
+	.fcon-screen .psu-view[data-phase="prepare"] .psu-warning { top: 60%; font-size: 4.2cqw; }
+	.fcon-screen .psu-wait { font-size: 6cqw; }
+	.fcon-screen .psu-spinner { width: 5cqw; height: 5cqw; }
+	.fcon-screen .psu-view[data-phase="restarting"] .psu-restarting { left: 9%; width: 82%; top: 35%; font-size: 7cqw; }
+	.fcon-screen .psu-restarting p + p { font-size: 4.5cqw; }
+	.fcon-screen .psu-wide-break { display: none; }
+	.fcon-screen .psu-console { opacity: 0.25; animation: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.psu-particles g,
+	.psu-console,
+	.psu-fill::after { animation: none; }
+	.psu-spinner { animation-duration: 3s; }
+}

@@ -1,0 +1,104 @@
+/* Tool Category hub page. */
+
+.tcat-page {
+	padding-bottom: 60px;
+}
+
+.tcat-hero {
+	text-align: center;
+	padding: 48px 0 34px;
+}
+
+.tcat-title {
+	font-size: 38px;
+	font-weight: 900;
+	letter-spacing: -.5px;
+	margin: 0;
+}
+
+.tcat-subtitle {
+	margin: 12px auto 0;
+	font-size: 17px;
+	color: #6b7280;
+	max-width: 720px;
+}
+
+.tcat-count {
+	margin: 10px 0 0;
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--cat, #ea580c);
+}
+
+.tcat-grid-section {
+	padding-bottom: 44px;
+}
+
+.tcat-seo-content,
+.tcat-faq {
+	padding-top: 36px;
+	border-top: 1px solid #e5e7eb;
+	margin-top: 36px;
+}
+
+.tcat-seo-content-inner,
+.tcat-faq-inner {
+	padding: 0;
+}
+
+.tcat-faq-title {
+	font-size: 26px;
+	font-weight: 700;
+	margin: 0 0 16px;
+	color: #0f172a;
+}
+
+.tcat-faq-item {
+	border-bottom: 1px solid #e5e7eb;
+	padding: 14px 0;
+}
+
+.tcat-faq-item:last-child {
+	border-bottom: 0;
+}
+
+.tcat-faq-q {
+	font-weight: 600;
+	cursor: pointer;
+	list-style: none;
+	padding: 6px 36px 6px 0;
+	position: relative;
+	color: #0f172a;
+}
+
+.tcat-faq-q::-webkit-details-marker {
+	display: none;
+}
+
+.tcat-faq-q::after {
+	content: '+';
+	position: absolute;
+	right: 8px;
+	top: 4px;
+	font-weight: 400;
+	font-size: 22px;
+	line-height: 1;
+	color: var(--cat, #ea580c);
+	transition: transform .2s;
+}
+
+.tcat-faq-item[open] > .tcat-faq-q::after {
+	content: '\2013';
+}
+
+.tcat-faq-a {
+	margin-top: 10px;
+	color: #4b5563;
+	line-height: 1.65;
+}
+
+@media (max-width: 700px) {
+	.tcat-title {
+		font-size: 30px;
+	}
+}

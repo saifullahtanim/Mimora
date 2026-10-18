@@ -1,0 +1,521 @@
+/* Text Case Converter
+-------------------------------------- */
+
+.tcc-page {
+    --tcc-accent: #fdcb6e;
+    --tcc-accent-dark: #e4b84f;
+    --tcc-accent-text: #946b00;
+    --tcc-accent-light: color-mix(in srgb, #fdcb6e 12%, transparent);
+    --tcc-border: var(--flex-gray-15, rgba(0, 0, 0, 0.08));
+    --tcc-surface: var(--solid-white, #fff);
+    --tcc-radius: var(--round-7, 7px);
+    --tcc-transition: var(--effect, 0.25s ease);
+    position: relative;
+    padding: 36px 0 80px;
+}
+
+/* Hero
+-------------------------------------- */
+
+.tcc-hero {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 18px 0 28px;
+    text-align: center;
+}
+
+.tcc-title {
+    margin-bottom: 12px;
+    font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+}
+
+.tcc-subtitle {
+    max-width: 640px;
+    margin: 0 auto;
+    font-size: clamp(0.9rem, 1.5vw, 1rem);
+    line-height: 1.65;
+    color: var(--excerpt-color);
+}
+
+/* Card
+-------------------------------------- */
+
+.tcc-tool-section {
+    max-width: 1080px;
+    margin: 0 auto 28px;
+}
+
+.tcc-card {
+    border: 1px solid #ddd;
+    border-radius: 16px;
+    background: var(--tcc-surface);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03), 0 6px 24px rgba(0, 0, 0, 0.07);
+    padding: 32px;
+}
+
+/* ═══════════════════════════════════
+   Two-Column Layout
+   ═══════════════════════════════════ */
+
+.tcc-layout {
+    display: flex;
+    gap: 28px;
+}
+
+.tcc-layout-left {
+    flex: 1;
+    min-width: 0;
+}
+
+.tcc-layout-right {
+    width: 200px;
+    flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════
+   Textarea
+   ═══════════════════════════════════ */
+
+.tcc-textarea {
+    display: block;
+    width: 100%;
+    min-height: 380px;
+    padding: 16px;
+    font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', 'Consolas', 'Monaco', monospace;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    color: var(--headline-fcolor, #222);
+    background: var(--tcc-surface);
+    border: 1.5px solid var(--tcc-border);
+    border-radius: 12px;
+    resize: vertical;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+}
+
+.tcc-textarea:focus {
+    outline: none;
+    border-color: var(--tcc-accent-dark);
+    box-shadow: 0 0 0 3px var(--tcc-accent-light);
+}
+
+.tcc-textarea::placeholder {
+    color: var(--body-fcolor, #999);
+    opacity: 0.5;
+}
+
+/* ═══════════════════════════════════
+   Textarea Footer
+   ═══════════════════════════════════ */
+
+.tcc-textarea-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 4px 0;
+}
+
+.tcc-char-count {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--excerpt-color, #888);
+}
+
+.tcc-textarea-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.tcc-btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    color: #666;
+    background: #f0eefc;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--tcc-transition);
+}
+
+.tcc-btn-icon svg {
+    width: 15px;
+    height: 15px;
+}
+
+.tcc-btn-icon:hover {
+    color: var(--tcc-accent-text);
+    border-color: var(--tcc-accent-dark);
+    background: var(--tcc-accent-light);
+}
+
+/* ═══════════════════════════════════
+   Case Conversion Buttons
+   ═══════════════════════════════════ */
+
+.tcc-convert-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 14px;
+}
+
+.tcc-convert-btn {
+    padding: 12px 10px;
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: var(--headline-fcolor, #333);
+    background: #f0eefc;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: var(--tcc-transition);
+    line-height: 1;
+    text-align: center;
+}
+
+.tcc-convert-btn:hover {
+    color: #fff;
+    background: var(--tcc-accent-text);
+}
+
+.tcc-convert-btn:active,
+.tcc-convert-btn.tcc-active {
+    color: #fff;
+    background: var(--tcc-accent-dark);
+}
+
+/* Dev format buttons — monospace font */
+.tcc-convert-btn-dev {
+    font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', 'Consolas', 'Monaco', monospace;
+    font-size: 0.8rem;
+}
+
+/* ═══════════════════════════════════
+   Stats Sidebar
+   ═══════════════════════════════════ */
+
+.tcc-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.tcc-stat {
+    border: none;
+    border-radius: 12px;
+    padding: 16px 14px;
+    text-align: center;
+    background: #f0eefc;
+    transition: background 0.2s;
+}
+
+.tcc-stat:hover {
+    background: #e6e3fa;
+}
+
+.tcc-stat-value {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--tcc-accent-text);
+    line-height: 1.2;
+    margin-bottom: 3px;
+}
+
+.tcc-stat-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #666;
+}
+
+/* ═══════════════════════════════════
+   SEO Content
+   ═══════════════════════════════════ */
+
+.tcc-seo-content {
+    margin-top: 54px;
+    padding-top: 36px;
+    border-top: 1px solid var(--tcc-border);
+}
+
+/* ═══════════════════════════════════
+   FAQ Section
+   ═══════════════════════════════════ */
+
+.tcc-faq {
+    margin-top: 54px;
+    padding-top: 36px;
+    border-top: 1px solid var(--tcc-border);
+}
+
+.tcc-faq-inner {
+    padding: 0;
+}
+
+.tcc-faq-label {
+    display: inline-block;
+    margin-bottom: 6px;
+    padding: 3px 12px;
+    font-family: var(--meta-family);
+    font-size: var(--meta-fsize);
+    font-weight: var(--meta-b-fweight, 600);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--tcc-accent-text);
+    background: var(--tcc-accent-light);
+    border-radius: 20px;
+}
+
+.tcc-faq-title {
+    margin-bottom: 24px;
+    font-size: clamp(1.5rem, 2.5vw, 2rem);
+}
+
+.tcc-faq-list {
+    position: relative;
+}
+
+.tcc-faq-item {
+    border-bottom: 1px solid var(--tcc-border);
+}
+
+.tcc-faq-item:last-child {
+    border-bottom: none;
+}
+
+.tcc-faq-question {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 18px 0;
+    text-align: left;
+    color: inherit;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    gap: 20px;
+    cursor: pointer;
+}
+
+.tcc-faq-question:hover,
+.tcc-faq-question:focus {
+    color: var(--tcc-accent-text);
+    background: transparent;
+    box-shadow: none;
+}
+
+.tcc-faq-question-text {
+    font-family: var(--h4-family);
+    font-size: clamp(1rem, 2vw, 1.125rem);
+    font-weight: var(--h4-fweight, 700);
+    line-height: 1.45;
+}
+
+.tcc-faq-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
+    color: var(--tcc-accent-text);
+    border: 1px solid var(--tcc-border);
+    border-radius: 50%;
+    background: var(--tcc-accent-light);
+    transition: var(--tcc-transition);
+}
+
+.tcc-faq-toggle svg {
+    width: 14px;
+    height: 14px;
+    transition: transform 0.2s ease;
+}
+
+.tcc-faq-item.tcc-faq-open .tcc-faq-toggle svg {
+    transform: rotate(180deg);
+}
+
+.tcc-faq-answer {
+    display: none;
+    padding-bottom: 18px;
+}
+
+.tcc-faq-item.tcc-faq-open .tcc-faq-answer {
+    display: block;
+}
+
+.tcc-faq-item:first-child .tcc-faq-answer {
+    display: block;
+}
+
+.tcc-faq-item:first-child .tcc-faq-toggle svg {
+    transform: rotate(180deg);
+}
+
+.tcc-faq-item:first-child:not(.tcc-faq-open):not(.tcc-faq-touched) .tcc-faq-answer {
+    display: block;
+}
+
+.tcc-faq-item:first-child:not(.tcc-faq-open).tcc-faq-touched .tcc-faq-answer {
+    display: none;
+}
+
+.tcc-faq-item:first-child:not(.tcc-faq-open).tcc-faq-touched .tcc-faq-toggle svg {
+    transform: rotate(0deg);
+}
+
+.tcc-faq-answer-inner {
+    max-width: 840px;
+    color: var(--excerpt-color);
+    line-height: 1.7;
+    font-size: 0.95rem;
+}
+
+.tcc-faq-answer-inner p {
+    margin: 0;
+}
+
+/* ═══════════════════════════════════
+   Toast
+   ═══════════════════════════════════ */
+
+.tcc-toast-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 100000;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    pointer-events: none;
+}
+
+.tcc-toast {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #fff;
+    background: var(--dark-accent, #191c20);
+    border-radius: var(--tcc-radius);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    pointer-events: auto;
+    animation: tccToastIn 0.3s ease;
+}
+
+.tcc-toast.tcc-toast-out {
+    animation: tccToastOut 0.25s ease forwards;
+}
+
+@keyframes tccToastIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes tccToastOut {
+    to {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+}
+
+/* ═══════════════════════════════════
+   Responsive
+   ═══════════════════════════════════ */
+
+@media (max-width: 1024px) {
+    .tcc-page {
+        padding-top: 28px;
+    }
+
+    .tcc-layout {
+        flex-direction: column;
+    }
+
+    .tcc-layout-right {
+        width: 100%;
+    }
+
+    .tcc-stats {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .tcc-stat {
+        flex: 1;
+        min-width: 120px;
+    }
+
+    .tcc-textarea {
+        min-height: 200px;
+    }
+}
+
+@media (max-width: 767px) {
+    .tcc-page {
+        padding: 18px 0 56px;
+    }
+
+    .tcc-hero {
+        padding: 24px 0 20px;
+    }
+
+    .tcc-card {
+        padding: 20px 16px;
+    }
+
+    .tcc-textarea {
+        min-height: 150px;
+    }
+
+    .tcc-stat {
+        min-width: 0;
+    }
+
+    .tcc-convert-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .tcc-convert-btn {
+        padding: 10px 8px;
+        font-size: 0.78rem;
+    }
+
+    .tcc-seo-content {
+        margin-top: 42px;
+    }
+
+    .tcc-faq {
+        margin-top: 42px;
+    }
+
+    .tcc-faq-question {
+        gap: 14px;
+    }
+
+    .tcc-toast-container {
+        bottom: 12px;
+        right: 12px;
+        left: 12px;
+    }
+}

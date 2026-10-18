@@ -1,0 +1,599 @@
+/* Age Calculator — single tool card + separator-based content sections. */
+
+.age-calculator-main {
+    --age-calculator-accent: #7c3aed;
+    --age-calculator-accent-soft: rgba(124, 58, 237, 0.15);
+    --age-calculator-border: #e5e7eb;
+    --age-calculator-ink: #111827;
+    --age-calculator-muted: #6b7280;
+    padding: 24px 0 72px;
+}
+
+/* ---------- Hero ---------- */
+.age-calculator-hero {
+    text-align: center;
+    padding: 32px 0 28px;
+}
+
+.age-calculator-title {
+    font-size: clamp(32px, 5vw, 44px);
+    font-weight: 800;
+    margin: 0 0 12px;
+    color: var(--age-calculator-ink);
+    letter-spacing: -0.02em;
+}
+
+.age-calculator-subtitle {
+    font-size: 17px;
+    color: var(--age-calculator-muted);
+    max-width: 640px;
+    margin: 0 auto;
+    line-height: 1.55;
+}
+
+/* ---------- Tool card ---------- */
+.age-calculator-tool-card {
+    background: #fff;
+    border: 1px solid var(--age-calculator-border);
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    position: relative;
+    overflow: hidden;
+}
+
+/* ---------- Inputs ---------- */
+.age-calculator-inputs {
+    display: flex;
+    gap: 16px;
+    background: #f3f4f6;
+    padding: 20px;
+    border-radius: 14px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+}
+
+.age-calculator-field {
+    flex: 1;
+    min-width: 220px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.age-calculator-field label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #4b5563;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+/* DOB row — three fully-custom dropdowns side by side (Month / Day / Year).
+   No native <select>. The trigger looks like a styled pill; the open list
+   is a fully themed scrollable popup so the highlight matches the tool. */
+.age-calculator-dob-row {
+    display: flex;
+    gap: 8px;
+}
+
+.age-calculator-dd {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 14px 36px 14px 16px;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 10px;
+    background-color: #ffffff;
+    font-size: 15px;
+    font-weight: 500;
+    font-family: inherit;
+    color: var(--age-calculator-ink);
+    cursor: pointer;
+    user-select: none;
+    transition: border-color 0.15s, box-shadow 0.15s, background-color 0.15s;
+    outline: none;
+}
+
+.age-calculator-dd:hover {
+    border-color: #94a3b8;
+    background-color: #fafbfc;
+}
+
+.age-calculator-dd:focus-visible,
+.age-calculator-dd.is-open {
+    border-color: var(--age-calculator-accent);
+    box-shadow: 0 0 0 4px var(--age-calculator-accent-soft);
+    background-color: #ffffff;
+}
+
+.age-calculator-dd-display {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.age-calculator-dd-display-placeholder {
+    color: #9ca3af;
+    font-weight: 400;
+}
+
+.age-calculator-dd-chevron {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    margin-top: -4px;
+    width: 12px;
+    height: 8px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none' stroke='%236b7280' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-size: contain;
+    pointer-events: none;
+    transition: transform 0.2s;
+}
+
+.age-calculator-dd.is-open .age-calculator-dd-chevron {
+    transform: rotate(180deg);
+}
+
+ul.age-calculator-dd-list {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    min-width: 100%;
+    max-height: 260px;
+    overflow-y: auto;
+    margin: 0;
+    padding: 6px;
+    list-style: none;
+    background-color: #ffffff !important;
+    background-image: none;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.16);
+    z-index: 100;
+    display: none;
+    box-sizing: border-box;
+}
+
+.age-calculator-dd.is-open ul.age-calculator-dd-list {
+    display: block;
+}
+
+ul.age-calculator-dd-list li.age-calculator-dd-item {
+    display: block;
+    margin: 0;
+    padding: 10px 14px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    list-style: none;
+    line-height: 1.4;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--age-calculator-ink);
+    text-align: left;
+    white-space: nowrap;
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: background-color 0.1s, color 0.1s;
+}
+
+ul.age-calculator-dd-list li.age-calculator-dd-item::before,
+ul.age-calculator-dd-list li.age-calculator-dd-item::after {
+    content: none !important;
+    display: none !important;
+}
+
+ul.age-calculator-dd-list li.age-calculator-dd-item:hover {
+    background-color: var(--age-calculator-accent-soft);
+}
+
+ul.age-calculator-dd-list li.age-calculator-dd-item.is-selected,
+ul.age-calculator-dd-list li.age-calculator-dd-item.is-selected:hover {
+    background-color: var(--age-calculator-accent);
+    color: #ffffff;
+    font-weight: 700;
+}
+
+/* "As of" date input — flatpickr renders a calendar popup on click. */
+.age-calculator-field input[type="date"],
+.age-calculator-field input.flatpickr-input,
+.age-calculator-field input.age-calculator-input-date {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 14px 16px 14px 46px;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 10px;
+    background-color: #fff;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='5' width='18' height='16' rx='2'/%3E%3Cline x1='3' y1='10' x2='21' y2='10'/%3E%3Cline x1='8' y1='3' x2='8' y2='7'/%3E%3Cline x1='16' y1='3' x2='16' y2='7'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: 16px center;
+    font-size: 15px;
+    font-weight: 500;
+    font-family: inherit;
+    color: var(--age-calculator-ink);
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s, background-color 0.15s;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.age-calculator-field input[type="date"]::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.age-calculator-field input[type="date"]:hover,
+.age-calculator-field input.flatpickr-input:hover {
+    border-color: #94a3b8;
+    background-color: #fafbfc;
+}
+
+.age-calculator-field input[type="date"]:focus,
+.age-calculator-field input.flatpickr-input:focus,
+.age-calculator-field input[type="date"]:focus-visible,
+.age-calculator-field input.flatpickr-input:focus-visible {
+    outline: none;
+    border-color: var(--age-calculator-accent);
+    background-color: #fff;
+    box-shadow: 0 0 0 4px var(--age-calculator-accent-soft);
+}
+
+/* ---------- Minimal flatpickr theming for the "As of" calendar popup ---------- */
+.flatpickr-calendar.open {
+    z-index: 9999;
+    border-radius: 14px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 20px 48px rgba(15, 23, 42, 0.12),
+                0 4px 16px rgba(15, 23, 42, 0.04);
+    padding: 4px;
+    font-family: inherit;
+}
+
+.flatpickr-day.selected,
+.flatpickr-day.selected:hover,
+.flatpickr-day.selected:focus,
+.flatpickr-day.selected.today,
+.flatpickr-day.selected.startRange,
+.flatpickr-day.selected.endRange,
+.flatpickr-day.selected.startRange.endRange,
+.flatpickr-day.startRange,
+.flatpickr-day.endRange,
+.flatpickr-day.startRange.endRange {
+    background: var(--age-calculator-accent, #7c3aed) !important;
+    border-color: var(--age-calculator-accent, #7c3aed) !important;
+    color: #fff !important;
+    border-radius: 8px !important;
+    font-weight: 700;
+}
+
+.flatpickr-day.today {
+    border: none;
+    background: rgba(124, 58, 237, 0.10);
+    color: var(--age-calculator-accent);
+    font-weight: 700;
+    border-radius: 8px;
+}
+
+.flatpickr-day:hover {
+    background: var(--age-calculator-accent-soft);
+    border: none;
+    border-radius: 8px;
+}
+
+.age-calculator-error {
+    color: #b91c1c;
+    font-size: 14px;
+    margin: 12px 4px 0;
+    min-height: 1.2em;
+}
+
+/* ---------- Hero result number ---------- */
+.age-calculator-hero-result {
+    display: block;
+    text-align: center;
+    margin: 28px 0 24px;
+    font-size: clamp(26px, 5vw, 42px);
+    font-weight: 800;
+    color: var(--age-calculator-accent);
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    transition: color 0.6s ease;
+}
+
+/* ---------- Zodiac panel ---------- */
+.age-calculator-zodiac {
+    position: relative;
+    border-radius: 18px;
+    padding: 28px;
+    margin: 28px 0;
+    color: #fff;
+    overflow: hidden;
+    min-height: 140px;
+    background: linear-gradient(135deg, #7c3aed, #3ba9ee);
+    transition: background 0.6s ease;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 24px;
+    align-items: center;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.age-calculator-zodiac[data-element="fire"]  { background: linear-gradient(135deg, #ff7e3d, #ff4d6d); }
+.age-calculator-zodiac[data-element="earth"] { background: linear-gradient(135deg, #5a8a4b, #84a05f); }
+.age-calculator-zodiac[data-element="air"]   { background: linear-gradient(135deg, #7c3aed, #3ba9ee); }
+.age-calculator-zodiac[data-element="water"] { background: linear-gradient(135deg, #0d9488, #3b82f6); }
+
+.age-calculator-zodiac-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    opacity: 0.65;
+}
+
+.age-calculator-constellation-dot {
+    fill: #ffffff;
+    filter: drop-shadow(0 0 1.2px rgba(255, 255, 255, 0.9));
+}
+
+.age-calculator-constellation-line {
+    stroke: rgba(255, 255, 255, 0.35);
+    stroke-width: 0.25;
+    stroke-linecap: round;
+    fill: none;
+}
+
+.age-calculator-zodiac-glyph {
+    font-size: 64px;
+    line-height: 1;
+    position: relative;
+    z-index: 1;
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.25));
+}
+
+.age-calculator-zodiac-text {
+    position: relative;
+    z-index: 1;
+}
+
+.age-calculator-zodiac-name {
+    font-size: clamp(22px, 3.4vw, 32px);
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    margin-bottom: 6px;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+}
+
+.age-calculator-zodiac-meta {
+    font-size: 14px;
+    opacity: 0.95;
+    letter-spacing: 0.04em;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+}
+
+/* ---------- Stat grid ---------- */
+.age-calculator-stats {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+    margin: 24px 0;
+}
+
+.age-calculator-stat {
+    background: #f9fafb;
+    border: 1px solid var(--age-calculator-border);
+    border-radius: 10px;
+    padding: 14px 8px;
+    text-align: center;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.age-calculator-stat:hover {
+    border-color: var(--age-calculator-accent);
+    background: #fff;
+}
+
+.age-calculator-stat-value {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--age-calculator-ink);
+    word-break: break-word;
+    line-height: 1.2;
+}
+
+.age-calculator-stat-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--age-calculator-muted);
+    margin-top: 4px;
+    font-weight: 600;
+}
+
+/* ---------- Footnote ---------- */
+.age-calculator-footnote {
+    text-align: center;
+    color: var(--age-calculator-muted);
+    font-size: 15px;
+    margin: 20px 0 28px;
+    min-height: 1.5em;
+    line-height: 1.5;
+}
+
+/* ---------- Download button ---------- */
+.age-calculator-actions {
+    text-align: center;
+}
+
+.age-calculator-download {
+    background: var(--age-calculator-accent);
+    color: #fff;
+    border: 0;
+    padding: 14px 32px;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.6s ease, transform 0.12s ease, box-shadow 0.2s ease, opacity 0.2s;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.age-calculator-download:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.16);
+}
+
+.age-calculator-download:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.age-calculator-download:focus-visible {
+    outline: 3px solid var(--age-calculator-accent-soft);
+    outline-offset: 3px;
+}
+
+.age-calculator-download:disabled {
+    background: #d1d5db;
+    cursor: not-allowed;
+    box-shadow: none;
+    opacity: 0.7;
+}
+
+/* ---------- Confetti ---------- */
+.age-calculator-confetti-piece {
+    position: absolute;
+    top: -12px;
+    width: 8px;
+    height: 14px;
+    border-radius: 2px;
+    pointer-events: none;
+    animation: age-calculator-confetti-fall 1.5s linear forwards;
+    z-index: 10;
+}
+
+@keyframes age-calculator-confetti-fall {
+    0%   { transform: translateY(0) rotate(0); opacity: 1; }
+    100% { transform: translateY(720px) rotate(720deg); opacity: 0; }
+}
+
+/* ---------- SEO body + FAQ (flat, separator-based) ---------- */
+.age-calculator-seo-content {
+    padding-top: 36px;
+    border-top: 1px solid var(--age-calculator-border);
+    margin-top: 40px;
+}
+
+.age-calculator-seo-content-inner {
+    line-height: 1.7;
+}
+
+.age-calculator-faq {
+    padding-top: 36px;
+    border-top: 1px solid var(--age-calculator-border);
+    margin-top: 40px;
+}
+
+.age-calculator-faq-inner {
+    padding: 0;
+}
+
+.age-calculator-faq-title {
+    font-size: 26px;
+    font-weight: 700;
+    margin: 0 0 16px;
+    color: var(--age-calculator-ink);
+}
+
+.age-calculator-faq-item {
+    border-bottom: 1px solid var(--age-calculator-border);
+    padding: 14px 0;
+}
+
+.age-calculator-faq-item:last-child {
+    border-bottom: 0;
+}
+
+.age-calculator-faq-q {
+    font-weight: 600;
+    cursor: pointer;
+    list-style: none;
+    padding: 6px 36px 6px 0;
+    position: relative;
+    color: var(--age-calculator-ink);
+}
+
+.age-calculator-faq-q::-webkit-details-marker { display: none; }
+
+.age-calculator-faq-q::after {
+    content: '+';
+    position: absolute;
+    right: 8px;
+    top: 4px;
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 1;
+    color: var(--age-calculator-accent);
+    transition: transform 0.2s, color 0.6s;
+}
+
+.age-calculator-faq-item[open] > .age-calculator-faq-q::after {
+    content: '–';
+}
+
+.age-calculator-faq-a {
+    margin-top: 10px;
+    color: #4b5563;
+    line-height: 1.65;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 720px) {
+    .age-calculator-tool-card {
+        padding: 20px;
+    }
+    .age-calculator-zodiac {
+        grid-template-columns: 1fr;
+        text-align: center;
+        padding: 24px 20px;
+    }
+    .age-calculator-zodiac-glyph {
+        font-size: 56px;
+        margin: 0 auto;
+    }
+    .age-calculator-stats {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 420px) {
+    .age-calculator-inputs {
+        flex-direction: column;
+    }
+    .age-calculator-stat-value {
+        font-size: 15px;
+    }
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+    .age-calculator-hero-result,
+    .age-calculator-zodiac,
+    .age-calculator-tool-card,
+    .age-calculator-download,
+    .age-calculator-faq-q::after {
+        transition: none;
+    }
+    .age-calculator-confetti-piece {
+        display: none;
+    }
+}

@@ -1,0 +1,473 @@
+/* Fake Windows XP Crash Prank
+ *
+ * Crash overlay with three auto-advancing stages, sits above the XP
+ * simulator overlay when the prank is triggered.
+ *   1. reboot   — XP boot logo + sliding loading bar (3.5s)
+ *   2. install  — "Install media missing" boot-failure error (3s)
+ *   3. bsod     — UNMOUNTABLE_BOOT_VOLUME (terminal — ESC exits)
+ *
+ * Naming convention: .xpcrash-* for everything inside the crash overlay.
+ */
+
+/* ============================================================
+ * Landing page mini-preview
+ * ============================================================ */
+.xpcrash-page .prank-preview-frame {
+    aspect-ratio: 16/10;
+    overflow: hidden;
+}
+
+.xpcrash-preview-thumb {
+    position: absolute;
+    inset: 0;
+    background: #0000aa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 24px;
+}
+
+.xpcrash-preview-bsod {
+    color: #fff;
+    font: 11px "Lucida Console", "Courier New", monospace;
+    line-height: 1.7;
+    text-align: left;
+}
+
+.xpcrash-preview-stop {
+    margin-top: 14px;
+}
+
+/* ============================================================
+ * Fullscreen overlay
+ * ============================================================ */
+.xpcrash-overlay {
+    /* Crash overlay sits ABOVE the XP simulator overlay (z-index 99999 vs
+     * the simulator's 99999 — both same; render order puts crash on top
+     * since it's later in the DOM). Default cursor (this is auto-driven). */
+    position: fixed;
+    inset: 0;
+    background: #000;
+    z-index: 100000;
+    display: none;
+    overflow: hidden;
+    color: #fff;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.xpcrash-overlay.is-active { display: block; }
+
+/* Once the crash flow is on screen, the experience is keyboard-driven —
+ * hide the cursor so the prank doesn't betray itself. */
+.xpcrash-overlay.is-active,
+.xpcrash-overlay.is-active * { cursor: none; }
+
+.xpcrash-stage {
+    position: absolute;
+    inset: 0;
+    display: none;
+}
+
+.xpcrash-stage.is-visible {
+    display: flex;
+    animation: xpcrash-stage-in 0.18s ease;
+}
+
+@keyframes xpcrash-stage-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* ============================================================
+ * Stage: Dell BIOS post — black with big italic blue DELL logo
+ * ============================================================ */
+.xpcrash-stage-dell {
+    background: #000;
+    align-items: center;
+    justify-content: center;
+}
+
+.xpcrash-dell-logo {
+    color: #0028c8;
+    font: italic bold 220px "Arial Black", Impact, sans-serif;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    transform: skewX(-10deg);
+}
+
+.xpcrash-dell-hint {
+    position: absolute;
+    top: 24px;
+    right: 32px;
+    color: #fff;
+    font: 16px "Lucida Console", "Courier New", monospace;
+    line-height: 1.6;
+    text-align: left;
+}
+
+@media (max-width: 1200px) { .xpcrash-dell-logo { font-size: 170px; } }
+@media (max-width: 800px)  {
+    .xpcrash-dell-logo { font-size: 120px; }
+    .xpcrash-dell-hint { font-size: 12px; top: 14px; right: 18px; }
+}
+
+/* ============================================================
+ * Stage: BIOS searching for bootable media on CD/DVD
+ * Black screen, white monospace text in upper-left, the dots after the
+ * drive name "tick" via JS (.....).
+ * ============================================================ */
+.xpcrash-stage-cdsearch {
+    background: #000;
+    color: #fff;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 20px 24px;
+    font-family: "Lucida Console", "Courier New", monospace;
+}
+
+.xpcrash-cdsearch-text {
+    font-size: 17px;
+    line-height: 1.4;
+}
+
+.xpcrash-cdsearch-dots::before { content: ""; }
+
+@media (max-width: 800px) {
+    .xpcrash-stage-cdsearch  { padding: 14px 12px; }
+    .xpcrash-cdsearch-text   { font-size: 13px; }
+}
+
+/* ============================================================
+ * Stage: Reboot (XP boot logo + 3-block sliding bar) — kept for
+ * reference / future use. Currently the crash flow goes BSOD → Dell
+ * → cdsearch → install, so this stage isn't in the rotation.
+ * ============================================================ */
+.xpcrash-stage-reboot {
+    background: #000;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+}
+
+.xpcrash-xpboot-logo {
+    display: block;
+    width: 380px;
+    height: auto;
+    margin: 0 auto 56px;
+}
+
+@media (min-width: 1600px) { .xpcrash-xpboot-logo { width: 460px; } }
+
+.xpcrash-xpboot-progress { width: 200px; }
+
+.xpcrash-xpboot-progress-track {
+    position: relative;
+    width: 100%;
+    height: 22px;
+    background: #000;
+    border: 1px solid #5a5a5a;
+    border-radius: 4px;
+    box-shadow: inset 0 0 0 1px #0a0a0a;
+    overflow: hidden;
+}
+
+.xpcrash-xpboot-progress-bar {
+    position: absolute;
+    top: 4px;
+    left: 0;
+    height: 12px;
+    width: 60px;
+    background-image:
+        linear-gradient(180deg, #c7e3ff 0%, #4a9bf6 50%, #1f6cd6 100%),
+        linear-gradient(180deg, #c7e3ff 0%, #4a9bf6 50%, #1f6cd6 100%),
+        linear-gradient(180deg, #c7e3ff 0%, #4a9bf6 50%, #1f6cd6 100%);
+    background-size: 16px 12px, 16px 12px, 16px 12px;
+    background-position: 0 0, 22px 0, 44px 0;
+    background-repeat: no-repeat;
+    animation: xpcrash-xpboot-slide 1.3s linear infinite;
+}
+
+@keyframes xpcrash-xpboot-slide {
+    from { left: -60px; }
+    to   { left: 200px; }
+}
+
+.xpcrash-xpboot-copyright {
+    position: absolute;
+    bottom: 32px;
+    left: 32px;
+    color: #888;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+}
+
+.xpcrash-xpboot-corp {
+    position: absolute;
+    bottom: 32px;
+    right: 32px;
+    color: #fff;
+    font: italic bold 16px "Trebuchet MS", Tahoma, sans-serif;
+    letter-spacing: 0.02em;
+}
+
+.xpcrash-xpboot-corp sup {
+    font-size: 9px;
+    vertical-align: super;
+    font-weight: 400;
+}
+
+/* ============================================================
+ * Stage: HP "Boot Device Not Found"
+ * Black screen, white monospace text top-left, highlighted button.
+ * ============================================================ */
+.xpcrash-stage-bootdevice {
+    background: #000;
+    color: #fff;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 28px 32px;
+    font: 24px "Lucida Console", "Courier New", monospace;
+    letter-spacing: 0;
+    /* Disable AA so the type reads like a real CRT/BIOS bitmap font. */
+    -webkit-font-smoothing: none;
+    -moz-osx-font-smoothing: grayscale;
+    font-smooth: never;
+}
+
+.xpcrash-bootdevice-text {
+    line-height: 1.5;
+}
+
+/* Highlighted "Last Known Good Configuration" — selected option on the
+ * HP BIOS screen. Flat gray highlight + 1px white outline, sharp corners,
+ * NO browser button chrome. Sits on its own line below "Hard Disk (3F0)". */
+.xpcrash-bd-btn {
+    display: inline-block;
+    margin: 14px 0 0;
+    padding: 1px 10px;
+    background: #6e6e6e;
+    color: #fff;
+    border: 1px solid #fff;
+    border-radius: 0;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    font: inherit;
+    line-height: inherit;
+    pointer-events: none;
+}
+
+@media (max-width: 800px) {
+    .xpcrash-stage-bootdevice { padding: 16px 14px; font-size: 16px; }
+}
+
+/* ============================================================
+ * Stage: Format C: / FDISK terminal
+ * White-on-black monospace, sections fade in as the JS unlocks them.
+ * ============================================================ */
+.xpcrash-stage-format {
+    background: #000;
+    color: #fff;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 28px 36px;
+    font: 19px "Lucida Console", "Courier New", monospace;
+}
+
+.xpcrash-format-text {
+    line-height: 1.55;
+    width: 100%;
+}
+
+/* Sections start hidden — JS adds .is-shown to reveal each in turn. */
+.xpcrash-format-warning,
+.xpcrash-format-fdisk { display: none; }
+
+.xpcrash-format-warning.is-shown,
+.xpcrash-format-fdisk.is-shown { display: block; }
+
+/* DOS-era format progress bar — outlined box with hatched right side and
+ * solid filled left side that grows as JS bumps the percentage. */
+.xpcrash-format-bar {
+    position: relative;
+    width: 360px;
+    height: 26px;
+    border: 2px solid #fff;
+    background: #000;
+    overflow: hidden;
+    margin: 4px 0;
+}
+
+.xpcrash-format-bar::before {
+    /* Hatched/dithered right side (the "yet to fill" portion). */
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+        90deg,
+        #888 0,
+        #888 2px,
+        #000 2px,
+        #000 4px
+    );
+    opacity: 0.8;
+}
+
+.xpcrash-format-bar-fill {
+    position: relative;
+    height: 100%;
+    width: 0%;
+    background: #fff;
+    transition: width 0.1s linear;
+}
+
+.xpcrash-format-cursor {
+    display: inline-block;
+    width: 0.6em;
+    background: #fff;
+    color: #000;
+    animation: xpcrash-blink 1s steps(2, end) infinite;
+}
+
+@keyframes xpcrash-blink {
+    50% { background: transparent; }
+}
+
+@media (max-width: 800px) {
+    .xpcrash-stage-format { padding: 18px 14px; font-size: 13px; }
+    .xpcrash-format-bar   { width: 240px; height: 20px; }
+}
+
+/* ============================================================
+ * Stage: Prank reveal — yellow background, classic dad-joke sign-off
+ * ============================================================ */
+.xpcrash-stage-prank {
+    background: #e0d375;
+    color: #000;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px;
+}
+
+.xpcrash-prank-title {
+    margin: 0;
+    font: 700 clamp(2rem, 6vw, 4.5rem) Arial, Helvetica, sans-serif;
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+}
+
+.xpcrash-prank-sub {
+    margin: 18px 0 0;
+    font: 400 clamp(1rem, 2vw, 1.4rem) Arial, Helvetica, sans-serif;
+}
+
+/* ============================================================
+ * Stage 4: BSOD
+ * ============================================================ */
+.xpcrash-stage-bsod {
+    background: #0000aa;
+    color: #fff;
+    padding: 40px 80px;
+    align-items: flex-start;
+    justify-content: flex-start;
+    font-family: "Lucida Console", "Courier New", monospace;
+    cursor: default;
+}
+
+.xpcrash-bsod-text {
+    margin: 0;
+    font-size: 17px;
+    line-height: 1.55;
+    color: #fff;
+    white-space: pre;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.18);
+}
+
+@media (max-width: 1200px) {
+    .xpcrash-stage-bsod { padding: 30px 50px; }
+    .xpcrash-bsod-text  { font-size: 14px; }
+}
+
+@media (max-width: 800px) {
+    .xpcrash-stage-bsod { padding: 18px 14px; }
+    .xpcrash-bsod-text  { font-size: 11px; }
+}
+
+/* ============================================================
+ * SEO + FAQ on public landing (separator pattern)
+ * ============================================================ */
+.xpcrash-seo-content,
+.xpcrash-faq {
+    margin-top: 56px;
+    padding-top: 36px;
+    border-top: 1px solid var(--flex-gray-15, rgba(0, 0, 0, 0.08));
+}
+
+.xpcrash-seo-content-inner { padding: 0; }
+
+.xpcrash-seo-content-inner h2 {
+    font-size: clamp(1.2rem, 2.5vw, 1.55rem);
+    margin: 28px 0 12px;
+}
+
+.xpcrash-seo-content-inner h2:first-child { margin-top: 0; }
+
+.xpcrash-seo-content-inner p,
+.xpcrash-seo-content-inner li {
+    font-size: 0.98rem;
+    line-height: 1.7;
+    color: var(--meta-color, #444);
+}
+
+.xpcrash-faq-inner { padding: 0; }
+
+.xpcrash-faq-title {
+    font-size: clamp(1.3rem, 2.8vw, 1.7rem);
+    margin: 0 0 18px;
+}
+
+.xpcrash-faq-item {
+    border-bottom: 1px solid var(--flex-gray-15, rgba(0, 0, 0, 0.08));
+    padding: 14px 0;
+}
+
+.xpcrash-faq-item summary {
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    list-style: none;
+    position: relative;
+    padding-right: 28px;
+}
+
+.xpcrash-faq-item summary::-webkit-details-marker { display: none; }
+
+.xpcrash-faq-item summary::after {
+    content: "+";
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.4rem;
+    line-height: 1;
+}
+
+.xpcrash-faq-item[open] summary::after { content: "−"; }
+
+.xpcrash-faq-answer { padding-top: 10px; }
+
+.xpcrash-faq-answer p {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--meta-color, #444);
+}
+
+.xpcrash-updated {
+    margin-top: 24px;
+    font-size: 0.82rem;
+    color: #6b7280;
+}

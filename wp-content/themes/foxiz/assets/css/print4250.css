@@ -1,0 +1,57 @@
+@media print {
+
+    body[data-theme='dark'] {
+        --h1-fcolor: #000;
+        --h2-fcolor: #000;
+        --h3-fcolor: #000;
+        --h4-fcolor: #000;
+        --h5-fcolor: #000;
+        --h6-fcolor: #000;
+        --meta-fcolor: #000;
+        --body-fcolor: #000;
+        --meta-b-fcolor: #000;
+        --headline-fcolor: #000;
+        --tagline-fcolor: #000;
+    }
+
+    .single-sidebar, .header-wrap, .single-related, .footer-wrap, .single-popular, .efoot,
+    .entry-bottom, .entry-newsletter, .featured-gallery-wrap, .breadcrumb-wrap,
+    .s-cats, .l-shared-sec-outer, .entry-sec, .review-section, .s-ct .widget, .related-sec, .sqview, .t-shared-sec,
+    .s-feat-holder img, .single-header-inner:before, .breadcrumb-absolute, .single-header-content:before,
+    .featured-embed, .paudio-embed, .pvideo-embed, .tipsy, .top-site-ad, .ruby-table-contents, .single-meta .meta-avatar,
+    .smeta-extra, .sfoter-sec, #back-top, .live-blog-interval, .ad-wrap, .gb-btn {
+        display: none !important;
+    }
+
+    .s-ct, .single-header-content {
+        flex-basis: 100% !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .accordion-item-content {
+        display: block !important;
+        opacity: 1 !important;
+    }
+
+    .accordion-item-header {
+        opacity: 1 !important;
+    }
+
+    .gb-wrap {
+        box-shadow: none !important;
+        border: 1px solid #aaa;
+    }
+
+    body .site-outer {
+        margin-top: 0 !important;
+    }
+
+    .single-header-content {
+        padding: 0;
+    }
+
+    .single-header-content *, blockquote *, .smeta-sec * {
+        color: #000 !important;
+    }
+}

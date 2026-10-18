@@ -1,0 +1,13 @@
+{
+  "name": "how-tools",
+  "version": "1.0.0",
+  "description": "Local server for free online tools and prank screens",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

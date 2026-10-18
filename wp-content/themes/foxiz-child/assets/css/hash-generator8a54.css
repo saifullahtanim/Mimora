@@ -1,0 +1,691 @@
+/* Hash Generator
+-------------------------------------- */
+
+.hashgen-page {
+    --hashgen-accent: #059669;
+    --hashgen-accent-90: #059669e6;
+    --hashgen-accent-dark: #047857;
+    --hashgen-accent-light: color-mix(in srgb, #059669 10%, transparent);
+    --hashgen-border: var(--flex-gray-15, rgba(0, 0, 0, 0.08));
+    --hashgen-surface: var(--solid-white, #fff);
+    --hashgen-soft: #f3f4f6;
+    --hashgen-radius: var(--round-7, 7px);
+    --hashgen-transition: var(--effect, 0.25s ease);
+    position: relative;
+    padding: 36px 0 80px;
+}
+
+/* Hero
+-------------------------------------- */
+
+.hashgen-hero {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 18px 0 28px;
+    text-align: center;
+}
+
+.hashgen-title {
+    margin-bottom: 12px;
+    font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+}
+
+.hashgen-subtitle {
+    max-width: 680px;
+    margin: 0 auto;
+    font-size: clamp(0.9rem, 1.5vw, 1rem);
+    line-height: 1.65;
+    color: var(--excerpt-color);
+}
+
+/* Card
+-------------------------------------- */
+
+.hashgen-tool-section {
+    max-width: 860px;
+    margin: 0 auto 28px;
+}
+
+.hashgen-card {
+    border: 1px solid #ddd;
+    border-radius: 16px;
+    background: var(--hashgen-surface);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03), 0 6px 24px rgba(0, 0, 0, 0.07);
+    padding: 32px 32px 28px;
+}
+
+/* Mode Tabs
+-------------------------------------- */
+
+.hashgen-mode-tabs {
+    display: inline-flex;
+    gap: 4px;
+    padding: 4px;
+    background: var(--hashgen-soft);
+    border-radius: 12px;
+    margin-bottom: 18px;
+}
+
+.hashgen-mode-tab {
+    padding: 9px 20px;
+    font-family: var(--btn-family);
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--body-fcolor, #555);
+    background: transparent;
+    border: 0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--hashgen-transition);
+    line-height: 1;
+}
+
+.hashgen-mode-tab:hover {
+    color: var(--hashgen-accent);
+}
+
+.hashgen-mode-tab.is-active {
+    color: #fff;
+    background: var(--hashgen-accent);
+    box-shadow: 0 2px 6px color-mix(in srgb, var(--hashgen-accent) 30%, transparent);
+}
+
+.hashgen-mode-tab:focus-visible {
+    outline: 2px solid var(--hashgen-accent);
+    outline-offset: 2px;
+}
+
+/* Input (Text)
+-------------------------------------- */
+
+.hashgen-input-wrap {
+    margin-bottom: 20px;
+}
+
+.hashgen-textarea {
+    width: 100%;
+    min-height: 140px;
+    padding: 14px 16px;
+    font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', 'Consolas', 'Monaco', monospace;
+    font-size: 0.92rem;
+    line-height: 1.55;
+    color: var(--headline-fcolor, #111);
+    background: var(--hashgen-surface);
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    resize: vertical;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.hashgen-textarea:focus {
+    outline: none;
+    border-color: var(--hashgen-accent);
+    box-shadow: 0 0 0 3px var(--hashgen-accent-light);
+}
+
+.hashgen-textarea::placeholder {
+    color: var(--body-fcolor, #999);
+    opacity: 0.6;
+}
+
+.hashgen-input-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 8px;
+    padding: 0 2px;
+    font-family: var(--meta-family);
+    font-size: 0.78rem;
+    color: var(--excerpt-color, #888);
+}
+
+.hashgen-clear {
+    padding: 4px 12px;
+    font-size: 0.76rem;
+    font-weight: 700;
+    color: var(--body-fcolor, #888);
+    background: transparent;
+    border: 1px solid var(--hashgen-border);
+    border-radius: 14px;
+    cursor: pointer;
+    transition: var(--hashgen-transition);
+}
+
+.hashgen-clear:hover {
+    color: var(--hashgen-accent);
+    border-color: var(--hashgen-accent);
+}
+
+/* Input (File)
+-------------------------------------- */
+
+.hashgen-drop {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 44px 20px;
+    border: 2px dashed #d0d4db;
+    border-radius: 14px;
+    background: #fafbfc;
+    cursor: pointer;
+    transition: var(--hashgen-transition);
+    text-align: center;
+}
+
+.hashgen-drop:hover,
+.hashgen-drop.is-dragover {
+    border-color: var(--hashgen-accent);
+    background: var(--hashgen-accent-light);
+}
+
+.hashgen-drop svg {
+    width: 36px;
+    height: 36px;
+    color: var(--hashgen-accent);
+}
+
+.hashgen-drop-primary {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--headline-fcolor, #222);
+}
+
+.hashgen-drop-secondary {
+    font-size: 0.85rem;
+    color: var(--excerpt-color, #888);
+    line-height: 1.5;
+    word-break: break-word;
+}
+
+.hashgen-file-input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* Format Row
+-------------------------------------- */
+
+.hashgen-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 0;
+    border-top: 1px solid var(--hashgen-border);
+}
+
+.hashgen-row-label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--headline-fcolor, #333);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.hashgen-formats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    margin-left: auto;
+}
+
+.hashgen-charset {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.hashgen-charset input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.hashgen-checkmark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border: 2px solid #d0d4db;
+    border-radius: 6px;
+    background: var(--hashgen-surface);
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.hashgen-checkmark::after {
+    content: '';
+    display: block;
+    width: 6px;
+    height: 11px;
+    border: solid #fff;
+    border-width: 0 2.5px 2.5px 0;
+    transform: rotate(45deg);
+    margin-top: -2px;
+    opacity: 0;
+    transition: opacity 0.15s;
+}
+
+.hashgen-charset input:checked ~ .hashgen-checkmark {
+    background: var(--hashgen-accent);
+    border-color: var(--hashgen-accent);
+}
+
+.hashgen-charset input:checked ~ .hashgen-checkmark::after {
+    opacity: 1;
+}
+
+.hashgen-charset input:focus-visible ~ .hashgen-checkmark {
+    outline: 2px solid var(--hashgen-accent);
+    outline-offset: 2px;
+}
+
+.hashgen-charset-label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--headline-fcolor, #333);
+}
+
+.hashgen-charset input:not(:checked) ~ .hashgen-charset-label {
+    opacity: 0.55;
+}
+
+/* Output
+-------------------------------------- */
+
+.hashgen-output {
+    margin-top: 8px;
+    padding-top: 18px;
+    border-top: 1px solid var(--hashgen-border);
+}
+
+.hashgen-output-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+}
+
+.hashgen-output-title {
+    font-family: var(--meta-family);
+    font-size: var(--meta-fsize, 0.78rem);
+    font-weight: var(--meta-b-fweight, 600);
+    color: var(--excerpt-color, #888);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.hashgen-output-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.hashgen-secondary {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 14px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--hashgen-accent);
+    background: var(--hashgen-accent-light);
+    border: 1px solid color-mix(in srgb, var(--hashgen-accent) 20%, transparent);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: var(--hashgen-transition);
+}
+
+.hashgen-secondary:hover {
+    background: color-mix(in srgb, var(--hashgen-accent) 16%, transparent);
+}
+
+.hashgen-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.hashgen-item {
+    display: grid;
+    grid-template-columns: 96px 1fr auto;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: #fafbfc;
+    border: 1px solid var(--hashgen-border);
+    border-radius: 10px;
+    transition: background 0.15s;
+    min-height: 48px;
+}
+
+.hashgen-item:hover {
+    background: #f2f4f6;
+}
+
+.hashgen-item-label {
+    font-family: var(--meta-family);
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--hashgen-accent);
+    letter-spacing: 0.04em;
+}
+
+.hashgen-item-text {
+    font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', 'Consolas', 'Monaco', monospace;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--headline-fcolor, #111);
+    word-break: break-all;
+    line-height: 1.5;
+    user-select: all;
+    min-width: 0;
+}
+
+.hashgen-item-text:empty::before {
+    content: '—';
+    color: var(--excerpt-color, #bbb);
+    font-weight: 400;
+}
+
+.hashgen-item-copy {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--body-fcolor, #888);
+    background: transparent;
+    border: 1px solid var(--hashgen-border);
+    border-radius: 14px;
+    cursor: pointer;
+    transition: var(--hashgen-transition);
+    white-space: nowrap;
+}
+
+.hashgen-item-copy:hover {
+    color: var(--hashgen-accent);
+    border-color: var(--hashgen-accent);
+}
+
+.hashgen-item-copy.is-copied {
+    color: #00b894;
+    border-color: #00b894;
+}
+
+.hashgen-item-copy:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+/* SEO / FAQ
+-------------------------------------- */
+
+.hashgen-seo-content {
+    margin-top: 54px;
+    padding-top: 36px;
+    border-top: 1px solid var(--hashgen-border);
+}
+
+.hashgen-faq {
+    margin-top: 54px;
+    padding-top: 36px;
+    border-top: 1px solid var(--hashgen-border);
+}
+
+.hashgen-faq-inner {
+    padding: 0;
+}
+
+.hashgen-faq-label {
+    display: inline-block;
+    margin-bottom: 6px;
+    padding: 3px 12px;
+    font-family: var(--meta-family);
+    font-size: var(--meta-fsize);
+    font-weight: var(--meta-b-fweight, 600);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--hashgen-accent);
+    background: var(--hashgen-accent-light);
+    border-radius: 20px;
+}
+
+.hashgen-faq-title {
+    margin-bottom: 24px;
+    font-size: clamp(1.5rem, 2.5vw, 2rem);
+}
+
+.hashgen-faq-list {
+    position: relative;
+}
+
+.hashgen-faq-item {
+    border-bottom: 1px solid var(--hashgen-border);
+}
+
+.hashgen-faq-item:last-child {
+    border-bottom: none;
+}
+
+.hashgen-faq-question {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 18px 0;
+    text-align: left;
+    color: inherit;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    gap: 20px;
+    cursor: pointer;
+}
+
+.hashgen-faq-question:hover,
+.hashgen-faq-question:focus {
+    color: var(--hashgen-accent);
+    background: transparent;
+    box-shadow: none;
+}
+
+.hashgen-faq-question-text {
+    font-family: var(--h4-family);
+    font-size: clamp(1rem, 2vw, 1.125rem);
+    font-weight: var(--h4-fweight, 700);
+    line-height: 1.45;
+}
+
+.hashgen-faq-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
+    color: var(--hashgen-accent);
+    border: 1px solid var(--hashgen-border);
+    border-radius: 50%;
+    background: var(--hashgen-accent-light);
+    transition: var(--hashgen-transition);
+}
+
+.hashgen-faq-toggle svg {
+    width: 14px;
+    height: 14px;
+    transition: transform 0.2s ease;
+}
+
+.hashgen-faq-item.hashgen-faq-open .hashgen-faq-toggle svg {
+    transform: rotate(180deg);
+}
+
+.hashgen-faq-answer {
+    display: none;
+    padding-bottom: 18px;
+}
+
+.hashgen-faq-item.hashgen-faq-open .hashgen-faq-answer {
+    display: block;
+}
+
+.hashgen-faq-item:first-child .hashgen-faq-answer {
+    display: block;
+}
+
+.hashgen-faq-item:first-child .hashgen-faq-toggle svg {
+    transform: rotate(180deg);
+}
+
+.hashgen-faq-item:first-child:not(.hashgen-faq-open):not(.hashgen-faq-touched) .hashgen-faq-answer {
+    display: block;
+}
+
+.hashgen-faq-item:first-child:not(.hashgen-faq-open).hashgen-faq-touched .hashgen-faq-answer {
+    display: none;
+}
+
+.hashgen-faq-item:first-child:not(.hashgen-faq-open).hashgen-faq-touched .hashgen-faq-toggle svg {
+    transform: rotate(0deg);
+}
+
+.hashgen-faq-answer-inner {
+    max-width: 840px;
+    color: var(--excerpt-color);
+    line-height: 1.7;
+    font-size: 0.95rem;
+}
+
+.hashgen-faq-answer-inner p {
+    margin: 0;
+}
+
+/* Toast
+-------------------------------------- */
+
+.hashgen-toast-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 100000;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    pointer-events: none;
+}
+
+.hashgen-toast {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #fff;
+    background: var(--dark-accent, #191c20);
+    border-radius: var(--hashgen-radius);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    pointer-events: auto;
+    animation: hashgenToastIn 0.3s ease;
+}
+
+.hashgen-toast.hashgen-toast-out {
+    animation: hashgenToastOut 0.25s ease forwards;
+}
+
+@keyframes hashgenToastIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes hashgenToastOut {
+    to { opacity: 0; transform: translateY(10px); }
+}
+
+/* Responsive
+-------------------------------------- */
+
+@media (max-width: 1024px) {
+    .hashgen-page { padding-top: 28px; }
+}
+
+@media (max-width: 767px) {
+    .hashgen-page {
+        padding: 18px 0 56px;
+    }
+
+    .hashgen-hero {
+        padding: 24px 0 20px;
+    }
+
+    .hashgen-card {
+        padding: 22px 16px 20px;
+    }
+
+    .hashgen-row {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .hashgen-formats {
+        margin-left: 0;
+        gap: 14px;
+    }
+
+    .hashgen-item {
+        grid-template-columns: 1fr auto;
+        grid-template-areas:
+            "label copy"
+            "text text";
+        gap: 8px;
+        padding: 10px 12px;
+    }
+
+    .hashgen-item-label {
+        grid-area: label;
+    }
+
+    .hashgen-item-copy {
+        grid-area: copy;
+    }
+
+    .hashgen-item-text {
+        grid-area: text;
+        font-size: 0.78rem;
+    }
+
+    .hashgen-output-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    .hashgen-drop {
+        padding: 32px 16px;
+    }
+
+    .hashgen-seo-content {
+        margin-top: 42px;
+    }
+
+    .hashgen-faq {
+        margin-top: 42px;
+    }
+
+    .hashgen-toast-container {
+        bottom: 12px;
+        right: 12px;
+        left: 12px;
+    }
+}

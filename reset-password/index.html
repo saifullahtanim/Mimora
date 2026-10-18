@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Reset Your Password — Mimora</title>
+	<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+	<link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" id="rb-preload-gfonts" href="https://fonts.googleapis.com/css?family=Jost:400,500,600,700,800,900%7CMulish:700,800,900&amp;display=swap" crossorigin>
+	<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Jost:400,500,600,700,800,900%7CMulish:700,800,900&amp;display=swap"></noscript>
+
+	<link rel='stylesheet' id='foxiz-elements-css' href='/wp-content/plugins/foxiz-core/lib/foxiz-elements/public/style128b.css?ver=3.1' media='all' />
+	<link rel='stylesheet' id='tools-site-chrome-css' href='/wp-content/themes/foxiz-child/assets/css/site-chrome9632.css?ver=1.2.4' media='all' />
+	<link rel='stylesheet' id='foxiz-main-css' href='/wp-content/themes/foxiz/assets/css/main4250.css?ver=2.7.0' media='all' />
+	<style id="foxiz-main-inline-css">
+		:root {
+			--body-family: Jost, sans-serif;
+			--h1-family: Mulish, sans-serif;
+			--g-color: #3b5998;
+			--primary-blue: #3b5998;
+			--round-5: 12px;
+		}
+		[data-theme="dark"] {
+			--solid-white: #191c20;
+			--body-fcolor: #cbd5e1;
+		}
+		.reset-card-outer {
+			background: var(--solid-white, #ffffff);
+			border-radius: 14px;
+			padding: 45px 38px 40px;
+			box-shadow: 0 15px 45px rgba(15, 23, 42, 0.12);
+			width: 100%;
+			max-width: 480px;
+			margin: 0 auto;
+		}
+		[data-theme="dark"] .reset-card-outer {
+			box-shadow: 0 15px 45px rgba(0, 0, 0, 0.45);
+			border: 1px solid rgba(255, 255, 255, 0.08);
+		}
+		.reset-title {
+			font-size: 32px;
+			font-weight: 800;
+			color: var(--h1-fcolor, #1e293b);
+			margin-bottom: 26px;
+			line-height: 1.2;
+		}
+		.reset-label {
+			font-size: 14px;
+			font-weight: 600;
+			color: #475569;
+			margin-bottom: 8px;
+			display: block;
+		}
+		[data-theme="dark"] .reset-label {
+			color: #94a3b8;
+		}
+		.reset-input-wrap {
+			position: relative;
+			margin-bottom: 22px;
+		}
+		.reset-input {
+			width: 100%;
+			height: 48px;
+			border: 1.5px solid #e2e8f0;
+			border-radius: 6px;
+			padding: 0 45px 0 14px;
+			font-size: 15px;
+			color: #1e293b;
+			background: #ffffff;
+			transition: border-color 0.15s;
+			box-sizing: border-box;
+		}
+		[data-theme="dark"] .reset-input {
+			background: #23272e;
+			border-color: #334155;
+			color: #f8fafc;
+		}
+		.reset-input:focus {
+			outline: none;
+			border-color: #3b5998;
+		}
+		.reset-toggle-eye {
+			position: absolute;
+			right: 14px;
+			top: 50%;
+			transform: translateY(-50%);
+			cursor: pointer;
+			color: #64748b;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+		.reset-btn {
+			width: 100%;
+			height: 48px;
+			background: #3b5998;
+			color: #ffffff;
+			border: none;
+			border-radius: 6px;
+			font-size: 16px;
+			font-weight: 700;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 8px;
+			cursor: pointer;
+			transition: all 0.2s;
+		}
+		.reset-btn:hover {
+			background: #30477a;
+		}
+		.mimora-auth-alert {
+			padding: 12px 14px;
+			border-radius: 8px;
+			font-size: 14px;
+			margin-bottom: 20px;
+			display: none;
+			align-items: center;
+			gap: 8px;
+		}
+		.mimora-alert-error {
+			background: #fef2f2;
+			color: #dc2626;
+			border: 1px solid rgba(239, 68, 68, 0.25);
+			display: flex;
+		}
+		.mimora-alert-success {
+			background: #ecfdf5;
+			color: #059669;
+			border: 1px solid rgba(16, 185, 129, 0.25);
+			display: flex;
+		}
+	</style>
+	<link rel='stylesheet' id='foxiz-style-css' href='/wp-content/themes/foxiz-child/style53cf.css?ver=2.1' media='all' />
+	<link rel="icon" href="/wp-content/uploads/2026/01/title.png" sizes="32x32" />
+</head>
+<body class="wp-singular page-template-default page" data-theme="default">
+	<script>
+		(function () {
+			let currentMode = null;
+			try { currentMode = localStorage.getItem('RubyDarkMode') || 'default'; } catch(e) { currentMode = 'default'; }
+			document.body.setAttribute('data-theme', currentMode === 'dark' ? 'dark' : 'default');
+		})();
+	</script>
+
+	<div class="site-outer">
+		<!-- Minimal Header -->
+		<div id="site-header" class="header-wrap rb-section header-set-1 header-1 header-wrapper style-shadow">
+			<div class="navbar-wrap">
+				<div class="rb-container edge-padding">
+					<div class="navbar-inner" style="display:flex; justify-content:space-between; align-items:center; padding:15px 0;">
+						<div class="logo-wrap is-image-logo site-branding">
+							<a href="/" class="logo" title="Mimora">
+								<img class="logo-default" height="120" width="384" src="/wp-content/uploads/2026/01/logo.png" alt="Mimora">
+							</a>
+						</div>
+						<div class="navbar-right">
+							<a href="/" style="font-weight:700; color:#3b5998; text-decoration:none;">← Back to Home</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Reset Password Card Container -->
+		<div class="mimora-auth-page-wrap" style="min-height: calc(100vh - 220px); display:flex; align-items:center; justify-content:center; padding:50px 20px 80px;">
+			<div class="reset-card-outer">
+				<div style="margin-bottom: 20px;">
+					<a href="/" style="display:inline-block;">
+						<img src="/wp-content/uploads/2026/01/logo.png" alt="Mimora" style="height:36px; width:auto; display:block;">
+					</a>
+				</div>
+
+				<h1 class="reset-title">Reset Your Password</h1>
+
+				<div id="reset-alert" class="mimora-auth-alert"></div>
+
+				<div id="reset-form-container">
+					<form id="reset-password-form" action="/api/reset-password" method="post">
+						<input type="hidden" name="token" id="hidden-token-input" value="">
+						<div class="reset-input-wrap">
+							<label class="reset-label" for="new-password">New Password <span style="color:#ef4444;">*</span></label>
+							<div style="position:relative;">
+								<input type="password" id="new-password" name="newPassword" required="required" placeholder="At least 6 characters" class="reset-input" />
+								<span class="reset-toggle-eye" data-target="new-password">
+									<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+								</span>
+							</div>
+						</div>
+
+						<div class="reset-input-wrap">
+							<label class="reset-label" for="confirm-password">Confirm Password <span style="color:#ef4444;">*</span></label>
+							<div style="position:relative;">
+								<input type="password" id="confirm-password" name="confirmPassword" required="required" placeholder="Repeat new password" class="reset-input" />
+								<span class="reset-toggle-eye" data-target="confirm-password">
+									<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+								</span>
+							</div>
+						</div>
+
+						<button type="submit" class="reset-btn" id="reset-submit-btn">
+							<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 11 15 16 9"></polyline></svg>
+							<span>Reset Password</span>
+						</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- 100% Robust Pure Vanilla JS (No jQuery dependencies) -->
+	<script>
+		(function () {
+			// Password Visibility Toggle
+			document.querySelectorAll('.reset-toggle-eye').forEach(function (toggle) {
+				toggle.addEventListener('click', function () {
+					var targetId = this.getAttribute('data-target');
+					var input = document.getElementById(targetId);
+					if (input.type === 'password') {
+						input.type = 'text';
+						this.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>';
+					} else {
+						input.type = 'password';
+						this.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
+					}
+				});
+			});
+
+			var urlParams = new URLSearchParams(window.location.search);
+			var token = urlParams.get('token') || '';
+			var email = urlParams.get('email') || '';
+
+			var hiddenTokenInput = document.getElementById('hidden-token-input');
+			if (hiddenTokenInput) hiddenTokenInput.value = token;
+
+			var alertBox = document.getElementById('reset-alert');
+			var btn = document.getElementById('reset-submit-btn');
+			var form = document.getElementById('reset-password-form');
+
+			if (!token) {
+				alertBox.className = 'mimora-auth-alert mimora-alert-error';
+				alertBox.innerHTML = '<span class="mimora-alert-icon">⚠️</span><span>No valid password reset token provided. Please request a new link.</span>';
+				alertBox.style.display = 'flex';
+				btn.disabled = true;
+				btn.style.opacity = '0.5';
+			}
+
+			form.addEventListener('submit', async function (e) {
+				e.preventDefault();
+				var newPassword = document.getElementById('new-password').value;
+				var confirmPassword = document.getElementById('confirm-password').value;
+
+				if (!token) {
+					alertBox.className = 'mimora-auth-alert mimora-alert-error';
+					alertBox.innerHTML = '<span class="mimora-alert-icon">⚠️</span><span>Invalid or missing reset token.</span>';
+					alertBox.style.display = 'flex';
+					return;
+				}
+
+				if (newPassword.length < 6) {
+					alertBox.className = 'mimora-auth-alert mimora-alert-error';
+					alertBox.innerHTML = '<span class="mimora-alert-icon">⚠️</span><span>Password must be at least 6 characters long.</span>';
+					alertBox.style.display = 'flex';
+					return;
+				}
+
+				if (newPassword !== confirmPassword) {
+					alertBox.className = 'mimora-auth-alert mimora-alert-error';
+					alertBox.innerHTML = '<span class="mimora-alert-icon">⚠️</span><span>Passwords do not match. Please verify.</span>';
+					alertBox.style.display = 'flex';
+					return;
+				}
+
+				btn.disabled = true;
+				btn.innerHTML = '<span>Updating Password...</span>';
+				alertBox.style.display = 'none';
+
+				try {
+					var res = await fetch('/api/reset-password', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+						body: JSON.stringify({ token: token, newPassword: newPassword, email: email })
+					});
+
+					var data = await res.json();
+					if (res.ok && data.success) {
+						btn.innerHTML = '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg><span>✓ Password Updated! Redirecting...</span>';
+						btn.style.background = '#10b981';
+						btn.style.borderColor = '#10b981';
+
+						var targetEmail = data.email || email || '';
+						
+						// Auto-redirect to homepage with login popup opened
+						setTimeout(function () {
+							window.location.replace('/?reset_success=1' + (targetEmail ? '&email=' + encodeURIComponent(targetEmail) : ''));
+						}, 350);
+					} else {
+						btn.disabled = false;
+						btn.innerHTML = '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 11 15 16 9"></polyline></svg><span>Reset Password</span>';
+						alertBox.className = 'mimora-auth-alert mimora-alert-error';
+						alertBox.innerHTML = '<span class="mimora-alert-icon">⚠️</span><span>' + (data.message || 'Error resetting password.') + '</span>';
+						alertBox.style.display = 'flex';
+					}
+				} catch (err) {
+					btn.disabled = false;
+					btn.innerHTML = '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 11 15 16 9"></polyline></svg><span>Reset Password</span>';
+					alertBox.className = 'mimora-auth-alert mimora-alert-error';
+					alertBox.innerHTML = '<span class="mimora-alert-icon">⚠️</span><span>Connection error. Please try again.</span>';
+					alertBox.style.display = 'flex';
+				}
+			});
+		})();
+	</script>
+</body>
+</html>
