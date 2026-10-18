@@ -1072,12 +1072,12 @@
 
     var rawSourceImage = null;
 
-    // ---------- Interactive Avatar Cropper Engine ----------
+    // ---------- Interactive Modern Avatar Cropper Engine ----------
     var cropper = {
         img: null,
         zoom: 1,
-        minZoom: 0.15,
-        maxZoom: 5,
+        minZoom: 1,
+        maxZoom: 4,
         panX: 0,
         panY: 0,
         rotation: 0,
@@ -1087,7 +1087,57 @@
         lastY: 0
     };
 
+    var touchState = {
+        isPinching: false,
+        startDist: 0,
+        startZoom: 1
+    };
+
     var cropCtx = els.cropCanvas ? els.cropCanvas.getContext('2d') : null;
+
+    function getRotatedDimensions() {
+        var rot = ((cropper.rotation % 360) + 360) % 360;
+        var isSwapped = (rot === 90 || rot === 270);
+        var imgW = cropper.img ? (cropper.img.naturalWidth || cropper.img.width || 300) : 300;
+        var imgH = cropper.img ? (cropper.img.naturalHeight || cropper.img.height || 300) : 300;
+        return {
+            w: isSwapped ? imgH : imgW,
+            h: isSwapped ? imgW : imgH,
+            rawW: imgW,
+            rawH: imgH
+        };
+    }
+
+    // Modern constraint: photo must ALWAYS cover the crop circle
+    function calculateMinZoom() {
+        if (!cropper.img) return 1;
+        var dims = getRotatedDimensions();
+        var targetDiameter = cropper.cropRadius * 2; // 240px
+        return Math.max(targetDiameter / dims.w, targetDiameter / dims.h);
+    }
+
+    // Modern boundary lock: photo edges cannot be dragged inside the crop circle
+    function clampPan() {
+        if (!cropper.img) return;
+        var dims = getRotatedDimensions();
+        var curW = dims.w * cropper.zoom;
+        var curH = dims.h * cropper.zoom;
+        var maxPanX = Math.max(0, (curW / 2) - cropper.cropRadius);
+        var maxPanY = Math.max(0, (curH / 2) - cropper.cropRadius);
+
+        if (cropper.panX > maxPanX) cropper.panX = maxPanX;
+        if (cropper.panX < -maxPanX) cropper.panX = -maxPanX;
+        if (cropper.panY > maxPanY) cropper.panY = maxPanY;
+        if (cropper.panY < -maxPanY) cropper.panY = -maxPanY;
+    }
+
+    function syncZoomSlider() {
+        if (!els.cropZoom) return;
+        els.cropZoom.min = cropper.minZoom.toFixed(4);
+        els.cropZoom.max = (cropper.minZoom * 4.5).toFixed(4);
+        els.cropZoom.step = ((cropper.minZoom * 3.5) / 100).toFixed(4);
+        els.cropZoom.value = cropper.zoom.toFixed(4);
+    }
 
     function openCropModal(imageObj) {
         if (!els.cropperModal || !els.cropCanvas || !imageObj) return;
@@ -1096,18 +1146,15 @@
         cropper.panY = 0;
         cropper.rotation = 0;
         cropper.isDragging = false;
+        touchState.isPinching = false;
 
-        // Auto calculate initial zoom so image covers circular cutout
-        var minDim = Math.min(imageObj.naturalWidth || imageObj.width || 300, imageObj.naturalHeight || imageObj.height || 300);
-        var targetDiameter = cropper.cropRadius * 2;
-        var initialZoom = Math.max(targetDiameter / minDim, 0.8);
-        cropper.zoom = initialZoom;
+        var minZ = calculateMinZoom();
+        cropper.minZoom = minZ;
+        cropper.maxZoom = minZ * 4.5;
+        cropper.zoom = minZ;
 
-        if (els.cropZoom) {
-            els.cropZoom.min = Math.max(0.1, (initialZoom * 0.4).toFixed(2));
-            els.cropZoom.max = Math.max(4, (initialZoom * 3.5).toFixed(2));
-            els.cropZoom.value = initialZoom;
-        }
+        syncZoomSlider();
+        clampPan();
 
         els.cropperModal.style.display = 'flex';
         els.cropperModal.setAttribute('aria-hidden', 'false');
@@ -1133,6 +1180,8 @@
 
         // 1. Draw translated, rotated and zoomed image
         cropCtx.save();
+        cropCtx.imageSmoothingEnabled = true;
+        cropCtx.imageSmoothingQuality = 'high';
         cropCtx.translate(w / 2 + cropper.panX, h / 2 + cropper.panY);
         cropCtx.rotate((cropper.rotation * Math.PI) / 180);
         cropCtx.scale(cropper.zoom, cropper.zoom);
@@ -1141,27 +1190,30 @@
         cropCtx.drawImage(cropper.img, -imgW / 2, -imgH / 2);
         cropCtx.restore();
 
-        // 2. Dark circular overlay mask
+        // 2. Dark circular overlay mask (frosted scrim)
         cropCtx.save();
-        cropCtx.fillStyle = 'rgba(15, 23, 42, 0.65)';
+        cropCtx.fillStyle = 'rgba(11, 15, 25, 0.72)';
         cropCtx.beginPath();
         cropCtx.rect(0, 0, w, h);
         cropCtx.arc(w / 2, h / 2, radius, 0, Math.PI * 2, true);
         cropCtx.fill();
 
-        // 3. Crisp white circle boundary
+        // 3. Crisp white circle boundary with shadow
+        cropCtx.shadowColor = 'rgba(0, 0, 0, 0.45)';
+        cropCtx.shadowBlur = 8;
         cropCtx.strokeStyle = '#ffffff';
         cropCtx.lineWidth = 2.5;
         cropCtx.beginPath();
         cropCtx.arc(w / 2, h / 2, radius, 0, Math.PI * 2);
         cropCtx.stroke();
+        cropCtx.shadowBlur = 0;
 
         // 4. Rule-of-thirds grid lines inside circle
         cropCtx.save();
         cropCtx.beginPath();
         cropCtx.arc(w / 2, h / 2, radius, 0, Math.PI * 2);
         cropCtx.clip();
-        cropCtx.strokeStyle = 'rgba(255, 255, 255, 0.22)';
+        cropCtx.strokeStyle = (cropper.isDragging || touchState.isPinching) ? 'rgba(255, 255, 255, 0.42)' : 'rgba(255, 255, 255, 0.22)';
         cropCtx.lineWidth = 1;
         var step = (radius * 2) / 3;
         var startX = w / 2 - radius;
@@ -1181,7 +1233,7 @@
         cropCtx.restore();
     }
 
-    // Touch & Mouse Dragging / Panning on Cropper Viewport
+    // Touch & Mouse Dragging / Panning & Multi-touch Pinch to Zoom
     if (els.cropViewport && els.cropCanvas) {
         function getPointerPos(e) {
             var clientX = e.clientX;
@@ -1194,14 +1246,43 @@
         }
 
         function onDragStart(e) {
+            if (e.touches && e.touches.length === 2) {
+                cropper.isDragging = false;
+                touchState.isPinching = true;
+                touchState.startDist = Math.hypot(
+                    e.touches[0].clientX - e.touches[1].clientX,
+                    e.touches[0].clientY - e.touches[1].clientY
+                );
+                touchState.startZoom = cropper.zoom;
+                e.preventDefault();
+                return;
+            }
             cropper.isDragging = true;
+            touchState.isPinching = false;
             var pos = getPointerPos(e);
             cropper.lastX = pos.x;
             cropper.lastY = pos.y;
             if (e.type === 'touchstart') e.preventDefault();
+            drawCropCanvas();
         }
 
         function onDragMove(e) {
+            if (e.touches && e.touches.length === 2 && touchState.isPinching) {
+                e.preventDefault();
+                var curDist = Math.hypot(
+                    e.touches[0].clientX - e.touches[1].clientX,
+                    e.touches[0].clientY - e.touches[1].clientY
+                );
+                if (touchState.startDist > 0) {
+                    var factor = curDist / touchState.startDist;
+                    cropper.zoom = Math.max(cropper.minZoom, Math.min(cropper.maxZoom, touchState.startZoom * factor));
+                    syncZoomSlider();
+                    clampPan();
+                    drawCropCanvas();
+                }
+                return;
+            }
+
             if (!cropper.isDragging) return;
             if (e.type === 'touchmove') e.preventDefault();
             var pos = getPointerPos(e);
@@ -1211,14 +1292,26 @@
             cropper.lastY = pos.y;
 
             var rect = els.cropCanvas.getBoundingClientRect();
-            var factor = els.cropCanvas.width / (rect.width || 340);
-            cropper.panX += dx * factor;
-            cropper.panY += dy * factor;
+            var scaleRatio = els.cropCanvas.width / (rect.width || 340);
+            cropper.panX += dx * scaleRatio;
+            cropper.panY += dy * scaleRatio;
+
+            clampPan();
             drawCropCanvas();
         }
 
-        function onDragEnd() {
+        function onDragEnd(e) {
+            if (e.touches && e.touches.length === 1) {
+                // Switched from pinch to single finger
+                touchState.isPinching = false;
+                cropper.isDragging = true;
+                cropper.lastX = e.touches[0].clientX;
+                cropper.lastY = e.touches[0].clientY;
+                return;
+            }
             cropper.isDragging = false;
+            touchState.isPinching = false;
+            drawCropCanvas();
         }
 
         els.cropViewport.addEventListener('mousedown', onDragStart);
@@ -1228,36 +1321,45 @@
         els.cropViewport.addEventListener('touchstart', onDragStart, { passive: false });
         window.addEventListener('touchmove', onDragMove, { passive: false });
         window.addEventListener('touchend', onDragEnd);
+        window.addEventListener('touchcancel', onDragEnd);
 
-        // Mouse wheel zoom
+        // Smooth Mouse wheel zoom with clamp
         els.cropViewport.addEventListener('wheel', function (e) {
             e.preventDefault();
-            var step = e.deltaY < 0 ? 0.08 : -0.08;
-            cropper.zoom = Math.max(cropper.minZoom, Math.min(cropper.maxZoom, cropper.zoom + step));
-            if (els.cropZoom) els.cropZoom.value = cropper.zoom;
+            var step = (cropper.maxZoom - cropper.minZoom) * 0.05;
+            var newZ = cropper.zoom + (e.deltaY < 0 ? step : -step);
+            cropper.zoom = Math.max(cropper.minZoom, Math.min(cropper.maxZoom, newZ));
+            syncZoomSlider();
+            clampPan();
             drawCropCanvas();
         }, { passive: false });
     }
 
     if (els.cropZoom) {
         els.cropZoom.addEventListener('input', function () {
-            cropper.zoom = parseFloat(els.cropZoom.value);
+            var val = parseFloat(els.cropZoom.value);
+            cropper.zoom = Math.max(cropper.minZoom, Math.min(cropper.maxZoom, val));
+            clampPan();
             drawCropCanvas();
         });
     }
 
     if (els.cropZoomIn) {
         els.cropZoomIn.addEventListener('click', function () {
-            cropper.zoom = Math.min(cropper.maxZoom, cropper.zoom + 0.15);
-            if (els.cropZoom) els.cropZoom.value = cropper.zoom;
+            var step = (cropper.maxZoom - cropper.minZoom) * 0.12;
+            cropper.zoom = Math.min(cropper.maxZoom, cropper.zoom + step);
+            syncZoomSlider();
+            clampPan();
             drawCropCanvas();
         });
     }
 
     if (els.cropZoomOut) {
         els.cropZoomOut.addEventListener('click', function () {
-            cropper.zoom = Math.max(cropper.minZoom, cropper.zoom - 0.15);
-            if (els.cropZoom) els.cropZoom.value = cropper.zoom;
+            var step = (cropper.maxZoom - cropper.minZoom) * 0.12;
+            cropper.zoom = Math.max(cropper.minZoom, cropper.zoom - step);
+            syncZoomSlider();
+            clampPan();
             drawCropCanvas();
         });
     }
@@ -1265,6 +1367,14 @@
     if (els.cropRotateBtn) {
         els.cropRotateBtn.addEventListener('click', function () {
             cropper.rotation = (cropper.rotation + 90) % 360;
+            var minZ = calculateMinZoom();
+            cropper.minZoom = minZ;
+            cropper.maxZoom = minZ * 4.5;
+            if (cropper.zoom < minZ) {
+                cropper.zoom = minZ;
+            }
+            syncZoomSlider();
+            clampPan();
             drawCropCanvas();
         });
     }
@@ -1274,11 +1384,12 @@
             cropper.panX = 0;
             cropper.panY = 0;
             cropper.rotation = 0;
-            if (cropper.img) {
-                var minDim = Math.min(cropper.img.naturalWidth || cropper.img.width, cropper.img.naturalHeight || cropper.img.height);
-                cropper.zoom = Math.max((cropper.cropRadius * 2) / minDim, 1);
-                if (els.cropZoom) els.cropZoom.value = cropper.zoom;
-            }
+            var minZ = calculateMinZoom();
+            cropper.minZoom = minZ;
+            cropper.maxZoom = minZ * 4.5;
+            cropper.zoom = minZ;
+            syncZoomSlider();
+            clampPan();
             drawCropCanvas();
         });
     }
@@ -1290,11 +1401,13 @@
     if (els.cropApplyBtn) {
         els.cropApplyBtn.addEventListener('click', function () {
             if (!cropper.img) return;
-            var outSize = 400; // Crisp high-res square
+            var outSize = 480; // High-res avatar output
             var outCanvas = document.createElement('canvas');
             outCanvas.width = outSize;
             outCanvas.height = outSize;
             var outCtx = outCanvas.getContext('2d');
+            outCtx.imageSmoothingEnabled = true;
+            outCtx.imageSmoothingQuality = 'high';
 
             var scaleFactor = outSize / (cropper.cropRadius * 2);
 
