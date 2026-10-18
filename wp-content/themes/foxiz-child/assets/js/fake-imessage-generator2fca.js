@@ -62,8 +62,8 @@
         simMode: 'dual',
         showPercent: true,
         showCameraHole: true,
-        showNotifIcons: true,
-        contactName: 'Mom',
+        showNotifIcons: false,
+        contactName: 'Mimora',
         contactAvatar: null,
         service: 'iMessage',
         statusTime: '9:41',
@@ -306,66 +306,13 @@
             c.fill();
         }
 
-        // 2. Left side: Time + Notification icons
-        var timeStr = state.statusTime || '11:40';
-        setFont(c, 14, 600, '"Roboto", "Google Sans", "Segoe UI", -apple-system, sans-serif');
+        // 2. Left side: Clean Time (no clutter/notification icons)
+        var timeStr = state.statusTime || '9:41';
+        setFont(c, 14.5, 600, '"Roboto", "Google Sans", "Segoe UI", -apple-system, sans-serif');
         c.fillStyle = COLORS.statusIcon;
         c.textAlign = 'left';
         c.textBaseline = 'middle';
         c.fillText(timeStr, 20, centerY);
-        var timeW = c.measureText(timeStr).width;
-
-        if (state.showNotifIcons) {
-            var notifX = 20 + timeW + 8;
-
-            // Gallery / Photo icon (rounded rect with hill & sun)
-            c.strokeStyle = COLORS.statusIcon;
-            c.lineWidth = 1.0;
-            roundRectPath(c, notifX, centerY - 5, 11, 10, 2);
-            c.stroke();
-            c.beginPath();
-            c.moveTo(notifX + 2, centerY + 3);
-            c.lineTo(notifX + 5, centerY - 1.5);
-            c.lineTo(notifX + 7, centerY + 0.5);
-            c.lineTo(notifX + 9.5, centerY - 2.5);
-            c.stroke();
-
-            // Cloud / Weather icon
-            var cloudX = notifX + 16;
-            c.fillStyle = COLORS.statusIcon;
-            c.beginPath();
-            c.arc(cloudX + 3, centerY + 0.5, 2.6, 0, Math.PI * 2);
-            c.arc(cloudX + 6.2, centerY - 1.5, 3.2, 0, Math.PI * 2);
-            c.arc(cloudX + 9.4, centerY + 0.5, 2.4, 0, Math.PI * 2);
-            c.fill();
-            c.fillRect(cloudX + 2, centerY + 0.5, 8.5, 2.5);
-
-            // Heart / Health icon
-            var heartX = cloudX + 17;
-            c.save();
-            c.translate(heartX + 4.5, centerY);
-            c.beginPath();
-            c.arc(0, 0, 5, 0, Math.PI * 2);
-            c.strokeStyle = COLORS.statusIcon;
-            c.lineWidth = 0.9;
-            c.stroke();
-            c.beginPath();
-            c.moveTo(0, 2.2);
-            c.bezierCurveTo(-2.6, 0.2, -2.6, -2, -0.9, -2);
-            c.bezierCurveTo(0, -2, 0, -0.8, 0, -0.8);
-            c.bezierCurveTo(0, -0.8, 0, -2, 0.9, -2);
-            c.bezierCurveTo(2.6, -2, 2.6, 0.2, 0, 2.2);
-            c.fillStyle = COLORS.statusIcon;
-            c.fill();
-            c.restore();
-
-            // More notifications dot
-            var dotX = heartX + 14;
-            c.fillStyle = COLORS.statusIcon;
-            c.beginPath();
-            c.arc(dotX, centerY, 1.5, 0, Math.PI * 2);
-            c.fill();
-        }
 
         // 3. Right side: Horizontal Battery, Battery %, Wi-Fi, Network (VoLTE/5G/4G), Signal (Single / Dual SIM)
         var curX = W - 20;
@@ -408,27 +355,43 @@
             curX -= (pctW + 7);
         }
 
-        // Wi-Fi
+        // Wi-Fi (3 concentric curved arcs + bottom apex dot matching reference image)
         if (state.wifi) {
-            var wifiR = 8.5;
-            curX -= wifiR;
+            var wifiOuterR = 10;
+            curX -= wifiOuterR;
+            var wifiCX = curX;
+            var wifiCY = centerY + 3.8;
+            var dotR = 1.6;
+
             c.strokeStyle = COLORS.statusIcon;
             c.lineCap = 'round';
-            c.lineWidth = 1.5;
-            var aStart = Math.PI + 0.6;
-            var aEnd   = Math.PI * 2 - 0.6;
+            c.lineWidth = 1.85;
+            var aStart = Math.PI + 0.58;
+            var aEnd   = Math.PI * 2 - 0.58;
+
+            // Outer arc
             c.beginPath();
-            c.arc(curX, centerY + 3.2, wifiR, aStart, aEnd);
+            c.arc(wifiCX, wifiCY, wifiOuterR, aStart, aEnd);
             c.stroke();
+
+            // Middle arc
             c.beginPath();
-            c.arc(curX, centerY + 3.2, 5.4, aStart, aEnd);
+            c.arc(wifiCX, wifiCY, 6.7, aStart, aEnd);
             c.stroke();
+
+            // Inner arc
+            c.beginPath();
+            c.arc(wifiCX, wifiCY, 3.5, aStart, aEnd);
+            c.stroke();
+
+            // Bottom apex dot
             c.fillStyle = COLORS.statusIcon;
             c.beginPath();
-            c.arc(curX, centerY + 2.2, 1.4, 0, Math.PI * 2);
+            c.arc(wifiCX, wifiCY, dotR, 0, Math.PI * 2);
             c.fill();
             c.lineCap = 'butt';
-            curX -= (wifiR + 6);
+
+            curX -= (wifiOuterR + 7);
         }
 
         // Network badge (VoLTE, 5G, 4G)
@@ -1619,7 +1582,7 @@
 
     els.reset.addEventListener('click', function () {
         if (!confirm('Clear all messages and reset settings to defaults?')) return;
-        state.contactName = 'Mom';
+        state.contactName = 'Mimora';
         state.contactAvatar = null;
         rawSourceImage = null;
         if (els.avatarInput) els.avatarInput.value = '';
